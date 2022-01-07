@@ -1,0 +1,15 @@
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  background: var(--pale);
+}
+
+@media (max-width: 500px) {
+  footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}

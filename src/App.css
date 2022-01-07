@@ -1,0 +1,64 @@
+* {
+  box-sizing: border-box;
+  font-family: "Varela Round", sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  line-height: 1.5;
+
+  --pale: #eceff1;
+  --light-gray: #cfd8dc;
+  --gray: #607d8b;
+  --dark-gray: #263238;
+  --red: #e91e63;
+  --blue: #03a9f4;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+}
+
+section {
+  padding: 40px;
+}
+
+a {
+  color: black;
+}
+
+a:hover {
+  animation: glow-text alternate infinite 0.5s linear;
+}
+
+button {
+  padding: 0.5em;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@keyframes glow-text {
+  from {
+    color: var(--red);
+  }
+  to {
+    color: var(--blue);
+  }
+}
+
+@keyframes glow-bg {
+  from {
+    background: var(--red);
+  }
+  to {
+    background: var(--blue);
+  }
+}
