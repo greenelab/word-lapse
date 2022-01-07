@@ -8,7 +8,7 @@
   text-transform: uppercase;
   line-height: 1.2;
   letter-spacing: 6px;
-  /* transform: skewX(10deg); */
+  transform: skewX(10deg);
   text-align: center;
 }
 
@@ -30,4 +30,6 @@
 
 .letter {
   display: inline-block;
+  font-family: "Righteous", sans-serif;
+  --percent: 0.5;
 }

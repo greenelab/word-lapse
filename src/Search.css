@@ -15,6 +15,11 @@
   padding: 10px 20px;
   width: 100%;
   text-align: center;
+  outline: none;
+}
+
+.search:focus {
+  border-color: var(--dark-gray);
 }
 
 .example {

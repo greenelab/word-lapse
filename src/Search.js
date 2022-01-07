@@ -19,6 +19,9 @@ const Search = () => {
 
   return (
     <form onSubmit={search} className="form">
+      <div>
+        Explore how a word changes in meaning over time
+      </div>
       <input
         className="search"
         value={value}

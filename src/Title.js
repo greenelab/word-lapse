@@ -12,10 +12,10 @@ const layerCount = 5;
 const fromLength = 0.05;
 
 // length of drop shadow effect to animate to (in em)
-const toLength = 0.2;
+const toLength = 0.15;
 
 // stroke width (in em)
-const strokeWidth = 0.07;
+const strokeWidth = 0.05;
 
 // text to spell out
 const text = "WordLapse";
@@ -46,8 +46,40 @@ const letters = text.split("").map((letter, index, array) => ({
 // put in word break
 const words = splitArray(letters, breaks);
 
+// generate animation with web animation api
+const animate = ({ element, fromTransform, toTransform, delay }) =>
+  element.animate(
+    [
+      {
+        transform: fromTransform,
+        offset: 0.0,
+        easing: "ease",
+      },
+      {
+        transform: toTransform,
+        offset: 0.3,
+        easing: "ease",
+      },
+      {
+        transform: fromTransform,
+        offset: 0.6,
+        easing: "linear",
+      },
+      {
+        transform: fromTransform,
+        offset: 1.0,
+        easing: "linear",
+      },
+    ],
+    {
+      duration: 4000,
+      delay,
+      iterations: Infinity,
+    }
+  );
+
 const Title = () => (
-  <div className="title">
+  <div className="title" role="presentation">
     {words.map((letters, index) => (
       <div key={index} className="word">
         {layers.map(({ color, from, to, stroke }, index) => (
@@ -69,37 +101,8 @@ const Title = () => (
                   key={index}
                   className="letter"
                   ref={(element) => {
-                    // generate animation with web animation api
                     if (element)
-                      element.animate(
-                        [
-                          {
-                            transform: fromTransform,
-                            offset: 0.0,
-                            easing: "ease",
-                          },
-                          {
-                            transform: toTransform,
-                            offset: 0.3,
-                            easing: "ease",
-                          },
-                          {
-                            transform: fromTransform,
-                            offset: 0.6,
-                            easing: "linear",
-                          },
-                          {
-                            transform: fromTransform,
-                            offset: 1.0,
-                            easing: "linear",
-                          },
-                        ],
-                        {
-                          duration: 4000,
-                          delay: delay,
-                          iterations: Infinity,
-                        }
-                      );
+                      animate({ element, fromTransform, toTransform, delay });
                     return element;
                   }}
                   style={{
