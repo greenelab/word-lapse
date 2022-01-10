@@ -1,15 +1,9 @@
 footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 20px;
   padding: 40px;
+  color: var(--gray);
   background: var(--pale);
-}
-
-@media (max-width: 500px) {
-  footer {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
+  text-align: center;
 }
