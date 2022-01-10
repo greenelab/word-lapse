@@ -16,6 +16,9 @@
   width: 100%;
   text-align: center;
   outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .search:focus {

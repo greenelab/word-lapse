@@ -6,7 +6,7 @@ const colorA = "#e91e63";
 const colorB = "#03a9f4";
 
 // number of layers to create drop shadow effect, more = smoother look, less = faster performance
-const layerCount = 10;
+const layerCount = 8;
 
 // base length of drop shadow effect (in em)
 const fromLength = 0.05;
