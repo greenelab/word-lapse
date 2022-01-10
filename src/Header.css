@@ -1,0 +1,11 @@
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 40px;
+  background: var(--pale);
+  overflow: hidden;
+  min-height: 100vh;
+}

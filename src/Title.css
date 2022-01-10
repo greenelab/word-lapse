@@ -1,0 +1,41 @@
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10vh;
+  font-size: 4rem;
+  text-transform: uppercase;
+  line-height: 1.2;
+  letter-spacing: 6px;
+  transform: skewX(10deg);
+  text-align: center;
+}
+
+.word {
+  position: relative;
+  margin: 0 0.1em;
+  transform: rotate(-10deg);
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+/* let first layer set height of container */
+.layer:first-child {
+  position: static;
+}
+
+.letter {
+  display: inline-block;
+  font-family: "Righteous", sans-serif;
+  --percent: 0.5;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+}
