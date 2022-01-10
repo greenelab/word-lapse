@@ -15,6 +15,7 @@
 .word {
   position: relative;
   margin: 0 0.1em;
+  transform: rotate(-10deg);
 }
 
 .layer {
@@ -32,4 +33,9 @@
   display: inline-block;
   font-family: "Righteous", sans-serif;
   --percent: 0.5;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
 }
