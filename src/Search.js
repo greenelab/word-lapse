@@ -1,34 +1,39 @@
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "./App";
+import { useDebounce } from "./util";
 import "./Search.css";
 
 const Search = () => {
-  const [value, setValue] = useState("");
+  const { search, setSearch } = useContext(AppContext);
+  const [value, setValue] = useState(search);
+  const debouncedValue = useDebounce(value, 1000);
 
-  const search = (event) => {
+  // when user explicitly submits form by pressing enter
+  const onSubmit = (event) => {
+    // avoid navigating away from page
     event.preventDefault();
-    if (value.trim())
-      window.setTimeout(
-        () =>
-          document
-            .querySelector("main")
-            .scrollIntoView({ block: "start", behavior: "smooth" }),
-        10
-      );
+    // update search immediately
+    setSearch(value);
   };
 
+  // when user types
+  useEffect(() => {
+    // update search after debounce
+    setSearch(debouncedValue);
+  }, [setSearch, debouncedValue]);
+
+  // when search changes upstream, update input value here
+  useEffect(() => setValue(search), [search]);
+
   return (
-    <form onSubmit={search} className="form">
+    <form onSubmit={onSubmit} className="form">
       <input
         className="search"
         value={value}
-        onBlur={search}
         onChange={({ target }) => setValue(target.value)}
-        placeholder="Type a word and press enter"
+        placeholder="Enter a word"
+        autoFocus
       />
-      <button className="submit">
-        <FontAwesomeIcon icon="angle-down" />
-      </button>
     </form>
   );
 };
