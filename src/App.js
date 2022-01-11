@@ -8,7 +8,8 @@ import { useQueryState } from "./util";
 import "./icons";
 import "./App.css";
 
-export const AppContext = createContext();
+export const AppContext = createContext({});
+
 const App = () => {
   const [results, setResults] = useState(null);
   const [search, setSearch] = useQueryState("search", "");
@@ -17,7 +18,7 @@ const App = () => {
 
   // when search query changes
   useEffect(() => {
-    (async () => {
+    const run = async () => {
       // reset results and status
       setResults(null);
       setStatus(statuses.empty);
@@ -46,7 +47,9 @@ const App = () => {
       } catch (error) {
         if (error.message !== statuses.old) setStatus(error.message);
       }
-    })();
+    };
+
+    run();
   }, [search]);
 
   return (

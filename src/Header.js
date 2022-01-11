@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import Title from "./Title";
 import Search from "./Search";
-import "./Header.css";
 import { AppContext } from "./App";
+import "./Header.css";
 
 const Header = () => {
   const { fullscreen } = useContext(AppContext);

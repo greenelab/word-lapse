@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { blendColors, splitArray } from "./util";
 import "./Title.css";
-import { useEffect } from "react/cjs/react.development";
 
 // letters to spell out
 let letters = "WordLapse";
