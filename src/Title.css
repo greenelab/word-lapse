@@ -2,20 +2,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  margin-top: 10vh;
   font-size: 4rem;
   text-transform: uppercase;
   line-height: 1.2;
   letter-spacing: 6px;
-  transform: skewX(10deg);
   text-align: center;
+}
+
+@media (max-width: 500px) {
+  .title {
+    flex-direction: column;
+  }
 }
 
 .word {
   position: relative;
   margin: 0 0.1em;
-  transform: rotate(-10deg);
 }
 
 .layer {
@@ -38,4 +40,12 @@
 .subtitle {
   text-align: center;
   font-size: 1.2rem;
+}
+
+header[data-fullscreen="false"] .title {
+  font-size: 2rem;
+}
+
+header[data-fullscreen="false"] .subtitle {
+  display: none;
 }

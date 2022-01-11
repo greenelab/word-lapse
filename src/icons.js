@@ -1,5 +1,14 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faExclamationCircle,
+  faInfoCircle,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(faGithub, faAngleDown);
+library.add(
+  faAngleDown,
+  faExclamationCircle,
+  faInfoCircle,
+  faSpinner
+);

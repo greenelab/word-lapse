@@ -5,18 +5,20 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
   line-height: 1.5;
 
-  --pale: #eceff1;
-  --light-gray: #cfd8dc;
-  --gray: #607d8b;
-  --dark-gray: #263238;
+  --page: 40px max(40px, calc((100vw - 1600px) / 2));
+  --page-sm: 20px max(20px, calc((100vw - 1600px) / 2));
+
+  --light-gray: #eceff1;
+  --gray: #90a4ae;
+  --dark-gray: #455a64;
   --red: #e91e63;
   --blue: #03a9f4;
 }
 
 #root {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -24,14 +26,14 @@ body {
 
 main {
   flex-grow: 1;
-}
-
-section {
-  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--page);
 }
 
 a {
-  color: var(--gray);
+  color: var(--dark-gray);
 }
 
 a:hover {

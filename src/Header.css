@@ -4,8 +4,18 @@ header {
   align-items: center;
   justify-content: center;
   gap: 40px;
-  padding: 40px;
-  background: var(--pale);
+  padding: var(--page);
+  background: var(--light-gray);
   overflow: hidden;
   min-height: 100vh;
+}
+
+header[data-fullscreen="false"] {
+  position: sticky;
+  top: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+  padding: var(--page-sm);
+  min-height: 0;
 }
