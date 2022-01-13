@@ -1,18 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 
+// linearly interpolate
+export const interpolate = (valueA, valueB, mix) =>
+  valueA + (valueB - valueA) * mix;
+
 // blend two 6-digit hex colors by % amount
-export const blendColors = (colorA, colorB, amount) => {
+export const blendColors = (colorA, colorB, mix) => {
   const [rA, gA, bA] = colorA.match(/\w\w/g).map((c) => parseInt(c, 16));
   const [rB, gB, bB] = colorB.match(/\w\w/g).map((c) => parseInt(c, 16));
-  const r = Math.round(rA + (rB - rA) * amount)
-    .toString(16)
-    .padStart(2, "0");
-  const g = Math.round(gA + (gB - gA) * amount)
-    .toString(16)
-    .padStart(2, "0");
-  const b = Math.round(bA + (bB - bA) * amount)
-    .toString(16)
-    .padStart(2, "0");
+  const r = Math.round(interpolate(rA, rB, mix)).toString(16).padStart(2, "0");
+  const g = Math.round(interpolate(gA, gB, mix)).toString(16).padStart(2, "0");
+  const b = Math.round(interpolate(bA, bB, mix)).toString(16).padStart(2, "0");
   return "#" + r + g + b;
 };
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { blendColors, splitArray } from "./util";
+import { blendColors, interpolate, splitArray } from "./util";
 import { red, blue } from "./palette";
 import "./Title.css";
 
@@ -24,7 +24,8 @@ const fromLength = 0.05;
 const toLength = 0.15;
 
 // stroke width (in em)
-const strokeWidth = 0.05;
+const fromStrokeWidth = 0.15;
+const toStrokeWidth = 0.05;
 
 // animation duration (in sec)
 const duration = 5;
@@ -36,13 +37,12 @@ layers = Array(layers)
     colors: [colorA, colorB],
     from: (fromLength * index) / layers,
     to: (toLength * index) / layers,
+    stroke: interpolate(fromStrokeWidth, toStrokeWidth, index / layers),
   }));
-// make copies of last colored layer and make them black/white for readability
-{
-  const { from, to } = layers.pop();
-  layers.push({ colors: ["#000000", "#000000"], from, to });
-  layers.push({ colors: ["#ffffff", "#ffffff"], from, to, stroke: "none" });
-}
+// make copies of last layer and make them black/white for readability
+const last = layers.pop();
+layers.push({ ...last, colors: ["#000000", "#000000"] });
+layers.push({ ...last, colors: ["#ffffff", "#ffffff"], stroke: 0 });
 
 // letter parameters, and break letters into words
 words = splitArray(
@@ -63,7 +63,7 @@ words = words.map((word) =>
       to: `translate(${to}em, ${-to}em)`,
       delay,
       color: blendColors(...colors, blend),
-      stroke: `${stroke || "currentColor"} ${strokeWidth}em`,
+      stroke: `currentColor ${stroke}em`,
     }))
   )
 );
