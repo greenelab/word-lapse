@@ -17,7 +17,7 @@
 }
 
 .search:focus {
-  border-color: var(--dark-gray);
+  border-color: var(--darkGray);
 }
 
 .example {

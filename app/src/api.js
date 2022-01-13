@@ -11,7 +11,7 @@ export const getResults = async (query) => {
   latest = id;
 
   // perform request
-  await new Promise((resolve) => window.setTimeout(resolve, 3000));
+  await new Promise((resolve) => window.setTimeout(resolve, 1000));
 
   // only return results if this request is latest request
   if (id === latest) return { query, ...fixture };

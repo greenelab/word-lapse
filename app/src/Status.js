@@ -4,6 +4,7 @@ import { AppContext } from "./App";
 import { statuses } from "./api";
 import "./Status.css";
 
+// special status message for loading/error/etc
 const Status = () => {
   const { status } = useContext(AppContext);
 

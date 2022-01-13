@@ -1,9 +1,29 @@
 import { useContext } from "react";
 import { AppContext } from "./App";
+import Chart from "./Chart";
+import Timeline from "./Timeline";
+import "./Results.css";
 
+// results section
 const Results = () => {
   const { results } = useContext(AppContext);
-  if (results) return <pre>{JSON.stringify(results, null, 2)}</pre>;
+  if (results)
+    return (
+      <div className="results">
+        <Chart>
+          <Timeline />
+        </Chart>
+        <Chart>
+          <Timeline />
+        </Chart>
+        <Chart>
+          <Timeline />
+        </Chart>
+        <Chart>
+          <Timeline />
+        </Chart>
+      </div>
+    );
   else return <></>;
 };
 

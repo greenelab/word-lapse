@@ -1,18 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 
+// linearly interpolate
+export const interpolate = (valueA, valueB, mix) =>
+  valueA + (valueB - valueA) * mix;
+
 // blend two 6-digit hex colors by % amount
-export const blendColors = (colorA, colorB, amount) => {
+export const blendColors = (colorA, colorB, mix) => {
   const [rA, gA, bA] = colorA.match(/\w\w/g).map((c) => parseInt(c, 16));
   const [rB, gB, bB] = colorB.match(/\w\w/g).map((c) => parseInt(c, 16));
-  const r = Math.round(rA + (rB - rA) * amount)
-    .toString(16)
-    .padStart(2, "0");
-  const g = Math.round(gA + (gB - gA) * amount)
-    .toString(16)
-    .padStart(2, "0");
-  const b = Math.round(bA + (bB - bA) * amount)
-    .toString(16)
-    .padStart(2, "0");
+  const r = Math.round(interpolate(rA, rB, mix)).toString(16).padStart(2, "0");
+  const g = Math.round(interpolate(gA, gB, mix)).toString(16).padStart(2, "0");
+  const b = Math.round(interpolate(bA, bB, mix)).toString(16).padStart(2, "0");
   return "#" + r + g + b;
 };
 
@@ -89,4 +87,27 @@ export const useQueryState = (key, defaultValue) => {
   );
 
   return [value || defaultValue, setState];
+};
+
+// set CSS variables
+export const setCssVariables = (variables) => {
+  for (const [key, value] of Object.entries(variables))
+    window.root.style.setProperty(`--${key}`, value);
+};
+
+// download data as .svg file
+export const downloadSvg = (element, filename = "chart") => {
+  if (!element) return;
+  const clone = element.cloneNode(true);
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const data = clone.outerHTML;
+  const blob = new Blob([data], { type: "image/svg+xml" });
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  document.body.appendChild(link);
+  link.href = url;
+  link.download = filename + ".svg";
+  link.click();
+  window.URL.revokeObjectURL(url);
+  link.remove();
 };

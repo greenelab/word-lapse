@@ -3,8 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="%PUBLIC_URL%/" />
 
     <title>%REACT_APP_TITLE%</title>
+
+    <!-- meta tags -->
+    <meta name="title" content="%REACT_APP_TITLE%" />
+    <meta name="description" content="%REACT_APP_DESCRIPTION%" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="%REACT_APP_TITLE%" />
+    <meta property="og:description" content="%REACT_APP_DESCRIPTION%" />
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="%REACT_APP_TITLE%" />
+    <meta property="twitter:description" content="%REACT_APP_DESCRIPTION%" />
+
+    <!-- favicons -->
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="ios.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <meta property="og:image" content="share-thumbnail.jpg" />
+    <meta property="twitter:image" content="share-thumbnail.jpg" />
 
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +33,7 @@
     />
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>JavaScript is required to run this app.</noscript>
     <div id="root"></div>
   </body>
 </html>

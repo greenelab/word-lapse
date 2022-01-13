@@ -3,6 +3,7 @@ import { AppContext } from "./App";
 import { useDebounce } from "./util";
 import "./Search.css";
 
+// search box
 const Search = () => {
   const { search, setSearch } = useContext(AppContext);
   const [value, setValue] = useState(search);
