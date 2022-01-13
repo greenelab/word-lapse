@@ -4,6 +4,7 @@ import Chart from "./Chart";
 import Timeline from "./Timeline";
 import "./Results.css";
 
+// results section
 const Results = () => {
   const { results } = useContext(AppContext);
   if (results)

@@ -4,11 +4,15 @@ import Footer from "./Footer";
 import Status from "./Status";
 import Results from "./Results";
 import { getResults, statuses } from "./api";
-import { useQueryState } from "./util";
-import { setCssVariables } from "./palette";
+import * as palette from "./palette";
+import { useQueryState, setCssVariables } from "./util";
 import "./icons";
 import "./App.css";
 
+// add all palette variables to document as CSS variables
+setCssVariables(palette);
+
+// context to conveniently pass down global/app-level vars
 export const AppContext = createContext({});
 
 const App = () => {
@@ -75,5 +79,3 @@ const App = () => {
 };
 
 export default App;
-
-setCssVariables();

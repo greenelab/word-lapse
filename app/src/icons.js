@@ -7,6 +7,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 
+// common palette of font awesome icons
 library.add(
   faAngleDown,
   faDownload,

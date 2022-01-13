@@ -91,6 +91,12 @@ export const useQueryState = (key, defaultValue) => {
   return [value || defaultValue, setState];
 };
 
+// set CSS variables
+export const setCssVariables = (variables) => {
+  for (const [key, value] of Object.entries(variables))
+    window.root.style.setProperty(`--${key}`, value);
+};
+
 // download data as .svg file
 export const downloadSvg = (element, filename = "chart") => {
   if (!element) return;

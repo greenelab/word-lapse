@@ -11,6 +11,7 @@ import { Text } from "@visx/text";
 import { purple, lightPurple, darkGray } from "./palette";
 import { AppContext } from "./App";
 
+// frequency timeline chart
 const Timeline = ({ width, height }) => {
   const { search, results } = useContext(AppContext);
   const { frequency_timeline: data } = results;

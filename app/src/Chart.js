@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadSvg } from "./util";
 import "./Chart.css";
 
-// tile/card container for one chart
+// container for one chart
 const Chart = ({ children = <></>, ...rest }) => {
   const ref = useRef();
 

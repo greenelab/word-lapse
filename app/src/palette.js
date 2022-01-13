@@ -19,7 +19,7 @@ const shadow = "#80808080";
 const fast = "0.5s ease";
 
 // master list of variables
-const variables = {
+export {
   page,
   pagePadding,
   pagePaddingSmall,
@@ -33,12 +33,3 @@ const variables = {
   shadow,
   fast,
 };
-
-// set CSS variables
-const setCssVariables = () => {
-  for (const [key, value] of Object.entries(variables))
-    window.root.style.setProperty(`--${key}`, value);
-};
-
-// export for use in JS
-module.exports = { ...variables, setCssVariables };
