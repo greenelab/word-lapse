@@ -1,6 +1,7 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faAngleDown,
+  faDownload,
   faExclamationCircle,
   faInfoCircle,
   faSpinner,
@@ -8,6 +9,7 @@ import {
 
 library.add(
   faAngleDown,
+  faDownload,
   faExclamationCircle,
   faInfoCircle,
   faSpinner

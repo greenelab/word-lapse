@@ -1,0 +1,14 @@
+.results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .results {
+    gap: 20px;
+  }
+}

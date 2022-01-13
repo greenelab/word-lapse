@@ -5,6 +5,7 @@ import Status from "./Status";
 import Results from "./Results";
 import { getResults, statuses } from "./api";
 import { useQueryState } from "./util";
+import { setCssVariables } from "./palette";
 import "./icons";
 import "./App.css";
 
@@ -74,3 +75,5 @@ const App = () => {
 };
 
 export default App;
+
+setCssVariables();

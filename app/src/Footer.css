@@ -2,8 +2,9 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: var(--page);
-  color: var(--dark-gray);
-  background: var(--light-gray);
+  padding: var(--pagePadding);
+  color: var(--darkGray);
+  background: var(--lightGray);
   text-align: center;
+  box-shadow: 0 0 5px var(--shadow);
 }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { blendColors, splitArray } from "./util";
+import { red, blue } from "./palette";
 import "./Title.css";
 
 // letters to spell out
@@ -13,8 +14,8 @@ let layers = 10;
 let words = [4];
 
 // gradient colors of drop shadow effect
-const colorA = "#e91e63";
-const colorB = "#03a9f4";
+const colorA = red;
+const colorB = blue;
 
 // base length of drop shadow effect (in em)
 const fromLength = 0.05;

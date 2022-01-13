@@ -6,15 +6,6 @@
 body {
   margin: 0;
   line-height: 1.5;
-
-  --page: 40px max(40px, calc((100vw - 1600px) / 2));
-  --page-sm: 20px max(20px, calc((100vw - 1600px) / 2));
-
-  --light-gray: #eceff1;
-  --gray: #90a4ae;
-  --dark-gray: #455a64;
-  --red: #e91e63;
-  --blue: #03a9f4;
 }
 
 #root {
@@ -29,15 +20,29 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--page);
+  padding: var(--pagePadding);
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: var(--pagePaddingSmall);
+  }
+}
+
+svg {
+  overflow: visible !important;
 }
 
 a {
-  color: var(--dark-gray);
+  color: var(--darkGray);
 }
 
 a:hover {
   animation: glow-text alternate infinite 0.5s linear;
+}
+
+text {
+  font-size: 1rem;
 }
 
 button {
