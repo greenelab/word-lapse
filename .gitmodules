@@ -1,0 +1,3 @@
+[submodule "server/data"]
+	path = server/data
+	url = https://github.com/greenelab/word-lapse-models.git
