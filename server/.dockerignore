@@ -1,0 +1,11 @@
+/.venv
+/.github
+/.vscode
+/server/data
+
+# # exclude git in general...
+/.git
+# # ...but allow specific metadata paths
+# !/.git/HEAD
+# !/.git/config
+# !/.git/refs
