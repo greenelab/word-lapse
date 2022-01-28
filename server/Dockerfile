@@ -8,7 +8,6 @@ WORKDIR /app
 # also install letsencrypt, so we can update our SSL cert before running
 RUN apt update && apt install git-lfs letsencrypt -y
 
-# COPY ./requirements.txt /tmp/requirements.txt
 COPY ./server_requirements.txt /tmp/server_requirements.txt
 RUN pip install -r /tmp/server_requirements.txt
 

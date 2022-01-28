@@ -43,11 +43,11 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
 
     # finally, run the server
     cd /app
-    /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 443 \
+    /usr/local/bin/uvicorn app.main:app --host 0.0.0.0 --port 443 \
         --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
         --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
 else
     # finally, run the server
     cd /app
-    /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 80
+    /usr/local/bin/uvicorn app.main:app --host 0.0.0.0 --port 80
 fi
