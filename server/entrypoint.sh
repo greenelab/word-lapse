@@ -20,11 +20,11 @@ if [ "${UPDATE_DATA:-1}" = "1" ]; then
         # clone submodule into ./data and do an lfs pull
         echo "* ${DATA_DIR} is empty, cloning data into it"
         git clone 'https://github.com/greenelab/word-lapse-models.git' "${DATA_DIR}"
-        cd /app/data && git lfs pull
+        cd "${DATA_DIR}" && git pull --ff-only
     else
         # just attempt to pull new data into the existing folder
         echo "* ${DATA_DIR} is *not* empty, refreshing contents"
-        cd /app/data && git lfs pull
+        cd "${DATA_DIR}" && git pull --ff-only
     fi
 fi
 
