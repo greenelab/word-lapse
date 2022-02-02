@@ -28,6 +28,7 @@ else
         gcloud compute instances update-container --project=word-lapse word-lapse-api \
             --container-image gcr.io/word-lapse/word-lapse-api-image:${COMMIT_SHA} \
             --container-mount-host-path=mount-path=/app/data,host-path=/mnt/stateful_partition/word-lapse-data,mode=rw \
-            --container-mount-host-path=mount-path=/etc/letsencrypt,host-path=/var/letsencrypt,mode=rw
+            --container-mount-host-path=mount-path=/etc/letsencrypt,host-path=/var/letsencrypt,mode=rw \
+            --container-env-file=instance_env
     )
 fi
