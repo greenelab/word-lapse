@@ -2,6 +2,9 @@ import linecache
 import os
 import tracemalloc
 
+from contextlib import contextmanager
+from timeit import default_timer
+
 def display_top(snapshot, key_type='lineno', limit=3):
     snapshot = snapshot.filter_traces((
         tracemalloc.Filter(False, "<frozen importlib._bootstrap>"),
@@ -27,7 +30,6 @@ def display_top(snapshot, key_type='lineno', limit=3):
     total = sum(stat.size for stat in top_stats)
     print("Total allocated size: %.1f KiB" % (total / 1024))
 
-from contextlib import contextmanager
 
 @contextmanager
 def track_usage(limit=3):
@@ -35,3 +37,30 @@ def track_usage(limit=3):
     yield
     snapshot = tracemalloc.take_snapshot()
     display_top(snapshot, limit=limit)
+
+@contextmanager
+def timed(verbose=False):
+    start = default_timer()
+    yield
+    end = default_timer()
+    
+    
+class ExecTimer(object):
+    def __init__(self, verbose=False):
+        self.verbose = verbose
+        self.timer = default_timer
+        
+    def __enter__(self):
+        self.start = self.timer()
+        return self
+
+    def snapshot(self):
+        end = self.timer()
+        self.elapsed_secs = end - self.start
+        self.elapsed = self.elapsed_secs * 1000  # millisecs
+        return self.elapsed
+        
+    def __exit__(self, *args):
+        self.snapshot()
+        if self.verbose:
+            print('elapsed time: %f secs' % self.elapsed_secs, flush=True)
