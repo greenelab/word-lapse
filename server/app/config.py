@@ -43,10 +43,11 @@ PARALLELIZE_QUERY = is_truthy(os.environ.get('PARALLELIZE_QUERY', 'yes'))
 # integer number of pools to use for parallel year queries, default 4
 PARALLEL_POOLS = int(os.environ.get('PARALLEL_POOLS', 4))
 
-print("Materialized models (MATERIALIZE_MODELS)?: %s" % MATERIALIZE_MODELS, flush=True)
-print("Pre-warmed model cache (WARM_CACHE)?: %s" % WARM_CACHE, flush=True)
-print("Parallel year querying (PARALLELIZE_QUERY)?: %s" % PARALLELIZE_QUERY, flush=True)
-print("Parallel pools (PARALLEL_POOLS)?: %s" % PARALLEL_POOLS, flush=True)
+def emit_config():
+    print("Materialized models (MATERIALIZE_MODELS)?: %s" % MATERIALIZE_MODELS, flush=True)
+    print("Pre-warmed model cache (WARM_CACHE)?: %s" % WARM_CACHE, flush=True)
+    print("Parallel year querying (PARALLELIZE_QUERY)?: %s" % PARALLELIZE_QUERY, flush=True)
+    print("Parallel pools (PARALLEL_POOLS)?: %s" % PARALLEL_POOLS, flush=True)
 
 if __name__ == "__main__":
     import doctest

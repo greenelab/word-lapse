@@ -7,7 +7,9 @@ import pandas as pd
 import plydata as ply
 from gensim.models import KeyedVectors, Word2Vec
 
-from .config import MATERIALIZE_MODELS, WARM_CACHE, PARALLELIZE_QUERY, PARALLEL_POOLS
+from .config import (
+    MATERIALIZE_MODELS, WARM_CACHE, PARALLELIZE_QUERY, PARALLEL_POOLS, emit_config
+)
 from .tracking import ExecTimer
 
 data_folder = Path("./data")
@@ -211,6 +213,9 @@ if MATERIALIZE_MODELS and WARM_CACHE:
     # invoke to cache word models into 'word_models'
     print("Warming enabled, preloading word2vec models...", flush=True)
     materialized_word_models()
+
+# print out app_config's settings for debugging
+emit_config()
 
 def _query_model(year, _, model, tok, word_freq_count_cutoff, neighbors, use_keyedvec):
     """"
