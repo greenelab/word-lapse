@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { range, useUid } from "./util";
-import commonWords from "./common-words.json";
+import { range } from "../util/math";
+import { useUid } from "../util/hooks";
+import commonWords from "../data/common-words.json";
 import "./Matrix.css";
 
 // only get words with lower case letters and of certain length

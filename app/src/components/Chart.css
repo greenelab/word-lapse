@@ -1,0 +1,22 @@
+.chart {
+  position: relative;
+  width: calc(var(--page) / 2 - 40px);
+  max-width: 100%;
+  transition: box-shadow var(--fast);
+}
+
+
+.download {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  color: var(--gray);
+  transition: color var(--fast);
+}
+
+.chart:hover .download:hover {
+  color: var(--purple);
+}

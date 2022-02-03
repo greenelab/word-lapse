@@ -1,4 +1,4 @@
-import fixture from "./api-fixture.json";
+import fixture from "./data/api-fixture.json";
 
 // singleton to hold latest request
 let latest = null;

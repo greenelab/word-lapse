@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "./App";
-import { useDebounce } from "./util";
+import { AppContext } from "../App";
+import { useDebounce } from "../util/hooks";
 import "./Search.css";
 
 // search box

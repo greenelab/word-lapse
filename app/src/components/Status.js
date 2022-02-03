@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AppContext } from "./App";
-import { statuses } from "./api";
+import { AppContext } from "../App";
+import { statuses } from "../api";
 import "./Status.css";
 
 // special status message for loading/error/etc

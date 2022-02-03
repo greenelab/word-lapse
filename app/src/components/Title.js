@@ -1,7 +1,7 @@
-import { blendColors, range } from "./util";
-import { red, blue } from "./palette";
-import "./Title.css";
 import { Fragment } from "react";
+import { blendColors, range } from "../util/math";
+import { red, blue } from "../palette";
+import "./Title.css";
 
 let id = 0;
 let words = ["WORD", "LAPSE"].map((word) =>

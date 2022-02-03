@@ -1,11 +1,12 @@
 import { useState, createContext, useEffect } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Status from "./Status";
-import Results from "./Results";
+import Header from "./sections/Header";
+import Footer from "./sections/Footer";
+import Results from "./sections/Results";
+import Status from "./components/Status";
 import { getResults, statuses } from "./api";
 import * as palette from "./palette";
-import { useQueryState, setCssVariables } from "./util";
+import { setCssVariables } from "./util/dom";
+import { useQueryState } from "./util/hooks";
 import "./icons";
 import "./App.css";
 

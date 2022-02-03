@@ -1,30 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-// generate counting sequence
-export const range = (n) =>
-  Array(n)
-    .fill(0)
-    .map((_, i) => i);
-
-// linearly interpolate
-export const interpolate = (valueA, valueB, mix) =>
-  valueA + (valueB - valueA) * mix;
-
-// blend two 6-digit hex colors by % amount
-export const blendColors = (colorA, colorB, mix) => {
-  const [rA, gA, bA] = colorA.match(/\w\w/g).map((c) => parseInt(c, 16));
-  const [rB, gB, bB] = colorB.match(/\w\w/g).map((c) => parseInt(c, 16));
-  const r = Math.round(interpolate(rA, rB, mix)).toString(16).padStart(2, "0");
-  const g = Math.round(interpolate(gA, gB, mix)).toString(16).padStart(2, "0");
-  const b = Math.round(interpolate(bA, bB, mix)).toString(16).padStart(2, "0");
-  return "#" + r + g + b;
-};
-
-// basic euclidean distance
-export const dist = (x1 = 0, y1 = 0, x2 = 0, y2 = 0) =>
-  Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-// use debounce react hook
+// debounce (rate limit) value
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -32,6 +8,27 @@ export const useDebounce = (value, delay) => {
     return () => clearTimeout(handler);
   }, [value, delay]);
   return debouncedValue;
+};
+
+// get fitted view box of svg
+export const useViewBox = () => {
+  const svg = useRef();
+  const [viewBox, setViewBox] = useState(undefined);
+
+  const getViewBox = useCallback(() => {
+    // if svg not mounted yet, exit
+    if (!svg.current) return;
+    // get bbox of content in svg
+    const { x, y, width, height } = svg.current.getBBox();
+    // set view box to bbox, essentially fitting view to content
+    setViewBox([x, y, width, height].join(" "));
+  }, []);
+
+  useEffect(() => {
+    getViewBox();
+  });
+
+  return [svg, viewBox];
 };
 
 // useState react hook, but synced to url parameter
@@ -87,32 +84,9 @@ export const useQueryState = (key, defaultValue) => {
   return [value || defaultValue, setState];
 };
 
-// unique id react hook
+// unique id for component instance
 let count = 0;
 export const useUid = (prefix) => {
   const [id] = useState(() => prefix + "-" + count++);
   return id;
-};
-
-// set CSS variables
-export const setCssVariables = (variables) => {
-  for (const [key, value] of Object.entries(variables))
-    window.root.style.setProperty(`--${key}`, value);
-};
-
-// download data as .svg file
-export const downloadSvg = (element, filename = "chart") => {
-  if (!element) return;
-  const clone = element.cloneNode(true);
-  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  const data = clone.outerHTML;
-  const blob = new Blob([data], { type: "image/svg+xml" });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  document.body.appendChild(link);
-  link.href = url;
-  link.download = filename + ".svg";
-  link.click();
-  window.URL.revokeObjectURL(url);
-  link.remove();
 };

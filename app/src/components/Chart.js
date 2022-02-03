@@ -1,20 +1,19 @@
-import { useRef, cloneElement } from "react";
-import { ParentSize } from "@visx/responsive";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { downloadSvg } from "./util";
+import { downloadSvg } from "../util/dom";
+import { useViewBox } from "../util/hooks";
 import "./Chart.css";
 
 // container for one chart
-const Chart = ({ children = <></>, ...rest }) => {
+const Chart = ({ id, children }) => {
   const ref = useRef();
+  const [svg, viewBox] = useViewBox();
 
   return (
     <div ref={ref} className="chart">
-      <ParentSize debounceTime={10}>
-        {({ width, height }) =>
-          cloneElement(children, { width, height, ...rest })
-        }
-      </ParentSize>
+      <svg ref={svg} viewBox={viewBox} id={id}>
+        {children}
+      </svg>
       <button
         className="download"
         onClick={() => downloadSvg(ref.current?.querySelector("svg"))}

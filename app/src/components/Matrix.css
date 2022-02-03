@@ -3,7 +3,7 @@
   color: var(--gray);
   text-align: left;
   z-index: -1;
-  animation: glow 2s forwards ease-in-out;
+  animation: fade 2s forwards ease-in-out, glow 2s forwards ease-in-out;
   user-select: none;
   pointer-events: none;
 }
@@ -12,17 +12,30 @@
   font-family: "Source Code Pro", monospace;
 }
 
-@keyframes glow {
+@keyframes fade {
   0% {
-    color: var(--gray);
     opacity: 0;
   }
   50% {
-    color: var(--red);
     opacity: 0.5;
   }
   100% {
-    color: var(--blue);
     opacity: 0;
   }
 }
+
+@keyframes glow {
+  0% {
+    color: var(--gray);
+  }
+  33% {
+    color: var(--red);
+  }
+  66% {
+    color: var(--blue);
+  }
+  100% {
+    color: var(--gray);
+  }
+}
+

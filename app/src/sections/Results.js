@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { AppContext } from "./App";
-import Chart from "./Chart";
-import Timeline from "./Timeline";
+import { AppContext } from "../App";
+import Chart from "../components/Chart";
+import Timeline from "../charts/Timeline";
 import "./Results.css";
 
 // results section
@@ -10,16 +10,7 @@ const Results = () => {
   if (results)
     return (
       <div className="results">
-        <Chart>
-          <Timeline />
-        </Chart>
-        <Chart>
-          <Timeline />
-        </Chart>
-        <Chart>
-          <Timeline />
-        </Chart>
-        <Chart>
+        <Chart id="timeline">
           <Timeline />
         </Chart>
       </div>
