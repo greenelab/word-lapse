@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+
+// generate counting sequence
+export const range = (n) =>
+  Array(n)
+    .fill(0)
+    .map((_, i) => i);
 
 // linearly interpolate
 export const interpolate = (valueA, valueB, mix) =>
@@ -12,14 +18,6 @@ export const blendColors = (colorA, colorB, mix) => {
   const g = Math.round(interpolate(gA, gB, mix)).toString(16).padStart(2, "0");
   const b = Math.round(interpolate(bA, bB, mix)).toString(16).padStart(2, "0");
   return "#" + r + g + b;
-};
-
-// split array into chunks at certain split
-export const splitArray = (array = [], splits = []) => {
-  const chunks = [];
-  for (const split of splits.reverse()) chunks.push(array.splice(split));
-  chunks.push(array);
-  return chunks.reverse();
 };
 
 // basic euclidean distance
@@ -87,6 +85,13 @@ export const useQueryState = (key, defaultValue) => {
   );
 
   return [value || defaultValue, setState];
+};
+
+// unique id react hook
+let count = 0;
+export const useUid = (prefix) => {
+  const [id] = useState(() => prefix + "-" + count++);
+  return id;
 };
 
 // set CSS variables

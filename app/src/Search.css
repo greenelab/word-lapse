@@ -1,8 +1,14 @@
-.form {
-  display: contents;
+#form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: -10px;
+  text-align: center;
 }
 
-.search {
+#search {
   border: solid 3px var(--gray);
   border-radius: 999px;
   font-size: 1.2rem;
@@ -16,10 +22,6 @@
   appearance: none;
 }
 
-.search:focus {
+#search:focus {
   border-color: var(--darkGray);
-}
-
-.example {
-  color: var(--gray);
 }

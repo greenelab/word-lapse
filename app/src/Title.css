@@ -1,51 +1,22 @@
 .title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
-  text-transform: uppercase;
-  line-height: 1.2;
-  letter-spacing: 6px;
-  text-align: center;
+  max-height: 150px;
 }
 
-@media (max-width: 500px) {
-  .title {
-    flex-direction: column;
-  }
-}
-
-.word {
-  position: relative;
-  margin: 0 0.1em;
-}
-
-.layer {
-  position: absolute;
-  top: 0;
-  white-space: nowrap;
-}
-
-/* let first layer set height of container */
-.layer:first-child {
-  position: static;
-}
-
-.letter {
-  display: inline-block;
+.title tspan {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.05em;
   font-family: "Righteous", sans-serif;
-  --percent: 0.5;
+  font-size: 25px;
+  text-transform: uppercase;
+  text-anchor: middle;
+  alignment-baseline: middle;
 }
 
-.subtitle {
-  text-align: center;
-  font-size: 1.2rem;
+.title tspan:not(:last-child) {
+  letter-spacing: 4px;
 }
 
 header[data-fullscreen="false"] .title {
-  font-size: 2rem;
-}
-
-header[data-fullscreen="false"] .subtitle {
-  display: none;
+  max-height: 80px;
 }

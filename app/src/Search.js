@@ -27,14 +27,17 @@ const Search = () => {
   useEffect(() => setValue(search), [search]);
 
   return (
-    <form onSubmit={onSubmit} className="form">
+    <form onSubmit={onSubmit} id="form">
       <input
-        className="search"
+        id="search"
         value={value}
         onChange={({ target }) => setValue(target.value)}
         placeholder="Enter a word"
         autoFocus
       />
+      <label htmlFor="search">
+        Explore how a word changes in meaning over time
+      </label>
     </form>
   );
 };

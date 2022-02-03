@@ -1,0 +1,28 @@
+.matrix {
+  position: absolute;
+  color: var(--gray);
+  text-align: left;
+  z-index: -1;
+  animation: glow 2s forwards ease-in-out;
+  user-select: none;
+  pointer-events: none;
+}
+
+.matrix span {
+  font-family: "Source Code Pro", monospace;
+}
+
+@keyframes glow {
+  0% {
+    color: var(--gray);
+    opacity: 0;
+  }
+  50% {
+    color: var(--red);
+    opacity: 0.5;
+  }
+  100% {
+    color: var(--blue);
+    opacity: 0;
+  }
+}
