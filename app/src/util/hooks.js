@@ -11,7 +11,7 @@ export const useDebounce = (value, delay) => {
 };
 
 // get fitted view box of svg
-export const useViewBox = () => {
+export const useViewBox = (padding = 10) => {
   const svg = useRef();
   const [viewBox, setViewBox] = useState(undefined);
 
@@ -21,8 +21,10 @@ export const useViewBox = () => {
     // get bbox of content in svg
     const { x, y, width, height } = svg.current.getBBox();
     // set view box to bbox, essentially fitting view to content
-    setViewBox([x, y, width, height].join(" "));
-  }, []);
+    setViewBox(
+      [x, y, width, height].map((v) => Math.round(v) + padding).join(" ")
+    );
+  }, [padding]);
 
   useEffect(() => {
     getViewBox();

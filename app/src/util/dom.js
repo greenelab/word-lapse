@@ -1,3 +1,5 @@
+import { svgPathProperties } from "svg-path-properties";
+
 // set CSS variables
 export const setCssVariables = (variables) => {
   for (const [key, value] of Object.entries(variables))
@@ -19,4 +21,14 @@ export const downloadSvg = (element, filename = "chart") => {
   link.click();
   window.URL.revokeObjectURL(url);
   link.remove();
+};
+
+// get length of svg path string
+export const getPathLength = (string) => {
+  try {
+    const properties = new svgPathProperties(string);
+    return properties.getTotalLength();
+  } catch {
+    return 1000;
+  }
 };

@@ -35,10 +35,11 @@ svg {
 
 a {
   color: var(--darkGray);
+  transition: color var(--purple);
 }
 
 a:hover {
-  animation: glow-text alternate infinite 0.5s linear;
+  color: var(--purple)
 }
 
 button {
@@ -46,22 +47,4 @@ button {
   background: none;
   border: none;
   cursor: pointer;
-}
-
-@keyframes glow-text {
-  from {
-    color: var(--red);
-  }
-  to {
-    color: var(--blue);
-  }
-}
-
-@keyframes glow-bg {
-  from {
-    background: var(--red);
-  }
-  to {
-    background: var(--blue);
-  }
 }

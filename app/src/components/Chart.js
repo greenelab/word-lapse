@@ -17,6 +17,7 @@ const Chart = ({ id, children }) => {
       <button
         className="download"
         onClick={() => downloadSvg(ref.current?.querySelector("svg"))}
+        title="Download this chart as an SVG"
       >
         <FontAwesomeIcon icon="download" />
       </button>
