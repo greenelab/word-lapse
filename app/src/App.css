@@ -16,11 +16,13 @@ body {
 }
 
 main {
+  position: relative;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: var(--pagePadding);
+  overflow: hidden;
 }
 
 @media (max-width: 600px) {
@@ -35,37 +37,29 @@ svg {
 
 a {
   color: var(--darkGray);
+  transition: color var(--purple);
 }
 
 a:hover {
-  animation: glow-text alternate infinite 0.5s linear;
-}
-
-text {
-  font-size: 1rem;
+  color: var(--purple)
 }
 
 button {
-  padding: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: none;
+  min-width: 40px;
+  min-height: 40px;
   border: none;
+  border-radius: 999px;
+  background: var(--lightGray);
+  color: var(--gray);
   cursor: pointer;
+  transition: background var(--fast), color var(--fast);
 }
 
-@keyframes glow-text {
-  from {
-    color: var(--red);
-  }
-  to {
-    color: var(--blue);
-  }
-}
-
-@keyframes glow-bg {
-  from {
-    background: var(--red);
-  }
-  to {
-    background: var(--blue);
-  }
+button:hover {
+  background: var(--lightPurple);
+  color: var(--purple);
 }
