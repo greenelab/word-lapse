@@ -16,6 +16,7 @@ import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
 import { useViewBox } from "../util/hooks";
+import "./Timeline.css"
 
 // unique id of this chart
 const id = "timeline";

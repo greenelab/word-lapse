@@ -1,0 +1,6 @@
+/* styles we don't want/need in downloaded svg */
+
+.dot:hover {
+  stroke-width: 8;
+  stroke: var(--darkGray);
+}
