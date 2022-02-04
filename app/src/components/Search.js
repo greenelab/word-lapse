@@ -7,7 +7,7 @@ import "./Search.css";
 const Search = () => {
   const { search, setSearch } = useContext(AppContext);
   const [value, setValue] = useState(search);
-  const debouncedValue = useDebounce(value, 1000);
+  const debouncedValue = useDebounce(value, 100); // INCREASE DELAY ONCE USING REAL API
 
   // when user explicitly submits form by pressing enter
   const onSubmit = (event) => {
@@ -35,7 +35,7 @@ const Search = () => {
         placeholder="Enter a word"
         autoFocus
       />
-      <label htmlFor="search">
+      <label id="search-label" htmlFor="search">
         Explore how a word changes in meaning over time
       </label>
     </form>

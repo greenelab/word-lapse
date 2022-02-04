@@ -4,17 +4,18 @@
   align-items: center;
   flex-direction: column;
   gap: 10px;
+  min-width: 0;
   margin-bottom: -10px;
   text-align: center;
 }
 
 #search {
+  width: 300px;
+  max-width: 100%;
+  padding: 10px 20px;
   border: solid 3px var(--gray);
   border-radius: 999px;
-  font-size: 1.2rem;
-  padding: 10px 20px;
-  width: 100%;
-  max-width: 500px;
+  font-size: 1rem;
   text-align: center;
   outline: none;
   -webkit-appearance: none;
@@ -24,4 +25,8 @@
 
 #search:focus {
   border-color: var(--darkGray);
+}
+
+header[data-fullscreen="false"] #search-label {
+  display: none;
 }

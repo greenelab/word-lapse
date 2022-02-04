@@ -14,12 +14,13 @@ const randomWord = () => words[Math.floor(Math.random() * words.length)];
 const maxLength = Math.max(...words.map((word) => word.length));
 const randomPosition = () => Math.round(Math.random() * 100);
 
+// set interval with a random starting delay
 const timer = (func, period, delay) => {
   let interval;
-  const timeout = window.setTimeout(
-    () => (interval = window.setInterval(func, period)),
-    delay * Math.random()
-  );
+  const timeout = window.setTimeout(() => {
+    interval = window.setInterval(func, period);
+    func();
+  }, delay * Math.random());
   return () => {
     window.clearTimeout(timeout);
     window.clearInterval(interval);
@@ -27,11 +28,19 @@ const timer = (func, period, delay) => {
 };
 
 // text animation like the matrix
-const Matrix = () => {
+const Matrix = () =>
+  Array(15)
+    .fill(0)
+    .map((_, index) => <Word key={index} />);
+
+export default Matrix;
+
+// single word in animation
+const Word = () => {
   const id = useUid("matrix");
-  const [x, setX] = useState(randomPosition());
-  const [y, setY] = useState(randomPosition());
-  const [word, setWord] = useState(randomWord());
+  const [x, setX] = useState(-99999);
+  const [y, setY] = useState(-99999);
+  const [word, setWord] = useState("");
 
   const setRandomWord = useCallback(() => setWord(randomWord()), []);
 
@@ -68,5 +77,3 @@ const Matrix = () => {
     </div>
   );
 };
-
-export default Matrix;

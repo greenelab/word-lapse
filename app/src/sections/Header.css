@@ -19,12 +19,7 @@ header[data-fullscreen="false"] {
   flex-direction: row;
   justify-content: space-between;
   gap: 20px;
+  padding: var(--pagePaddingSmall);
   min-height: 0;
 }
 
-@media (max-width: 600px) {
-  header {
-    flex-direction: column !important;
-    padding: var(--pagePaddingSmall);
-  }
-}

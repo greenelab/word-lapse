@@ -18,6 +18,6 @@ export const blendColors = (colorA, colorB, mix) => {
   return "#" + r + g + b;
 };
 
-// basic euclidean distance
+// euclidean distance
 export const dist = (x1 = 0, y1 = 0, x2 = 0, y2 = 0) =>
   Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

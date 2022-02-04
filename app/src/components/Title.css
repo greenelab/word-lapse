@@ -1,5 +1,5 @@
 .title {
-  max-height: 150px;
+  max-width: 300px;
 }
 
 .title tspan {
@@ -14,9 +14,9 @@
 }
 
 .title tspan:not(:last-child) {
-  letter-spacing: 4px;
+  letter-spacing: 2px;
 }
 
 header[data-fullscreen="false"] .title {
-  max-height: 80px;
+  max-width: min(150px, 25vw);
 }

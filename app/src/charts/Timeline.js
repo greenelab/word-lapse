@@ -11,62 +11,63 @@ import {
   easeLinear,
   easeElasticOut,
 } from "d3";
-import { blue, gray, lightGray, red } from "../palette";
+import { blue, gray, lightGray, lightPurple, purple, red } from "../palette";
 import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
+import { useViewBox } from "../util/hooks";
 
 // unique id of this chart
-const id = "#timeline";
+const id = "timeline";
+
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
 const height = 200;
+
 // duration of animations (in ms)
 const duration = 1000;
 
-const chart = (data, index) => {
+// d3 code for chart
+const chart = (timeline, changepoints, index) => {
   // get elements of interest
-  const svg = select(id);
-  const body = svg.select(".body");
+  const svg = select("#" + id);
 
-  // get subset of data for animation purposes
-  const animatedData = data.slice(0, index);
+  // get subset of timeline for animation purposes
+  const animatedTimeline = timeline.slice(0, index);
 
   // get range of values for x/y axes
-  const xExtent = extent(data, (d) => d.year);
-  const yExtent = extent(data, (d) => d.frequency);
+  const xExtent = extent(timeline, (d) => d.year);
+  const yExtent = extent(timeline, (d) => d.frequency);
 
   // get scales for x/y that map values to SVG coordinates
   const xScale = scaleLinear().domain(xExtent).range([0, width]);
   const yScale = scaleLinear().domain(yExtent).range([0, -height]);
 
-  // curve factories
+  // make curve fill from timeline points
   const curveFill = area()
     .curve(curveCatmullRom)
     .x((d) => xScale(d.year))
     .y1((d) => yScale(d.frequency))
-    .y0((d) => yScale(yExtent[0]));
-  const curveStroke = line()
-    .curve(curveCatmullRom)
-    .x((d) => xScale(d.year))
-    .y((d) => yScale(d.frequency));
-
-  // get total length of path for animation
-  const length = getPathLength(curveStroke(data));
-
-  // make curve fill from data points
-  body
+    .y0(() => yScale(yExtent[0]));
+  svg
+    .select(".curve-fills")
     .selectAll(".curve-fill")
-    .data([data])
+    .data([timeline])
     .join("path")
     .attr("class", "curve-fill")
     .attr("d", curveFill)
     .attr("fill", lightGray);
 
-  // make curve stroke from data points
-  body
+  // make curve stroke from timeline points
+  const curveStroke = line()
+    .curve(curveCatmullRom)
+    .x((d) => xScale(d.year))
+    .y((d) => yScale(d.frequency));
+  const length = getPathLength(curveStroke(timeline));
+  svg
+    .select(".curve-strokes")
     .selectAll(".curve-stroke")
-    .data([data])
+    .data([timeline])
     .join((enter) =>
       enter
         .append("path")
@@ -84,10 +85,59 @@ const chart = (data, index) => {
     .attr("stroke", gray)
     .attr("stroke-width", 2);
 
-  // make dots from data points
-  body
+  // make change point
+  const changepointFill = area()
+    .curve(curveCatmullRom)
+    .x((d) => xScale(d))
+    .y1(() => yScale(yExtent[1]))
+    .y0(() => yScale(yExtent[0]));
+  svg
+    .select(".changepoints")
+    .selectAll(".changepoint-fill")
+    .data([changepoints])
+    .join((enter) =>
+      enter
+        .append("path")
+        .style("opacity", 0)
+        .transition()
+        .delay(duration * 2)
+        .duration(duration)
+        .style("opacity", 0.25)
+    )
+    .attr("class", "changepoint-fill")
+    .attr("d", changepointFill)
+    .attr("fill", lightPurple)
+    .attr("stroke", purple)
+    .attr("stroke-dasharray", "4 4");
+
+  // make changepoint text
+  const midX = (xScale(changepoints[0]) + xScale(changepoints[1])) / 2;
+  svg
+    .select(".changepoints")
+    .selectAll(".changepoint-text")
+    .data([changepoints[0]])
+    .join((enter) =>
+      enter
+        .append("text")
+        .style("opacity", 0)
+        .transition()
+        .delay(duration * 2)
+        .duration(duration)
+        .style("opacity", 1)
+    )
+    .attr("class", "changepoint-text")
+    .attr("transform", () => `translate(${midX}, ${-height / 2}) rotate(-90)`)
+    .style("font-size", "12")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "middle")
+    .attr("fill", purple)
+    .text("Change point");
+
+  // make dots from timeline points
+  svg
+    .select(".dots")
     .selectAll(".dot")
-    .data(animatedData)
+    .data(animatedTimeline)
     .join((enter) =>
       enter
         .append("circle")
@@ -103,50 +153,52 @@ const chart = (data, index) => {
     )
     .attr("stroke", "black")
     .attr("stroke-width", "1")
-
     .attr("cx", (d) => xScale(d.year))
     .attr("cy", (d) => yScale(d.frequency));
 
   // make x/y axes ticks
   const xAxis = axisBottom(xScale)
-    .ticks(data.length / 2)
+    .ticks(timeline.length / 2)
     .tickFormat((d) => d);
   const yAxis = axisLeft(yScale)
     .tickValues(yExtent)
     .tickFormat((d, i) => (i === 0 ? "less" : "more"));
-  select(id + " .x-axis").call(xAxis);
-  select(id + " .y-axis").call(yAxis);
+  svg.select(".x-axis").call(xAxis);
+  svg.select(".y-axis").call(yAxis);
 };
 
 // frequency timeline chart
 const Timeline = () => {
   const { search, results } = useContext(AppContext);
-  const { frequency_timeline: data } = results;
+  const { timeline, changepoints } = results;
   const [index, setIndex] = useState(0);
+  const [svg, viewBox] = useViewBox();
 
-  // animate data index
+  // animate timeline index
   useEffect(() => {
-    if (index < data.length) {
+    if (index < timeline.length) {
       setIndex(index);
       window.setTimeout(
         () => setIndex((value) => value + 1),
-        duration / data.length
+        duration / timeline.length
       );
     }
-  }, [index, data.length]);
+  }, [index, timeline.length]);
 
   // rerun d3 code any time data changes
   useEffect(() => {
-    chart(data, index);
-  }, [data, index]);
+    chart(timeline, changepoints, index);
+  }, [timeline, changepoints, index]);
 
   return (
-    <>
-      <g className="body"></g>
-      <g className="axis x-axis"></g>
-      <g className="axis y-axis"></g>
+    <svg ref={svg} id={id} viewBox={viewBox}>
+      <g className="curve-fills"></g>
+      <g className="curve-strokes"></g>
+      <g className="changepoints"></g>
+      <g className="x-axis"></g>
+      <g className="y-axis"></g>
+      <g className="dots"></g>
       <text
-        className="axis-title"
         transform={`translate(${width / 2}, 40)`}
         textAnchor="middle"
         alignmentBaseline="middle"
@@ -155,7 +207,6 @@ const Timeline = () => {
         Year
       </text>
       <text
-        className="axis-title"
         transform={`translate(-50, -${height / 2}) rotate(-90)`}
         textAnchor="middle"
         alignmentBaseline="middle"
@@ -164,15 +215,14 @@ const Timeline = () => {
         Frequency
       </text>
       <text
-        className="title"
         x={width / 2}
         y={-height - 30}
         textAnchor="middle"
-        style={{ fontSize: 16 }}
+        style={{ fontSize: 12 }}
       >
         How often "{search}" has been used over time
       </text>
-    </>
+    </svg>
   );
 };
 

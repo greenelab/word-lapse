@@ -10,19 +10,7 @@ const Header = () => {
 
   return (
     <header data-fullscreen={fullscreen}>
-      {fullscreen && (
-        <>
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-          <Matrix />
-        </>
-      )}
+      {fullscreen && <Matrix />}
       <Title />
       <Search />
     </header>

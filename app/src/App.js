@@ -7,7 +7,6 @@ import { getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";
 import { useQueryState } from "./util/hooks";
-import "./icons";
 import "./App.css";
 
 // add all palette variables to document as CSS variables
@@ -24,7 +23,7 @@ const App = () => {
 
   // when search query changes
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       // reset results and status
       setResults(null);
       setStatus(statuses.empty);
@@ -34,17 +33,15 @@ const App = () => {
         .filter((w) => w)
         .join(" · ");
 
-      // if search not empty
-      if (search.trim()) {
-        setFullscreen(false);
-      }
-      // if search empty
-      else {
+      // if search empty, reset app
+      if (!search.trim()) {
         window.scrollTo(0, 0);
         setFullscreen(true);
         return;
       }
 
+      // go into results mode
+      setFullscreen(false);
       setStatus(statuses.loading);
       try {
         // perform query
@@ -53,9 +50,7 @@ const App = () => {
       } catch (error) {
         if (error.message !== statuses.old) setStatus(error.message);
       }
-    };
-
-    run();
+    })();
   }, [search]);
 
   return (

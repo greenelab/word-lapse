@@ -22,7 +22,9 @@ export const useViewBox = (padding = 10) => {
     const { x, y, width, height } = svg.current.getBBox();
     // set view box to bbox, essentially fitting view to content
     setViewBox(
-      [x, y, width, height].map((v) => Math.round(v) + padding).join(" ")
+      [x - padding, y - padding, width + padding * 2, height + padding * 2]
+        .map((v) => Math.round(v))
+        .join(" ")
     );
   }, [padding]);
 

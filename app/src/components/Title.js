@@ -3,6 +3,7 @@ import { blendColors, range } from "../util/math";
 import { red, blue } from "../palette";
 import "./Title.css";
 
+// letter props
 let id = 0;
 let words = ["WORD", "LAPSE"].map((word) =>
   word.split("").map((letter) => ({
@@ -12,6 +13,7 @@ let words = ["WORD", "LAPSE"].map((word) =>
   }))
 );
 
+// app title in header
 const Title = () => (
   <>
     {/* for accessibility */}
@@ -20,7 +22,7 @@ const Title = () => (
     {/* title viz */}
     <svg viewBox="-50 -25 100 50" className="title" role="presentation">
       {words.map((word, index) => (
-        <text key={index} x="0" y={(index - (words.length - 1) / 2) * 30}>
+        <text key={index} x="0" y={(index - (words.length - 1) / 2) * 25}>
           {word.map(({ letter, color, id }) => (
             <Fragment key={id}>
               <Filter id={id} color={color} />

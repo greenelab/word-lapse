@@ -1,24 +1,14 @@
 .chart {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 20px;
   width: calc(var(--page) / 2 - 40px);
   max-width: 100%;
   transition: box-shadow var(--fast);
+  box-shadow: 2px 4px 10px #00000020;
 }
 
-.download {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: var(--lightGray);
-  color: var(--gray);
-  transition: background var(--fast), color var(--fast);
-}
-
-.chart:hover .download:hover {
-  background: var(--lightPurple);
-  color: var(--purple);
+.chart-controls {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
 }
