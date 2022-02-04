@@ -12,7 +12,12 @@ const words = commonWords.filter(
 // util/convenient values/funcs
 const randomWord = () => words[Math.floor(Math.random() * words.length)];
 const maxLength = Math.max(...words.map((word) => word.length));
-const randomPosition = () => Math.round(Math.random() * 100);
+const randomPosition = () =>
+  // linear/ramp random distribution that avoids center, i.e. "V" shape
+  Math.floor(
+    (Math.sqrt(Math.random()) * (Math.random() > 0.5 ? 1 : -1) * 0.5 + 0.5) *
+      100
+  );
 
 // set interval with a random starting delay
 const timer = (func, period, delay) => {

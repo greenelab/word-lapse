@@ -172,7 +172,7 @@ const Timeline = () => {
   const { search, results } = useContext(AppContext);
   const { timeline, changepoints } = results;
   const [index, setIndex] = useState(0);
-  const [svg, viewBox] = useViewBox();
+  const [svg, viewBox] = useViewBox(10);
 
   // animate timeline index
   useEffect(() => {

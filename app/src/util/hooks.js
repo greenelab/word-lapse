@@ -11,7 +11,7 @@ export const useDebounce = (value, delay) => {
 };
 
 // get fitted view box of svg
-export const useViewBox = (padding = 10) => {
+export const useViewBox = (padding = 0) => {
   const svg = useRef();
   const [viewBox, setViewBox] = useState(undefined);
 

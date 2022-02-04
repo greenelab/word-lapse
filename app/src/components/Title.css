@@ -1,8 +1,17 @@
 .title {
-  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 250px;
 }
 
-.title tspan {
+.title svg {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.title text {
   fill: white;
   stroke: black;
   stroke-width: 0.02em;
@@ -13,10 +22,16 @@
   alignment-baseline: middle;
 }
 
-.title tspan:not(:last-child) {
-  letter-spacing: 2px;
+header[data-fullscreen="false"] .title {
+  flex-direction: row;
+  gap: 0;
+  max-width: 200px;
 }
 
-header[data-fullscreen="false"] .title {
-  max-width: min(150px, 25vw);
+@media (max-width: 600px) {
+  header[data-fullscreen="false"] .title {
+    flex-direction: column;
+    gap: 5px;
+    max-width: 25vw;
+  }
 }
