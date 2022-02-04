@@ -12,7 +12,9 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^5.0.0",
-    "svg-path-properties": "^1.0.11"
+    "svg-path-properties": "^1.0.11",
+    "tippy": "^0.0.0",
+    "tippy.js": "^6.3.7"
   },
   "scripts": {
     "start": "react-scripts start",

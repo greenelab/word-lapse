@@ -3,6 +3,7 @@ import Header from "./sections/Header";
 import Footer from "./sections/Footer";
 import Results from "./sections/Results";
 import Status from "./components/Status";
+import "./components/tooltip";
 import { getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";

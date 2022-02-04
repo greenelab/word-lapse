@@ -154,7 +154,11 @@ const chart = (timeline, changepoints, index) => {
     .attr("stroke", "black")
     .attr("stroke-width", "1")
     .attr("cx", (d) => xScale(d.year))
-    .attr("cy", (d) => yScale(d.frequency));
+    .attr("cy", (d) => yScale(d.frequency))
+    .attr(
+      "data-tooltip",
+      (d) => `Year: ${d.year}<br>Frequency: ${d.frequency.toExponential(2)}`
+    );
 
   // make x/y axes ticks
   const xAxis = axisBottom(xScale)
