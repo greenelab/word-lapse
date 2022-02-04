@@ -7,7 +7,7 @@ import "./Search.css";
 const Search = () => {
   const { search, setSearch } = useContext(AppContext);
   const [value, setValue] = useState(search);
-  const debouncedValue = useDebounce(value, 100); // INCREASE DELAY ONCE USING REAL API
+  const debouncedValue = useDebounce(value, 1000);
 
   // when user explicitly submits form by pressing enter
   const onSubmit = (event) => {
