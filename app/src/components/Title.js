@@ -39,17 +39,12 @@ const Title = () => (
       <svg
         key={index}
         viewBox={[-width / 2, -height / 2, width, height].join(" ")}
+        aria-hidden="true"
       >
         {word.map(({ char, color, x, id }, index) => (
           <Fragment key={index}>
             <Filter id={id} color={color} />
-            <text
-              key={index}
-              x={x}
-              y="1"
-              aria-hidden="true"
-              filter={`url(#drop-shadow-${id})`}
-            >
+            <text key={index} x={x} y="1" filter={`url(#drop-shadow-${id})`}>
               {char}
             </text>
           </Fragment>
