@@ -1,6 +1,7 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { blendColors, range } from "../util/math";
 import { red, blue } from "../palette";
+import { AppContext } from "../App";
 import "./Title.css";
 
 // letter props
@@ -9,13 +10,15 @@ let letters = "WORDLAPSE".split("").map((letter, index, { length }) => ({
   color: blendColors(red, blue, index / (length - 1)),
   id: index,
 }));
-// manually kern because tspan's cannot have filters
+
+// split into words and position
+const words = [letters.slice(0, 4), letters.slice(4)];
+
+// manually kern each letter because tspan's cannot (reliably) have filters >:|
 const kern = [
   [-29, -7, 13, 31],
   [-36, -18, 0, 19, 36],
 ];
-// split into words and position
-const words = [letters.slice(0, 4), letters.slice(4)];
 words.forEach((word, wordIndex) =>
   word.forEach((letter, letterIndex) => {
     letter.x = kern[wordIndex][letterIndex];
@@ -56,34 +59,48 @@ const Title = () => (
 
 export default Title;
 
-const layers = 10;
+// drop shadow filter
+const Filter = ({ id, color }) => {
+  const { fullscreen } = useContext(AppContext);
 
-const Filter = ({ id, color }) => (
-  <filter id={`drop-shadow-${id}`} x="-50%" y="-50%" width="200%" height="200%">
-    {range(layers).map((n) => (
-      <feDropShadow
-        key={n}
-        stdDeviation="0 0"
-        in="SourceGraphic"
-        dx={(2 * -n) / layers}
-        dy={(2 * n) / layers}
-        floodColor={color}
-        floodOpacity="1"
-        x="-100%"
-        y="-100%"
-        width="300%"
-        height="300%"
-        result={`drop-shadow-${n}`}
-        colorInterpolationFilters="sRGB"
-      />
-    ))}
-    <feMerge>
-      {range(layers)
-        .reverse()
-        .map((n) => (
-          <feMergeNode key={n} in={`drop-shadow-${n}`} />
-        ))}
-      <feMergeNode in="SourceGraphic" />
-    </feMerge>
-  </filter>
-);
+  // number of layers
+  const layers = fullscreen ? 10 : 2;
+  // length of shadow
+  const length = 1.8;
+
+  return (
+    <filter
+      id={`drop-shadow-${id}`}
+      x="-50%"
+      y="-50%"
+      width="200%"
+      height="200%"
+    >
+      {range(layers).map((n) => (
+        <feDropShadow
+          key={n}
+          stdDeviation="0 0"
+          in="SourceGraphic"
+          dx={-(length * (n + 1)) / layers}
+          dy={(length * (n + 1)) / layers}
+          floodColor={color}
+          floodOpacity="1"
+          x="-100%"
+          y="-100%"
+          width="300%"
+          height="300%"
+          result={`drop-shadow-${n}`}
+          colorInterpolationFilters="sRGB"
+        />
+      ))}
+      <feMerge>
+        {range(layers)
+          .reverse()
+          .map((n) => (
+            <feMergeNode key={n} in={`drop-shadow-${n}`} />
+          ))}
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  );
+};
