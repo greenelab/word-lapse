@@ -12,7 +12,7 @@ export const getResults = async (query) => {
 
   // PLACEHOLDER RANDOMIZED STUFF FOR TESTING
   if (Math.random() < 0.1) throw new Error("Random test error");
-  await sleep(Math.random() < 0.25 ? 10000 : 0);
+  await sleep(Math.random() < 0.1 ? 10000 : 0);
   fixture.timeline.forEach((entry) => (entry.frequency *= Math.random()));
   const results = fixture;
 

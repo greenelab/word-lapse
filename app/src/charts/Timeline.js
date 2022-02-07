@@ -16,7 +16,7 @@ import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
 import { useViewBox } from "../util/hooks";
-import "./Timeline.css"
+import "./Timeline.css";
 
 // unique id of this chart
 const id = "timeline";
@@ -86,7 +86,7 @@ const chart = (timeline, changepoints, index) => {
     .attr("stroke", gray)
     .attr("stroke-width", 2);
 
-  // make change point
+  // make changepoints fill
   const changepointFill = area()
     .curve(curveCatmullRom)
     .x((d) => xScale(d))
@@ -94,7 +94,7 @@ const chart = (timeline, changepoints, index) => {
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".changepoints")
-    .selectAll(".changepoint-fill")
+    .selectAll(".changepoints-fill")
     .data([changepoints])
     .join((enter) =>
       enter
@@ -105,17 +105,21 @@ const chart = (timeline, changepoints, index) => {
         .duration(duration)
         .style("opacity", 0.25)
     )
-    .attr("class", "changepoint-fill")
+    .attr("class", "changepoints-fill")
     .attr("d", changepointFill)
     .attr("fill", lightPurple)
     .attr("stroke", purple)
-    .attr("stroke-dasharray", "4 4");
+    .attr("stroke-dasharray", "4 4")
+    .attr(
+      "data-tooltip",
+      "Represents a significant change in the word's association"
+    );
 
-  // make changepoint text
+  // make changepoints text
   const midX = (xScale(changepoints[0]) + xScale(changepoints[1])) / 2;
   svg
     .select(".changepoints")
-    .selectAll(".changepoint-text")
+    .selectAll(".changepoints-text")
     .data([changepoints[0]])
     .join((enter) =>
       enter
@@ -126,7 +130,7 @@ const chart = (timeline, changepoints, index) => {
         .duration(duration)
         .style("opacity", 1)
     )
-    .attr("class", "changepoint-text")
+    .attr("class", "changepoints-text")
     .attr("transform", () => `translate(${midX}, ${-height / 2}) rotate(-90)`)
     .style("font-size", "12")
     .attr("text-anchor", "middle")
