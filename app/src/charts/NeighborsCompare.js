@@ -9,6 +9,8 @@ import "./Neighbors.css";
 // unique id of this chart
 const id = "neighbors-compare";
 
+// width of lines
+const width = 100;
 // height of lines
 const height = 15;
 
@@ -38,19 +40,31 @@ const NeighborsSingle = () => {
     [uniqueNeighbors, ANeighbors, BNeighbors]
   );
 
+  const rows = 20;
+  const cols = Math.ceil(commonNeighbors.length / rows);
+
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
+        <rect
+          x={-1.25 * cols * width}
+          y="0"
+          width={2.5 * cols * width}
+          height={rows * height}
+          opacity={0}
+        />
         <Side
           commonNeighbors={commonNeighbors}
           neighbors={ANeighbors}
-          x={-50}
+          x={-1}
+          cols={cols}
           color={red}
         />
         <Side
           commonNeighbors={commonNeighbors}
           neighbors={BNeighbors}
-          x={50}
+          x={1}
+          cols={cols}
           color={blue}
         />
         <text x="0" y="-40" textAnchor="middle" style={{ fontSize: 12 }}>
@@ -78,13 +92,13 @@ const NeighborsSingle = () => {
 
 export default NeighborsSingle;
 
-const Side = ({ commonNeighbors, neighbors, x, color }) =>
+const Side = ({ commonNeighbors, neighbors, cols, x, color }) =>
   commonNeighbors.map((word, index) => (
     <Fragment key={index}>
       <text
         className="neighbors-word"
-        x={x}
-        y={index * height}
+        x={(x + x * (index % cols)) * width}
+        y={Math.floor(index / cols) * height}
         textAnchor="middle"
         style={{
           fontSize: 10,
