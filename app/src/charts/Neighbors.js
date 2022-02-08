@@ -13,7 +13,7 @@ import "./Neighbors.css";
 const id = "neighbors";
 
 // max char width of lines
-const chars = 60;
+const chars = 56; // adjust so that fitted title text size matches that of other graphs
 // height of lines
 const height = 15;
 
@@ -56,10 +56,10 @@ const Neighbors = () => {
     return () => window.clearInterval(interval);
   }, [playing, years.length]);
 
-  // fit svg viewbox after render when unique neighbors changes
+  // fit svg viewbox after render when certain props change
   useEffect(() => {
     setViewBox();
-  }, [uniqueNeighbors.length, setViewBox]);
+  }, [symbols, uniqueNeighbors.length, setViewBox]);
 
   // current year color
   const blended = blendColors(red, blue, yearBIndex / (years.length - 1));
@@ -91,8 +91,9 @@ const Neighbors = () => {
               const inA = ANeighbors.includes(word);
               const inB = BNeighbors.includes(word);
 
+              // determine symbol
               let symbol;
-              if (compare) {
+              if (symbols && compare) {
                 if (inA && inB) symbol = symbolChars.both;
                 else if (inA) symbol = symbolChars.a;
                 else if (inB) symbol = symbolChars.b;
@@ -131,7 +132,7 @@ const Neighbors = () => {
                   aria-hidden={!color}
                   tabIndex={!color ? -1 : 0}
                 >
-                  {symbols && symbol} {toHumanCase(word)}
+                  {(symbol || "") + " " + toHumanCase(word)}
                 </tspan>
               );
             })}
@@ -150,9 +151,8 @@ const Neighbors = () => {
               </tspan>
               <tspan fill={purple}>
                 {" "}
-                (or {symbols && symbolChars.both} both
+                (or {symbols && symbolChars.both} both)
               </tspan>
-              )
             </>
           )}
           {!compare && yearB}
@@ -171,7 +171,7 @@ const Neighbors = () => {
         {compare && (
           <button
             onClick={() => setSymbols(!symbols)}
-            data-tooltip={symbols ? "Hide symbols" : "Show symbols"}
+            data-tooltip={symbols ? "Show just text" : "Show symbols"}
           >
             <FontAwesomeIcon
               icon={symbols ? "font" : "icons"}
@@ -202,6 +202,8 @@ const Neighbors = () => {
         <Slider
           steps={years}
           value={yearBIndex}
+          onMouseDown={() => setPlaying(false)}
+          onTouchStart={() => setPlaying(false)}
           onChange={(value) => {
             setYearBIndex(Number(value));
             setPlaying(false);

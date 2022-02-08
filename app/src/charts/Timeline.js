@@ -23,7 +23,7 @@ const id = "timeline";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
-const height = 200;
+const height = 300;
 
 // duration of animations (in ms)
 const duration = 1000;

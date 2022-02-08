@@ -5,7 +5,7 @@ import { spacedRange } from "../util/math";
 import "./Slider.css";
 
 // number range slider
-const Slider = ({ value, onChange, steps, tooltip }) => {
+const Slider = ({ value, onChange, steps, tooltip, ...rest }) => {
   const [element, bbox] = useBbox();
   const { width = 1000 } = bbox;
 
@@ -21,7 +21,7 @@ const Slider = ({ value, onChange, steps, tooltip }) => {
   }, [element, tooltip]);
 
   return (
-    <div ref={element} className="slider">
+    <div ref={element} className="slider" {...rest}>
       <RCSlider
         value={value}
         onChange={onChange}
