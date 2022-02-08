@@ -132,7 +132,7 @@ const Neighbors = () => {
                   aria-hidden={!color}
                   tabIndex={!color ? -1 : 0}
                 >
-                  {(symbol || "") + " " + toHumanCase(word)}
+                  {(symbol ? symbol + " " : "") + toHumanCase(word)}
                 </tspan>
               );
             })}
@@ -143,15 +143,14 @@ const Neighbors = () => {
           {compare && (
             <>
               <tspan fill={red}>
-                {symbols && symbolChars.a} {yearA}
-              </tspan>
-              <tspan> vs. </tspan>
+                {(symbols ? symbolChars.a + " " : "") + yearA}
+              </tspan>{" "}
+              <tspan>vs.</tspan>{" "}
               <tspan fill={blue}>
-                {symbols && symbolChars.b} {yearB}
-              </tspan>
+                {(symbols ? symbolChars.b + " " : "") + yearB}
+              </tspan>{" "}
               <tspan fill={purple}>
-                {" "}
-                (or {symbols && symbolChars.both} both)
+                {"(or " + (symbols ? symbolChars.both + " " : "") + "both)"}
               </tspan>
             </>
           )}

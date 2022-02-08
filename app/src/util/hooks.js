@@ -15,6 +15,7 @@ export const useBbox = () => {
   const element = useRef();
   const [bbox, setBbox] = useState({});
 
+  // attach resize observer
   useEffect(() => {
     if (!element.current) return;
     const observer = new ResizeObserver(() =>

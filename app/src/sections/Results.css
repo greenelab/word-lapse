@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 60px;
   width: 100%;
 }
 
@@ -19,7 +19,7 @@
   width: calc(var(--page) / 2 - 40px);
   max-width: 100%;
   transition: box-shadow var(--fast);
-  box-shadow: 2px 4px 10px #00000020;
+  box-shadow: 0 0 0 2px var(--lightGray);
 }
 
 .chart-controls {

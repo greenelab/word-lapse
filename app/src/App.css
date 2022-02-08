@@ -22,7 +22,7 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  gap: 60px;
   padding: var(--pagePadding);
   overflow: hidden;
 }

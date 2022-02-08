@@ -18,7 +18,6 @@ const purple = "#673ab7";
 const lightPurple = "#d1c4e9";
 
 // effects
-const shadow = "#80808080";
 const fast = "0.5s ease";
 
 // master list of variables
@@ -33,7 +32,6 @@ export {
   blue,
   purple,
   lightPurple,
-  shadow,
   fast,
 };
 
