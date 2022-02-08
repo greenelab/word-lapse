@@ -3,3 +3,4 @@ pandas == 1.2.4
 plydata == 0.4.3
 fastapi == 0.70.1
 uvicorn == 0.17.0
+joblib==1.1.0

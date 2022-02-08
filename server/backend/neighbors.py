@@ -1,4 +1,3 @@
-import multiprocessing
 import re
 from itertools import groupby
 from pathlib import Path
@@ -6,9 +5,12 @@ from pathlib import Path
 import pandas as pd
 import plydata as ply
 from gensim.models import KeyedVectors, Word2Vec
+from joblib import Memory, Parallel, delayed
 
 from .config import (
-    MATERIALIZE_MODELS, WARM_CACHE, PARALLELIZE_QUERY, PARALLEL_POOLS, emit_config
+    USE_MEMMAP, MATERIALIZE_MODELS, WARM_CACHE,
+    PARALLEL_POOLS, PARALLELIZE_QUERY, PARALLEL_BACKEND,
+    emit_config
 )
 from .tracking import ExecTimer
 
@@ -56,7 +58,23 @@ def cutoff_points(tok: str):
 # === extract_neighbors()
 # ========================================================================
 
-def word_models_by_year(only_first=True, use_keyedvec=True):
+def load_word_model(model_path, use_keyedvec=True):
+    """
+    Loads a single word model located at 'path'
+    """
+
+    if use_keyedvec:
+        # loads KeyedVectors (rather than full trainable models),
+        # which are memory-mapped so they can be shared across processes.
+        # also does a warmup query against the model so the initial
+        # delay doesn't occur when a user queries the model for the
+        # first time.
+        return KeyedVectors.load(str(model_path), mmap='r' if USE_MEMMAP else None)
+        # word_model.most_similar('pandemic') # any query will load the model
+    else:
+        return Word2Vec.load(str(model_path))
+
+def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False):
     """
     Generates a sequence of Word2Vec word models for each years' models
     in ./data/word2vec_models/*/*model.
@@ -65,6 +83,7 @@ def word_models_by_year(only_first=True, use_keyedvec=True):
     are multiple models associated with a specific year.
 
     only_first: if true, only returns the first model for each year
+    just_reference: if true, only returns the path to the model file
     """
 
     model_suffix = "wordvectors" if use_keyedvec else "model"
@@ -85,26 +104,21 @@ def word_models_by_year(only_first=True, use_keyedvec=True):
         # differentiated by idx
         for idx, word_model_ref in enumerate(sorted(word_model_refs)):
             with ExecTimer(verbose=True):
-                print("Loading model %s for year %s..." % (str(word_model_ref), year), flush=True)
-                
-                if use_keyedvec:
-                    # loads KeyedVectors (rather than full trainable models),
-                    # which are memory-mapped so they can be shared across processes.
-                    # also does a warmup query against the model so the initial
-                    # delay doesn't occur when a user queries the model for the
-                    # first time.
-                    word_model = KeyedVectors.load(str(word_model_ref), mmap='r')
-                    # word_model.most_similar('pandemic') # any query will load the model
+                if not just_reference:
+                    print("Loading model %s for year %s..." % (str(word_model_ref), year), flush=True)
+                    word_model = load_word_model(str(word_model_ref), use_keyedvec=use_keyedvec)
                 else:
-                    word_model = Word2Vec.load(str(word_model_ref))
-
+                    word_model = str(word_model_ref)
+                    
                 yield year, idx, word_model
 
                 # if only_first, skip the remaining years in this series
                 if only_first:
                     break
 
-def query_model_for_tok(tok, model, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
+def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
+    print("Querying %s for token '%s'..." % (year, tok), flush=True)
+
     result = []
     word_vectors = model if use_keyedvec else model.wv
 
@@ -138,6 +152,9 @@ def query_model_for_tok(tok, model, word_freq_count_cutoff: int = 30, neighbors:
 
     return result
 
+location = './cachedir'
+memory = Memory(location, verbose=0)
+
 def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
     """
     Given a word 'tok', for each year from 2000 to 2020, extracts the top
@@ -156,25 +173,30 @@ def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int
     model_loader = materialized_word_models if MATERIALIZE_MODELS else word_models_by_year
 
     if PARALLELIZE_QUERY:
-        global pool
-        if not pool:
-            pool = multiprocessing.Pool(PARALLEL_POOLS)
-
-        word_neighbor_map = dict(
-            pool.starmap(
-                _query_model,
-                (
-                    (year, idx, model, tok, word_freq_count_cutoff, neighbors, use_keyedvec)
-                    for year, idx, model in model_loader(use_keyedvec=use_keyedvec)
-                )
+        with Parallel(
+            n_jobs=PARALLEL_POOLS, backend=PARALLEL_BACKEND,
+            mmap_mode=('r' if USE_MEMMAP else None)
+        ) as parallel:
+            result = parallel(
+                delayed(
+                    lambda year, model: (
+                        year, query_model_for_tok(
+                            year, tok, model,
+                            word_freq_count_cutoff=word_freq_count_cutoff,
+                            neighbors=neighbors,
+                            use_keyedvec=use_keyedvec
+                        )
+                    )
+                )(year, model)
+                for year, _, model in model_loader(use_keyedvec=use_keyedvec)
             )
-        )
+            word_neighbor_map = dict(result)
     else:
         word_neighbor_map = {}
 
         for year, _, model in model_loader(use_keyedvec=use_keyedvec):
             word_neighbor_map[year] = query_model_for_tok(
-                tok, model,
+                year, tok, model,
                 word_freq_count_cutoff=word_freq_count_cutoff,
                 neighbors=neighbors,
                 use_keyedvec=use_keyedvec
@@ -188,7 +210,9 @@ def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int
 # ========================================================================
 
 word_models = None
-pool = None # pool of multiprocessing cores; only used if PARALLELIZE_QUERY is true
+
+# print out app_config's settings for debugging
+emit_config()
 
 def materialized_word_models(**kwargs):
     """
@@ -213,25 +237,3 @@ if MATERIALIZE_MODELS and WARM_CACHE:
     # invoke to cache word models into 'word_models'
     print("Warming enabled, preloading word2vec models...", flush=True)
     materialized_word_models()
-
-# print out app_config's settings for debugging
-emit_config()
-
-def _query_model(year, _, model, tok, word_freq_count_cutoff, neighbors, use_keyedvec):
-    """"
-    Returns a (year, result) tuple that can be combined for multiple years
-    into a dict.
-
-    Used by the multiprocessing code to parallelize year searches.
-    """
-    print("Querying %s for token %s..." % (year, tok), flush=True)
-
-    return (
-        year,
-        query_model_for_tok(
-            tok, model,
-            word_freq_count_cutoff=word_freq_count_cutoff,
-            neighbors=neighbors,
-            use_keyedvec=use_keyedvec
-        )
-    )
