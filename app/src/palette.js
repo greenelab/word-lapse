@@ -45,5 +45,9 @@ library.add(
   fas.faInfoCircle,
   fas.faSpinner,
   fas.faPlay,
-  fas.faPause
+  fas.faPause,
+  fas.faLeftRight,
+  fas.faRightLong,
+  fas.faIcons,
+  fas.faFont
 );

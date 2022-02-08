@@ -1,8 +1,7 @@
 import { useContext } from "react";
 import { AppContext } from "../App";
 import Timeline from "../charts/Timeline";
-import NeighborsSingle from "../charts/NeighborsSingle";
-import NeighborsCompare from "../charts/NeighborsCompare";
+import Neighbors from "../charts/Neighbors";
 import Download from "../components/Download";
 import "./Results.css";
 
@@ -13,9 +12,8 @@ const Results = () => {
     return (
       <>
         <div className="results">
+          <Neighbors />
           <Timeline />
-          <NeighborsSingle />
-          <NeighborsCompare />
         </div>
         <Download />
       </>

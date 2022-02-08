@@ -1,6 +1,6 @@
 import { sleep } from "./util/debug";
 import fixture from "./data/api-fixture.json";
-import { getUnique } from "./charts/neighbors";
+import { getUnique } from "./util/neighbors";
 
 // singleton to hold latest request
 let latest = null;
