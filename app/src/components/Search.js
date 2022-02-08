@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "./App";
-import { useDebounce } from "./util";
+import { AppContext } from "../App";
+import { useDebounce } from "../util/hooks";
 import "./Search.css";
 
 // search box
@@ -27,14 +27,17 @@ const Search = () => {
   useEffect(() => setValue(search), [search]);
 
   return (
-    <form onSubmit={onSubmit} className="form">
+    <form onSubmit={onSubmit} id="form">
       <input
-        className="search"
+        id="search"
         value={value}
         onChange={({ target }) => setValue(target.value)}
         placeholder="Enter a word"
         autoFocus
       />
+      <label id="search-label" htmlFor="search">
+        Explore how a word changes in meaning over time
+      </label>
     </form>
   );
 };

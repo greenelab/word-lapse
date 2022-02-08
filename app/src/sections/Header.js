@@ -1,7 +1,8 @@
 import { useContext } from "react";
-import Title from "./Title";
-import Search from "./Search";
-import { AppContext } from "./App";
+import Title from "../components/Title";
+import Search from "../components/Search";
+import Matrix from "../components/Matrix";
+import { AppContext } from "../App";
 import "./Header.css";
 
 const Header = () => {
@@ -9,6 +10,7 @@ const Header = () => {
 
   return (
     <header data-fullscreen={fullscreen}>
+      {fullscreen && <Matrix />}
       <Title />
       <Search />
     </header>

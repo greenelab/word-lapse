@@ -541,7 +541,7 @@
       "reemergence"
     ]
   },
-  "frequency_timeline": [
+  "timeline": [
     { "year": 2000, "frequency": 0.0000040559 },
     { "year": 2001, "frequency": 0.0000067864 },
     { "year": 2002, "frequency": 0.0000051355 },
@@ -564,5 +564,5 @@
     { "year": 2019, "frequency": 0.000007857 },
     { "year": 2020, "frequency": 0.0002476615 }
   ],
-  "changepoints": [{ "start_year": 2019, "end_year": 2020 }]
+  "changepoints": [ 2019, 2020 ]
 }

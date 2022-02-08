@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AppContext } from "./App";
-import { statuses } from "./api";
+import { AppContext } from "../App";
+import { statuses } from "../api";
 import "./Status.css";
+import Matrix from "./Matrix";
 
 // special status message for loading/error/etc
 const Status = () => {
@@ -23,12 +24,8 @@ const Status = () => {
   else if (status === statuses.loading)
     message = (
       <>
-        <FontAwesomeIcon
-          icon="spinner"
-          className="fa-spin"
-          style={{ color: "var(--gray)" }}
-        />
-        <span>Searching and loading results</span>
+        <Matrix />
+        <span>Computing results. This might take a minute.</span>
       </>
     );
   // error
@@ -43,7 +40,7 @@ const Status = () => {
       </>
     );
 
-  return <div className="status">{message}</div>;
+  return <div id="status">{message}</div>;
 };
 
 export default Status;

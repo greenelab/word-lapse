@@ -1,3 +1,6 @@
+import { library } from "@fortawesome/fontawesome-svg-core";
+import * as fas from "@fortawesome/free-solid-svg-icons";
+
 // common palette of styles
 
 // dimensions
@@ -33,3 +36,12 @@ export {
   shadow,
   fast,
 };
+
+// font awesome icons
+library.add(
+  fas.faAngleDown,
+  fas.faDownload,
+  fas.faExclamationCircle,
+  fas.faInfoCircle,
+  fas.faSpinner
+);

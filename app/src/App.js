@@ -1,12 +1,13 @@
 import { useState, createContext, useEffect } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Status from "./Status";
-import Results from "./Results";
+import Header from "./sections/Header";
+import Footer from "./sections/Footer";
+import Results from "./sections/Results";
+import Status from "./components/Status";
+import "./components/tooltip";
 import { getResults, statuses } from "./api";
 import * as palette from "./palette";
-import { useQueryState, setCssVariables } from "./util";
-import "./icons";
+import { setCssVariables } from "./util/dom";
+import { useQueryState } from "./util/hooks";
 import "./App.css";
 
 // add all palette variables to document as CSS variables
@@ -23,7 +24,7 @@ const App = () => {
 
   // when search query changes
   useEffect(() => {
-    const run = async () => {
+    (async () => {
       // reset results and status
       setResults(null);
       setStatus(statuses.empty);
@@ -33,17 +34,15 @@ const App = () => {
         .filter((w) => w)
         .join(" · ");
 
-      // if search not empty
-      if (search.trim()) {
-        setFullscreen(false);
-      }
-      // if search empty
-      else {
+      // if search empty, reset app
+      if (!search.trim()) {
         window.scrollTo(0, 0);
         setFullscreen(true);
         return;
       }
 
+      // go into results mode
+      setFullscreen(false);
       setStatus(statuses.loading);
       try {
         // perform query
@@ -52,9 +51,7 @@ const App = () => {
       } catch (error) {
         if (error.message !== statuses.old) setStatus(error.message);
       }
-    };
-
-    run();
+    })();
   }, [search]);
 
   return (

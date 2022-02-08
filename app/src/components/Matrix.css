@@ -1,0 +1,41 @@
+.matrix {
+  position: absolute;
+  color: var(--gray);
+  text-align: left;
+  z-index: -1;
+  animation: fade 2s forwards ease-in-out, glow 2s forwards ease-in-out;
+  user-select: none;
+  pointer-events: none;
+}
+
+.matrix span {
+  font-family: "Source Code Pro", monospace;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes glow {
+  0% {
+    color: var(--gray);
+  }
+  33% {
+    color: var(--red);
+  }
+  66% {
+    color: var(--blue);
+  }
+  100% {
+    color: var(--gray);
+  }
+}
+

@@ -1,0 +1,37 @@
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 250px;
+}
+
+.title svg {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.title text {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.02em;
+  font-family: "Righteous", sans-serif;
+  font-size: 25px;
+  text-transform: uppercase;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+
+header[data-fullscreen="false"] .title {
+  flex-direction: row;
+  gap: 0;
+  max-width: 200px;
+}
+
+@media (max-width: 600px) {
+  header[data-fullscreen="false"] .title {
+    flex-direction: column;
+    gap: 5px;
+    max-width: 25vw;
+  }
+}
