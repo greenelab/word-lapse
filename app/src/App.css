@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+  font-family: "Varela Round", sans-serif;
+}
+
+body {
+  margin: 0;
+  line-height: 1.5;
+}
+
+#root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--pagePadding);
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: var(--pagePaddingSmall);
+  }
+}
+
+svg {
+  overflow: visible !important;
+}
+
+a {
+  color: var(--darkGray);
+}
+
+a:hover {
+  animation: glow-text alternate infinite 0.5s linear;
+}
+
+text {
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5em;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@keyframes glow-text {
+  from {
+    color: var(--red);
+  }
+  to {
+    color: var(--blue);
+  }
+}
+
+@keyframes glow-bg {
+  from {
+    background: var(--red);
+  }
+  to {
+    background: var(--blue);
+  }
+}

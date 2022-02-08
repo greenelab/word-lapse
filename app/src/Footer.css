@@ -1,0 +1,10 @@
+footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--pagePadding);
+  color: var(--darkGray);
+  background: var(--lightGray);
+  text-align: center;
+  box-shadow: 0 0 5px var(--shadow);
+}

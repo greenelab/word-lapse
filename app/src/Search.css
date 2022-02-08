@@ -1,0 +1,25 @@
+.form {
+  display: contents;
+}
+
+.search {
+  border: solid 3px var(--gray);
+  border-radius: 999px;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.search:focus {
+  border-color: var(--darkGray);
+}
+
+.example {
+  color: var(--gray);
+}
