@@ -10,9 +10,9 @@ export const getResults = async (query) => {
   const id = window.performance.now();
   latest = id;
 
-  // PLACEHOLDER RANDOMIZED STUFF FOR TESTING
-  if (Math.random() < 0.1) throw new Error("Random test error");
-  await sleep(Math.random() < 0.1 ? 10000 : 0);
+  // PLACEHOLDER STUFF FOR TESTING
+  if (query === "error") throw new Error("Random test error");
+  if (query === "wait") await sleep(10000);
   fixture.timeline.forEach((entry) => (entry.frequency *= Math.random()));
   const results = fixture;
 

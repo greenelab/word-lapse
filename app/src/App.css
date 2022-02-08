@@ -21,6 +21,8 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  gap: 40px;
   padding: var(--pagePadding);
   overflow: hidden;
 }
@@ -48,9 +50,9 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   background: none;
-  min-width: 40px;
-  min-height: 40px;
+  padding: 10px 15px;
   border: none;
   border-radius: 999px;
   background: var(--lightGray);

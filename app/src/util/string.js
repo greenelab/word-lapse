@@ -3,9 +3,6 @@
 export const split = (string) =>
   string
     .replace(/[^a-zA-Z0-9]/g, " ") // replace any non-alphanumeric with space
-    .replace(/([A-Z])/g, " $1") // put space before every capital letter
-    .replace(/(.*)([0-9])/g, "$1$2 ") // put space before every first number
-    .replace(/([0-9])(.*)/g, " $1$2") // put space after every last number
     .toLowerCase()
     .split(/\s+/)
     .filter((word) => word);

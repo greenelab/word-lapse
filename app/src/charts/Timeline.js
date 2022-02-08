@@ -29,12 +29,12 @@ const height = 200;
 const duration = 1000;
 
 // d3 code for chart
-const chart = (timeline, changepoints, index) => {
+const chart = (timeline, changepoints, timelineIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
   // get subset of timeline for animation purposes
-  const animatedTimeline = timeline.slice(0, index);
+  const animatedTimeline = timeline.slice(0, timelineIndex);
 
   // get range of values for x/y axes
   const xExtent = extent(timeline, (d) => d.year);
@@ -180,58 +180,65 @@ const chart = (timeline, changepoints, index) => {
 const Timeline = () => {
   const { search, results } = useContext(AppContext);
   const { timeline, changepoints } = results;
-  const [index, setIndex] = useState(0);
-  const [svg, viewBox] = useViewBox(10);
+  const [timelineIndex, setTimelineIndex] = useState(0);
+  const [svg, setViewBox] = useViewBox(20);
 
-  // animate timeline index
+  // animate timeline timelineIndex
   useEffect(() => {
-    if (index < timeline.length) {
-      setIndex(index);
+    if (timelineIndex < timeline.length) {
+      setTimelineIndex(timelineIndex);
       window.setTimeout(
-        () => setIndex((value) => value + 1),
+        () => setTimelineIndex((value) => value + 1),
         duration / timeline.length
       );
     }
-  }, [index, timeline.length]);
+  }, [timelineIndex, timeline.length]);
 
   // rerun d3 code any time data changes
   useEffect(() => {
-    chart(timeline, changepoints, index);
-  }, [timeline, changepoints, index]);
+    chart(timeline, changepoints, timelineIndex);
+  }, [timeline, changepoints, timelineIndex]);
+
+  // fit svg viewbox after render when timeline changes
+  useEffect(() => {
+    setViewBox();
+  }, [timeline.length, setViewBox]);
 
   return (
-    <svg ref={svg} id={id} viewBox={viewBox}>
-      <g className="curve-fills"></g>
-      <g className="curve-strokes"></g>
-      <g className="changepoints"></g>
-      <g className="x-axis"></g>
-      <g className="y-axis"></g>
-      <g className="dots"></g>
-      <text
-        transform={`translate(${width / 2}, 40)`}
-        textAnchor="middle"
-        alignmentBaseline="middle"
-        style={{ fontSize: 12 }}
-      >
-        Year
-      </text>
-      <text
-        transform={`translate(-50, -${height / 2}) rotate(-90)`}
-        textAnchor="middle"
-        alignmentBaseline="middle"
-        style={{ fontSize: 12 }}
-      >
-        Frequency
-      </text>
-      <text
-        x={width / 2}
-        y={-height - 30}
-        textAnchor="middle"
-        style={{ fontSize: 12 }}
-      >
-        How often "{search}" has been used over time
-      </text>
-    </svg>
+    <div className="chart">
+      <svg ref={svg} id={id}>
+        <g className="curve-fills"></g>
+        <g className="curve-strokes"></g>
+        <g className="changepoints"></g>
+        <g className="x-axis"></g>
+        <g className="y-axis"></g>
+        <g className="dots"></g>
+        <text
+          transform={`translate(${width / 2}, 40)`}
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          style={{ fontSize: 12 }}
+        >
+          Year
+        </text>
+        <text
+          transform={`translate(-50, -${height / 2}) rotate(-90)`}
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          style={{ fontSize: 12 }}
+        >
+          Frequency
+        </text>
+        <text
+          x={width / 2}
+          y={-height - 30}
+          textAnchor="middle"
+          style={{ fontSize: 12 }}
+        >
+          How often "{search}" has been used over time
+        </text>
+      </svg>
+    </div>
   );
 };
 

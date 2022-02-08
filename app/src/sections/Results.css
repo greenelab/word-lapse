@@ -1,7 +1,7 @@
 .results {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 40px;
   width: 100%;
@@ -11,4 +11,21 @@
   .results {
     gap: 20px;
   }
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--page) / 2 - 40px);
+  max-width: 100%;
+  transition: box-shadow var(--fast);
+  box-shadow: 2px 4px 10px #00000020;
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
 }

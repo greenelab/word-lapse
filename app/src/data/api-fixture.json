@@ -1,9 +1,4 @@
 {
-  "neighbors_test": {
-    "2000": ["cat", "dog", "fish"],
-    "2001": ["cat", "dog", "bird"],
-    "2002": ["cat", "dog", "horse"]
-  },
   "neighbors": {
     "2000": [
       "introduction",

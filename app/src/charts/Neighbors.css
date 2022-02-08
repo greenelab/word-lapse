@@ -1,0 +1,30 @@
+/* styles we don't want/need in downloaded svg */
+
+.neighbors-word {
+  transition: fill var(--fast);
+}
+
+.slider {
+  flex-grow: 1;
+  height: 10px;
+  background: var(--lightGray);
+  border-radius: 999px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--darkGray);
+  appearance: none;
+}
+
+.slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--darkGraG);
+  appearance: none;
+}

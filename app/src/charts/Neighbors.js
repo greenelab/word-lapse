@@ -1,133 +1,105 @@
-import { useContext, useState, useEffect } from "react";
-import { select, forceCollide, forceLink, forceSimulation } from "d3";
+import { useContext, useState, useEffect, useMemo } from "react";
 import { AppContext } from "../App";
-import { blue, lightGray, lightPurple, red } from "../palette";
+import { blue, lightGray, red } from "../palette";
+import { useViewBox } from "../util/hooks";
+import { blendColors } from "../util/math";
 import { toHumanCase } from "../util/string";
+import "./Neighbors.css";
 
 // unique id of this chart
 const id = "neighbors";
 
-// dimensions of viewbox
-const width = 800;
-const height = 800;
-
-// geometry settings
-const nodeSize = 100;
-const nodeDistance = 140;
-const linkDistance = 120;
-
-// singleton mutable objects for d3 force simulation to work with
-let nodes = [];
-let links = [];
-
-const update = (neighbors, search) => {
-  // mutate nodes and links objects from neighbor data
-  links = neighbors.map((word) => ({ source: search, target: word }));
-  const centerProps = { center: true, fx: 0, fy: 0 };
-  for (const neighbor of [search, ...neighbors])
-    if (!nodes.find((node) => node.id === neighbor))
-      nodes.push({ id: neighbor, ...(neighbor === search ? centerProps : {}) });
-  for (let i = 0; i < nodes.length; i++)
-    if (![search, ...neighbors].includes(nodes[i].id)) nodes.splice(i--, 1);
-
-  // sort to keep in order
-  nodes.sort((a, b) => a.id - b.id);
-  // tell simulation nodes and links have changed
-  simulation.nodes(nodes);
-  simulation.force("link").links(links);
-  simulation.alpha(1).restart();
-};
-
-const chart = () => {
-  // get elements of interest
-  const svg = select("#" + id);
-
-  // console.log(links[0]);
-
-  // make edges from neighbor points
-  svg
-    .select(".links")
-    .selectAll(".link")
-    .data(links)
-    .join("line")
-    .attr("class", "link")
-    .attr("stroke", lightGray)
-    .attr("stroke-width", 2)
-    .attr("x1", (d) => d.source.x)
-    .attr("y1", (d) => d.source.y)
-    .attr("x2", (d) => d.target.x)
-    .attr("y2", (d) => d.target.y);
-
-  // make node fills from neighbors points
-  svg
-    .select(".nodes")
-    .selectAll(".node-fill")
-    .data(nodes)
-    .join("rect")
-    .attr("class", "node-fill")
-    .attr("fill", (d) => (d.center ? lightPurple : blue))
-    .attr("rx", nodeSize / 4)
-    .attr("ry", nodeSize / 4)
-    .attr("x", (d) => d.x - nodeSize / 2)
-    .attr("y", (d) => d.y - nodeSize / 4)
-    .attr("width", nodeSize)
-    .attr("height", nodeSize / 2);
-
-  // make node fills from neighbors points
-  svg
-    .select(".nodes")
-    .selectAll(".node-text")
-    .data(nodes)
-    .join("text")
-    .attr("class", "node-text")
-    .attr("fill", "black")
-    .attr("x", (d) => d.x)
-    .attr("y", (d) => d.y)
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
-    .text((d) => toHumanCase(d.id))
-    .style("font-size", (d) => (d.center ? 16 : 12));
-};
-
-const simulation = forceSimulation()
-  .force("collide", forceCollide().radius(nodeDistance / 2))
-  .force(
-    "link",
-    forceLink()
-      .distance(linkDistance)
-      .id((d) => d.id)
-  )
-  .on("tick", chart)
-  .alphaMin(0.1);
+// max char width of lines
+const chars = 60;
+// height of lines
+const height = 15;
 
 // word neighbors network
 const Neighbors = () => {
   const { search, results } = useContext(AppContext);
-  const years = Object.keys(results.neighbors);
-  const [index, setIndex] = useState(0);
-  const year = years[index];
-  const neighbors = results.neighbors[year];
+  const { neighbors } = results;
+  const years = Object.keys(neighbors);
+  const [yearIndex, setYearIndex] = useState(0);
+  const year = years[yearIndex];
+  const currentNeighbors = neighbors[year];
+  const [svg, setViewBox] = useViewBox(30);
+
+  // get a de-duped, sorted list of unique neighbors
+  const uniqueNeighbors = useMemo(
+    () => Array.from(new Set(Object.values(neighbors).flat())).sort(),
+    [neighbors]
+  );
 
   // animate year index
   useEffect(() => {
     const interval = window.setInterval(
-      () => setIndex((value) => (value + 1) % years.length),
-      3000
+      () => setYearIndex((value) => (value + 1) % years.length),
+      2000
     );
-
     return () => window.clearInterval(interval);
   }, [years.length]);
 
-  // rerun d3 code any time data changes
+  // fit svg viewbox after render when unique neighbors changes
   useEffect(() => {
-    update(neighbors, search);
-  }, [neighbors, search]);
+    setViewBox();
+  }, [uniqueNeighbors.length, setViewBox]);
+
+  // wrap text into lines by number of characters
+  // (because there is no easier way, believe me i tried)
+  const lines = [[]];
+  for (const neighbor of uniqueNeighbors) {
+    if (
+      lines[lines.length - 1].reduce((total, word) => total + word.length, 0) >
+      chars
+    )
+      lines.push([]);
+    lines[lines.length - 1].push(neighbor);
+  }
 
   return (
-    <svg id={id} viewBox={`-${width / 2} -${height / 2} ${width} ${height}`}>
-      <g className="links"></g>
-      <g className="nodes"></g>
-    </svg>
+    <div className="chart">
+      <svg ref={svg} id={id}>
+        {lines.map((line, lineIndex) => (
+          <text
+            key={lineIndex}
+            x="0"
+            y={height * lineIndex}
+            textAnchor="middle"
+          >
+            {line.map((neighbor, index) => (
+              <tspan
+                key={index}
+                className="neighbors-word"
+                dx="10"
+                style={{
+                  fontSize: 10,
+                  fill: currentNeighbors.includes(neighbor)
+                    ? blendColors(red, blue, yearIndex / (years.length - 1))
+                    : lightGray,
+                }}
+              >
+                {toHumanCase(neighbor)}
+              </tspan>
+            ))}
+          </text>
+        ))}
+        <text x="0" y="-40" textAnchor="middle" style={{ fontSize: 12 }}>
+          Words associated with "{search}" in {year}
+        </text>
+      </svg>
+      <div className="chart-controls">
+        <span>{year}</span>
+        <input
+          className="slider"
+          value={yearIndex}
+          onChange={(event) => setYearIndex(Number(event.target.value))}
+          type="range"
+          min={0}
+          max={years.length - 1}
+          step={1}
+        />
+      </div>
+    </div>
   );
 };
 
