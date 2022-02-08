@@ -4,6 +4,13 @@ export const range = (n) =>
     .fill(0)
     .map((_, i) => i);
 
+// generate n evenly spaced numbers between 0 and max, always including 0 and max
+export const spacedRange = (n, max) => {
+  const steps = range(n).map((value) => value * Math.round(max / (n - 1)));
+  while (max - steps[steps.length - 1] < 2) steps.pop();
+  return [...steps, max];
+};
+
 // linearly interpolate
 export const interpolate = (valueA, valueB, mix) =>
   valueA + (valueB - valueA) * mix;

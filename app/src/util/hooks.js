@@ -10,6 +10,23 @@ export const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
+// get bounding box of element
+export const useBbox = () => {
+  const element = useRef();
+  const [bbox, setBbox] = useState({});
+
+  useEffect(() => {
+    if (!element.current) return;
+    const observer = new ResizeObserver(() =>
+      setBbox(element.current.getBoundingClientRect())
+    );
+    observer.observe(element.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [element, bbox];
+};
+
 // get fitted view box of svg
 export const useViewBox = (padding = 0) => {
   const svg = useRef();

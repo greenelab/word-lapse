@@ -43,5 +43,7 @@ library.add(
   fas.faDownload,
   fas.faExclamationCircle,
   fas.faInfoCircle,
-  fas.faSpinner
+  fas.faSpinner,
+  fas.faPlay,
+  fas.faPause
 );

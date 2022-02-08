@@ -1,0 +1,52 @@
+.slider {
+  flex-grow: 1;
+  padding: 10px;
+}
+
+.rc-slider {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.rc-slider-rail {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--lightGray);
+}
+
+.rc-slider-track {
+  position: absolute;
+  height: 100%;
+  background: var(--darkGray);
+}
+
+.rc-slider-handle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  top: 50%;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 15px;
+  background: white;
+  border: solid 2px var(--darkGray);
+}
+
+.rc-slider-mark {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 0.9rem;
+}
+
+.rc-slider-mark-text {
+  position: absolute;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}

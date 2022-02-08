@@ -5,7 +5,12 @@ import "tippy.js/dist/tippy.css";
 const options = {
   offset: [0, 10],
   allowHTML: true,
-  onShow: (instance) => instance?.element?.getAttribute("data-tooltip").trim(),
+  onShow: (instance) => {
+    const content = instance?.reference?.getAttribute("data-tooltip")?.trim();
+    if (!content) return false;
+    instance?.setContent(content);
+  },
+  onHide: (instance) => instance?.reference !== document.activeElement,
 };
 
 // listen for changes to document
@@ -23,7 +28,7 @@ new MutationObserver((records) => {
     if (type === "attributes")
       if (target instanceof Element)
         // update tippy instance
-        target._tippy?.setContent(target.getAttribute("data-tooltip").trim());
+        target._tippy?.setContent(target.getAttribute("data-tooltip")?.trim());
   }
 }).observe(document.body, {
   childList: true,

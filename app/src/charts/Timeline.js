@@ -112,7 +112,10 @@ const chart = (timeline, changepoints, timelineIndex) => {
     .attr("stroke-dasharray", "4 4")
     .attr(
       "data-tooltip",
-      "Represents a significant change in the word's association"
+      (d) =>
+        `${d.join(
+          " to "
+        )} represents a significant change in the word's association`
     );
 
   // make changepoints text
