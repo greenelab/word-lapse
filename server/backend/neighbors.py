@@ -8,13 +8,17 @@ from gensim.models import KeyedVectors, Word2Vec
 from joblib import Memory, Parallel, delayed
 
 from .config import (
-    USE_MEMMAP, MATERIALIZE_MODELS, WARM_CACHE,
-    PARALLEL_POOLS, PARALLELIZE_QUERY, PARALLEL_BACKEND,
-    emit_config
+    USE_MEMMAP, MATERIALIZE_MODELS,
+    PARALLEL_POOLS, PARALLELIZE_QUERY, PARALLEL_BACKEND
 )
 from .tracking import ExecTimer
 
+# the root for the word-lapse-models datafiles
 data_folder = Path("./data")
+
+# stores cached word model references; used if MATERIALIZE_MODELS is true
+# (pre-populated on server startup if .config.WARM_CACHE is true)
+word_models = None
 
 
 # ========================================================================
@@ -60,7 +64,7 @@ def cutoff_points(tok: str):
 
 def load_word_model(model_path, use_keyedvec=True):
     """
-    Loads a single word model located at 'path'
+    Loads a single word model located at 'path'.
     """
 
     if use_keyedvec:
@@ -73,6 +77,7 @@ def load_word_model(model_path, use_keyedvec=True):
         # word_model.most_similar('pandemic') # any query will load the model
     else:
         return Word2Vec.load(str(model_path))
+
 
 def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False):
     """
@@ -116,6 +121,28 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
                 if only_first:
                     break
 
+
+def materialized_word_models(**kwargs):
+    """
+    Loads models all at once and keeps them in memory, returning a dict of the
+    models on subsequent requests.
+
+    Specifically, it consumes the word_models_by_year() generator the first time
+    it's called, but then materializes and caches the result into the global
+    'word_models'.
+    """
+
+    global word_models
+
+    if word_models and len(word_models) > 0:
+        return word_models
+
+    # materialize the word_models_by_year() generator
+    word_models = [ (year, idx, model) for year, idx, model in word_models_by_year(**kwargs) ]
+
+    return word_models
+
+
 def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
     print("Querying %s for token '%s'..." % (year, tok), flush=True)
 
@@ -152,8 +179,6 @@ def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neig
 
     return result
 
-location = './cachedir'
-memory = Memory(location, verbose=0)
 
 def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
     """
@@ -203,37 +228,3 @@ def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int
             )
 
     return word_neighbor_map
-
-
-# ========================================================================
-# === word2vec model materializaton, multiprocessing stubs
-# ========================================================================
-
-word_models = None
-
-# print out app_config's settings for debugging
-emit_config()
-
-def materialized_word_models(**kwargs):
-    """
-    Loads models all at once and keeps them in memory, returning
-    a dict of the models on subsequent requests.
-    """
-
-    global word_models
-
-    if word_models and len(word_models) > 0:
-        return word_models
-
-    # materialize the word_models_by_year() generator
-    word_models = [
-        (year, idx, model)
-        for year, idx, model in word_models_by_year(**kwargs)
-    ]
-
-    return word_models
-
-if MATERIALIZE_MODELS and WARM_CACHE:
-    # invoke to cache word models into 'word_models'
-    print("Warming enabled, preloading word2vec models...", flush=True)
-    materialized_word_models()

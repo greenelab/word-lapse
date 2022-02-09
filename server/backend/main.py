@@ -11,6 +11,20 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 
+@app.on_event('startup')
+async def check_warm_cache():
+    from .config import ( emit_config, MATERIALIZE_MODELS, WARM_CACHE )
+    from .neighbors import materialized_word_models
+    
+    # print out app_config's settings for debugging
+    emit_config()
+
+    if MATERIALIZE_MODELS and WARM_CACHE:
+        # invoke to cache word models into 'word_models'
+        print("Warming enabled, preloading word2vec models...", flush=True)
+        materialized_word_models()
+
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
