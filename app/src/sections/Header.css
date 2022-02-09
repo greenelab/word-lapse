@@ -9,7 +9,6 @@ header {
   background: var(--lightGray);
   overflow: hidden;
   min-height: 100vh;
-  box-shadow: 0 0 5px var(--shadow);
   z-index: 1;
   transition: min-height var(--fast);
 }

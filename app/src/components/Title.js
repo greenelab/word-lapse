@@ -43,6 +43,7 @@ const Title = () => (
         key={index}
         viewBox={[-width / 2, -height / 2, width, height].join(" ")}
         aria-hidden="true"
+        style={{ aspectRatio: width + "/" + height }}
       >
         {word.map(({ char, color, x, id }, index) => (
           <Fragment key={index}>

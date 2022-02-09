@@ -16,25 +16,25 @@ import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
 import { useViewBox } from "../util/hooks";
-import "./Timeline.css"
+import "./Timeline.css";
 
 // unique id of this chart
 const id = "timeline";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
-const height = 200;
+const height = 300;
 
 // duration of animations (in ms)
 const duration = 1000;
 
 // d3 code for chart
-const chart = (timeline, changepoints, index) => {
+const chart = (timeline, changepoints, timelineIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
   // get subset of timeline for animation purposes
-  const animatedTimeline = timeline.slice(0, index);
+  const animatedTimeline = timeline.slice(0, timelineIndex);
 
   // get range of values for x/y axes
   const xExtent = extent(timeline, (d) => d.year);
@@ -86,7 +86,7 @@ const chart = (timeline, changepoints, index) => {
     .attr("stroke", gray)
     .attr("stroke-width", 2);
 
-  // make change point
+  // make changepoints fill
   const changepointFill = area()
     .curve(curveCatmullRom)
     .x((d) => xScale(d))
@@ -94,7 +94,7 @@ const chart = (timeline, changepoints, index) => {
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".changepoints")
-    .selectAll(".changepoint-fill")
+    .selectAll(".changepoints-fill")
     .data([changepoints])
     .join((enter) =>
       enter
@@ -105,17 +105,24 @@ const chart = (timeline, changepoints, index) => {
         .duration(duration)
         .style("opacity", 0.25)
     )
-    .attr("class", "changepoint-fill")
+    .attr("class", "changepoints-fill")
     .attr("d", changepointFill)
     .attr("fill", lightPurple)
     .attr("stroke", purple)
-    .attr("stroke-dasharray", "4 4");
+    .attr("stroke-dasharray", "4 4")
+    .attr(
+      "data-tooltip",
+      (d) =>
+        `${d.join(
+          " to "
+        )} represents a significant change in the word's association`
+    );
 
-  // make changepoint text
+  // make changepoints text
   const midX = (xScale(changepoints[0]) + xScale(changepoints[1])) / 2;
   svg
     .select(".changepoints")
-    .selectAll(".changepoint-text")
+    .selectAll(".changepoints-text")
     .data([changepoints[0]])
     .join((enter) =>
       enter
@@ -126,7 +133,7 @@ const chart = (timeline, changepoints, index) => {
         .duration(duration)
         .style("opacity", 1)
     )
-    .attr("class", "changepoint-text")
+    .attr("class", "changepoints-text")
     .attr("transform", () => `translate(${midX}, ${-height / 2}) rotate(-90)`)
     .style("font-size", "12")
     .attr("text-anchor", "middle")
@@ -176,58 +183,65 @@ const chart = (timeline, changepoints, index) => {
 const Timeline = () => {
   const { search, results } = useContext(AppContext);
   const { timeline, changepoints } = results;
-  const [index, setIndex] = useState(0);
-  const [svg, viewBox] = useViewBox(10);
+  const [timelineIndex, setTimelineIndex] = useState(0);
+  const [svg, setViewBox] = useViewBox(20);
 
-  // animate timeline index
+  // animate timeline timelineIndex
   useEffect(() => {
-    if (index < timeline.length) {
-      setIndex(index);
+    if (timelineIndex < timeline.length) {
+      setTimelineIndex(timelineIndex);
       window.setTimeout(
-        () => setIndex((value) => value + 1),
+        () => setTimelineIndex((value) => value + 1),
         duration / timeline.length
       );
     }
-  }, [index, timeline.length]);
+  }, [timelineIndex, timeline.length]);
 
   // rerun d3 code any time data changes
   useEffect(() => {
-    chart(timeline, changepoints, index);
-  }, [timeline, changepoints, index]);
+    chart(timeline, changepoints, timelineIndex);
+  }, [timeline, changepoints, timelineIndex]);
+
+  // fit svg viewbox after render when timeline changes
+  useEffect(() => {
+    setViewBox();
+  }, [timeline.length, setViewBox]);
 
   return (
-    <svg ref={svg} id={id} viewBox={viewBox}>
-      <g className="curve-fills"></g>
-      <g className="curve-strokes"></g>
-      <g className="changepoints"></g>
-      <g className="x-axis"></g>
-      <g className="y-axis"></g>
-      <g className="dots"></g>
-      <text
-        transform={`translate(${width / 2}, 40)`}
-        textAnchor="middle"
-        alignmentBaseline="middle"
-        style={{ fontSize: 12 }}
-      >
-        Year
-      </text>
-      <text
-        transform={`translate(-50, -${height / 2}) rotate(-90)`}
-        textAnchor="middle"
-        alignmentBaseline="middle"
-        style={{ fontSize: 12 }}
-      >
-        Frequency
-      </text>
-      <text
-        x={width / 2}
-        y={-height - 30}
-        textAnchor="middle"
-        style={{ fontSize: 12 }}
-      >
-        How often "{search}" has been used over time
-      </text>
-    </svg>
+    <div className="chart">
+      <svg ref={svg} id={id}>
+        <g className="curve-fills"></g>
+        <g className="curve-strokes"></g>
+        <g className="changepoints"></g>
+        <g className="x-axis"></g>
+        <g className="y-axis"></g>
+        <g className="dots"></g>
+        <text
+          transform={`translate(${width / 2}, 40)`}
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          style={{ fontSize: 12 }}
+        >
+          Year
+        </text>
+        <text
+          transform={`translate(-50, -${height / 2}) rotate(-90)`}
+          textAnchor="middle"
+          alignmentBaseline="middle"
+          style={{ fontSize: 12 }}
+        >
+          Frequency
+        </text>
+        <text
+          x={width / 2}
+          y={-height - 30}
+          textAnchor="middle"
+          style={{ fontSize: 12 }}
+        >
+          How often "{search}" has been used over time
+        </text>
+      </svg>
+    </div>
   );
 };
 

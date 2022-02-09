@@ -1,14 +1,42 @@
 .results {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 60px;
   width: 100%;
 }
 
 @media (max-width: 600px) {
   .results {
-    gap: 20px;
+    gap: 40px;
+  }
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--page) / 2 - 40px);
+  max-width: 100%;
+  transition: box-shadow var(--fast);
+  box-shadow: 0 0 0 2px var(--lightGray);
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+@media (max-width: 600px) {
+  .chart-controls {
+    flex-wrap: wrap;
+  }
+
+  .slider {
+    padding: 10px;
+    padding-bottom: 25px;
   }
 }

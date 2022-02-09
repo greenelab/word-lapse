@@ -3,4 +3,10 @@
 .dot:hover {
   stroke-width: 8;
   stroke: var(--darkGray);
+  cursor: help;
+}
+
+.changepoints-fill:hover {
+  opacity: 1 !important;
+  cursor: help;
 }
