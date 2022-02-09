@@ -6,5 +6,4 @@ footer {
   color: var(--darkGray);
   background: var(--lightGray);
   text-align: center;
-  box-shadow: 0 0 5px var(--shadow);
 }

@@ -5,34 +5,52 @@ export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
     const handler = window.setTimeout(() => setDebouncedValue(value), delay);
-    return () => clearTimeout(handler);
+    return () => window.clearTimeout(handler);
   }, [value, delay]);
   return debouncedValue;
+};
+
+// get bounding box of element
+export const useBbox = () => {
+  const element = useRef();
+  const [bbox, setBbox] = useState({});
+
+  // attach resize observer
+  useEffect(() => {
+    if (!element.current) return;
+    const observer = new ResizeObserver(() =>
+      setBbox(element.current.getBoundingClientRect())
+    );
+    observer.observe(element.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [element, bbox];
 };
 
 // get fitted view box of svg
 export const useViewBox = (padding = 0) => {
   const svg = useRef();
-  const [viewBox, setViewBox] = useState(undefined);
 
-  const getViewBox = useCallback(() => {
+  const setViewBox = useCallback(() => {
     // if svg not mounted yet, exit
     if (!svg.current) return;
     // get bbox of content in svg
     const { x, y, width, height } = svg.current.getBBox();
     // set view box to bbox, essentially fitting view to content
-    setViewBox(
-      [x - padding, y - padding, width + padding * 2, height + padding * 2]
-        .map((v) => Math.round(v))
-        .join(" ")
-    );
+    const viewBox = [
+      x - padding,
+      y - padding,
+      width + padding * 2,
+      height + padding * 2,
+    ]
+      .map((v) => Math.round(v))
+      .join(" ");
+
+    svg.current.setAttribute("viewBox", viewBox);
   }, [padding]);
 
-  useEffect(() => {
-    getViewBox();
-  });
-
-  return [svg, viewBox];
+  return [svg, setViewBox];
 };
 
 // useState react hook, but synced to url parameter

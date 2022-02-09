@@ -13,9 +13,9 @@ const words = commonWords.filter(
 const randomWord = () => words[Math.floor(Math.random() * words.length)];
 const maxLength = Math.max(...words.map((word) => word.length));
 const randomPosition = () =>
-  // linear/ramp random distribution that avoids center, i.e. "V" shape
+  // random distribution that avoids center, i.e. "U" shape
   Math.floor(
-    (Math.sqrt(Math.random()) * (Math.random() > 0.5 ? 1 : -1) * 0.5 + 0.5) *
+    (Math.pow(Math.random(), 0.5) * (Math.random() > 0.5 ? 1 : -1) * 0.5 + 0.5) *
       100
   );
 
@@ -26,6 +26,8 @@ const timer = (func, period, delay) => {
     interval = window.setInterval(func, period);
     func();
   }, delay * Math.random());
+
+  // useEffect cleanup func
   return () => {
     window.clearTimeout(timeout);
     window.clearInterval(interval);
@@ -47,24 +49,28 @@ const Word = () => {
   const [y, setY] = useState(-99999);
   const [word, setWord] = useState("");
 
+  // change word
   const setRandomWord = useCallback(() => setWord(randomWord()), []);
 
+  // move word
   const setRandomPosition = useCallback(() => {
     setX(randomPosition());
     setY(randomPosition());
     document
       .getElementById(`matrix-${id}`)
-      .getAnimations()
-      .forEach((animation) => {
+      ?.getAnimations()
+      ?.forEach((animation) => {
         animation.cancel();
         animation.play();
       });
   }, [id]);
 
+  // change word rapidly
   useEffect(() => {
     return timer(setRandomWord, 200, 200);
   }, [setRandomWord]);
 
+  // move word occasionally
   useEffect(() => {
     return timer(setRandomPosition, 2000, 2000);
   }, [setRandomPosition]);

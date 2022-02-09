@@ -7,20 +7,27 @@ export const setCssVariables = (variables) => {
 };
 
 // download data as .svg file
-export const downloadSvg = (element, filename = "chart") => {
+export const downloadSvg = (
+  element,
+  filename = "chart",
+  addAttrs = [],
+  deleteAttrs = []
+) => {
   if (!element) return;
   const clone = element.cloneNode(true);
-  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  for (const [key, value] of addAttrs) clone.setAttribute(key, value);
+  for (const deleteAttr of deleteAttrs)
+    clone
+      .querySelectorAll(`[${deleteAttr}]`)
+      .forEach((el) => el.removeAttribute(deleteAttr));
   const data = clone.outerHTML;
   const blob = new Blob([data], { type: "image/svg+xml" });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
-  document.body.appendChild(link);
   link.href = url;
   link.download = filename + ".svg";
   link.click();
   window.URL.revokeObjectURL(url);
-  link.remove();
 };
 
 // get length of svg path string
