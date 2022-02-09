@@ -18,6 +18,8 @@
 # - PARALLEL_BACKEND = <enum>
 #   one of 'threading', 'loky', 'multiprocessing'
 
+API_VM=word-lapse-api
+
 declare -A PROFILES=(
     [memmap_off]="
 USE_MEMMAP=false
@@ -74,12 +76,14 @@ PARALLEL_BACKEND=loky
 # --- constants and helpers
 # ----------------------------------------------------------------------------
 
+START_TIME=$( date +'%Y-%m-%d_%H:%M:%s' )
+
 # profiling commands:
 CURL_TRACK_SECS="curl -o /dev/null -s -w %{time_total}s,%{response_code}"
 WARMUP_URL="https://api-wl.greenelab.com"
 TARGET_URL="https://api-wl.greenelab.com/neighbors?tok=pandemic"
 
-RESULTS_FILE=profiling_results.csv
+RESULTS_FILE="profiling_results__${START_TIME}.csv"
 
 VERBOSE=${VERBOSE:-1}
 
@@ -99,20 +103,27 @@ function elapsed_secs {
 # --- main runtime profiling
 # ----------------------------------------------------------------------------
 
+# before we do anything, check if the API server is running
+if ( gcloud compute instances --project=word-lapse list --filter="name:${API_VM} AND status:TERMINATED" 2>&1 | grep "${API_VM}" ); then
+    echo "*** ${API_VM} was terminated, starting now..."
+    gcloud compute instances --project=word-lapse start ${API_VM}
+    echo ""
+fi
+
 # iterates over $PROFILES, writing the results as rows into to $RESULTS_FILE
 
 # print header
-echo "profile,warmup_secs,q1_secs,q1_code,q2_secs,q2_code,q3_secs,q3_code" > ${RESULTS_FILE}
+echo "profile,warmup_secs,q1_secs,q1_code,q2_secs,q2_code,q3_secs,q3_code" > "${RESULTS_FILE}"
 
 for pname in "${!PROFILES[@]}"; do
-    [[ ${VERBOSE} -eq 0 ]] || echo "Profile: ${pname}"
+    [[ ${VERBOSE} -eq 0 ]] || echo "--- Profile: ${pname}"
     # [[ ${VERBOSE} -eq 0 ]] || echo "Args: ${PROFILES[$pname]}"
     # take the env vars, remove newlines, join with commas
     JOINED_ARGS=$( echo "${PROFILES[$pname]}" | grep "\S" | paste -sd ',' - )
     # [[ ${VERBOSE} -eq 0 ]] || echo "Args (joined): ${JOINED_ARGS}"
 
     gcloud compute instances update-container --project=word-lapse --zone=us-central1-a \
-        word-lapse-api \
+        ${API_VM} \
         --container-env=${JOINED_ARGS} || fail_w_msg "failed to update, bailing"
 
     # wait for backend to come up
@@ -120,7 +131,7 @@ for pname in "${!PROFILES[@]}"; do
     start_time=$(date +%s.%3)
     
     for i in $(seq 30 -1 0); do
-        curl --max-time 300 --connect-timeout 300 "${WARMUP_URL}" 2>/dev/null \
+        curl -o /dev/null --max-time 300 --connect-timeout 300 "${WARMUP_URL}" 2>/dev/null \
             && break \
             || ( [[ ${VERBOSE} -eq 0 ]] || echo "retrying (attempts left: $i)..." )
 
@@ -130,7 +141,7 @@ for pname in "${!PROFILES[@]}"; do
         if [[ $i -eq 0 ]]; then
             end_time=$(date +%s.%3)
             elapsed=$( elapsed_secs )
-            echo "Host dead after ${elapsed} seconds, bailing"
+            echo "*** Host dead after ${elapsed} seconds, bailing"
             exit 1
         fi
     done
@@ -155,5 +166,7 @@ for pname in "${!PROFILES[@]}"; do
     ${QUERY_TWO}
     ${QUERY_THREE}
     " | grep "\S" | awk '{$1=$1;print}' | paste -sd ',' - \
-     >> ${RESULTS_FILE}
+     >> "${RESULTS_FILE}"
+
+     echo ""
 done
