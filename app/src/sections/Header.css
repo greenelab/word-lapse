@@ -1,0 +1,25 @@
+header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: var(--pagePadding);
+  background: var(--lightGray);
+  overflow: hidden;
+  min-height: 100vh;
+  z-index: 1;
+  transition: min-height var(--fast);
+}
+
+header[data-fullscreen="false"] {
+  position: sticky;
+  top: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+  padding: var(--pagePaddingSmall);
+  min-height: 0;
+}
+

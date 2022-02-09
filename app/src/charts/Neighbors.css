@@ -1,0 +1,5 @@
+/* styles we don't want/need in downloaded svg */
+
+.neighbors-word {
+  transition: fill var(--fast);
+}

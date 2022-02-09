@@ -1,0 +1,42 @@
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title svg {
+  width: 200px;
+  max-width: 100%;
+  min-height: 20px;
+}
+
+.title text {
+  fill: white;
+  stroke: black;
+  stroke-width: 0.02em;
+  font-family: "Righteous", sans-serif;
+  font-size: 25px;
+  text-transform: uppercase;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+
+header[data-fullscreen="false"] .title {
+  flex-direction: row;
+  gap: 0;
+}
+
+header[data-fullscreen="false"] .title svg {
+  width: 100px;
+}
+
+@media (max-width: 600px) {
+  header[data-fullscreen="false"] .title {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  header[data-fullscreen="false"] .title svg {
+    width: 25vw;
+  }
+}
