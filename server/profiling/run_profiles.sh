@@ -83,7 +83,7 @@ CURL_TRACK_SECS="curl -o /dev/null -s -w %{time_total}s,%{response_code}"
 WARMUP_URL="https://api-wl.greenelab.com"
 TARGET_URL="https://api-wl.greenelab.com/neighbors?tok=pandemic"
 
-RESULTS_FILE="profiling_results__${START_TIME}.csv"
+RESULTS_FILE="results/profiling_results__${START_TIME}.csv"
 
 VERBOSE=${VERBOSE:-1}
 
