@@ -27,6 +27,8 @@ ARG SHORT_SHA=unspecified
 LABEL git_commit=$SHORT_SHA
 ARG COMMIT_SHA=unspecified
 LABEL git_commit_full=$COMMIT_SHA
+ENV SHORT_SHA $SHORT_SHA
+ENV COMMIT_SHA $COMMIT_SHA
 
 COPY . /app
 
