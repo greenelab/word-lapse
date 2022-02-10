@@ -14,6 +14,9 @@ if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
     export REDIS_URL="redis://localhost:6379"
 fi
 
+# time before gunicorn decides a worker is "dead"
+GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-600}
+
 # if /app/data is populated, attempt a git lfs pull
 # if it's not, clone word-lapse-models into it and then pull
 if [ "${UPDATE_DATA:-1}" = "1" ]; then
@@ -51,13 +54,29 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
         certbot renew
     fi
 
-    # finally, run the server
+    # finally, run the server (with HTTPS)
     cd /app
-    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443  ${DO_RELOAD} \
-        --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
-        --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+
+    if [[ ${USE_UVICORN:-0} -eq 1 ]]; then
+        /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443 ${DO_RELOAD} \
+            --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
+            --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+    else
+        gunicorn backend.main:app --bind 0.0.0.0:443 ${DO_RELOAD} \
+            --timeout ${GUNICORN_TIMEOUT} \
+            --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker \
+            --keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
+            --certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+    fi
 else
-    # finally, run the server
+    # finally, run the server (with just HTTP)
     cd /app
-    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80 ${DO_RELOAD}
+
+    if [[ ${USE_UVICORN:-0} -eq 1 ]]; then
+        /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80 ${DO_RELOAD}
+    else
+        gunicorn backend.main:app --bind 0.0.0.0:80 ${DO_RELOAD} \
+            --timeout ${GUNICORN_TIMEOUT} \
+            --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker 
+    fi
 fi

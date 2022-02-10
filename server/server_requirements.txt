@@ -1,4 +1,5 @@
-fastapi == 0.70.1
-uvicorn == 0.17.0
+fastapi==0.70.1
+gunicorn==20.1.0
+uvicorn==0.17.0
 joblib==1.1.0
 fastapi-redis-cache==0.2.5
