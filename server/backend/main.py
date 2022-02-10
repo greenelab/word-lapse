@@ -27,7 +27,7 @@ async def check_warm_cache():
         materialized_word_models()
 
 @app.on_event("startup")
-def init_redis_cache():
+async def init_redis_cache():
     global redis_cache
     redis_cache = FastApiRedisCache()
     redis_cache.init(
@@ -43,7 +43,7 @@ async def read_root():
 
 @app.get("/neighbors")
 @cache()
-async def neighbors(tok: str):
+def neighbors(tok: str):
     with ExecTimer() as timer:
         # Extract the frequencies
         frequency_output = extract_frequencies(tok)
