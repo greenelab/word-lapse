@@ -35,12 +35,15 @@ def init_redis_cache():
     )
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def read_root():
+    return {
+        "name": "Word Lapse API",
+        "commit_sha": os.environ.get("COMMIT_SHA", "unknown")
+    }
 
 @app.get("/neighbors")
 @cache()
-def neighbors(tok: str):
+async def neighbors(tok: str):
     with ExecTimer() as timer:
         # Extract the frequencies
         frequency_output = extract_frequencies(tok)
@@ -66,7 +69,7 @@ def neighbors(tok: str):
         }
 
 @app.get("/neighbors/cached")
-def neighbors_is_cached(tok: str):
+async def neighbors_is_cached(tok: str):
     key = redis_cache.get_cache_key(neighbors, tok)
     (_, in_cache) = redis_cache.check_cache(key)
     return {
