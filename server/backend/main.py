@@ -110,16 +110,20 @@ async def neighbors(tok: str):
     should be within 1 second.
 
     The returned object is of the form
+
+    ```
     {
         "neighbors": {<year:str>: [<token:str>, ...]},
         "frequency": [{"year": <year:int>, "frequency": <frequency:float>}, ...],
         "changepoints": [{"changepoint_idx": <year_range:str>}, ...],
         "elapsed": <elapsed_ms:float>
     }
+    ```
 
-    'year_range' in 'changepoints' is the span of years in which the change
+    Notes:
+    - `year_range` in `changepoints` is the span of years in which the change
     took place, e.g. 2019-2020.
-    'elapsed_ms' is the length of time the request took to formulate on
+    - `elapsed_ms` is the length of time the request took to formulate on
     the server.
     """
     from .w2v_worker import get_neighbors
@@ -152,8 +156,8 @@ async def neighbors_cache(count:int=100):
     limitations and the prohibitive cost of querying and returning all the keys
     to order it ourselves.
 
-    Refer to redis's documentation on the meaning of the 'freq' field in LFU mode:
-    https://redis.io/topics/lru-cache#the-new-lfu-mode
+    Refer to [redis's LFU documentation](https://redis.io/topics/lru-cache#the-new-lfu-mode)
+    for the meaning of the 'freq' field.
     """
     # connect to redis and get the top 100 keys by frequency?
     r = redis.from_url(os.environ.get("REDIS_URL"))
