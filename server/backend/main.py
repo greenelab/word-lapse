@@ -1,21 +1,23 @@
 import logging
+import os
 from typing import Optional
+
 from fastapi import FastAPI
-from .tracking import ExecTimer
+from fastapi_redis_cache import FastApiRedisCache, cache
 
 from .neighbors import cutoff_points, extract_frequencies, extract_neighbors
-
+from .tracking import ExecTimer
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-
+redis_cache : FastApiRedisCache = None # populated in init_redis_cache, used in neighbors_is_cached
 
 @app.on_event('startup')
 async def check_warm_cache():
-    from .config import ( emit_config, MATERIALIZE_MODELS, WARM_CACHE )
+    from .config import MATERIALIZE_MODELS, WARM_CACHE, emit_config
     from .neighbors import materialized_word_models
-    
+
     # print out app_config's settings for debugging
     emit_config()
 
@@ -24,13 +26,20 @@ async def check_warm_cache():
         print("Warming enabled, preloading word2vec models...", flush=True)
         materialized_word_models()
 
+@app.on_event("startup")
+def init_redis_cache():
+    global redis_cache
+    redis_cache = FastApiRedisCache()
+    redis_cache.init(
+        host_url=os.environ.get("REDIS_URL")
+    )
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-
 @app.get("/neighbors")
+@cache()
 def neighbors(tok: str):
     with ExecTimer() as timer:
         # Extract the frequencies
@@ -55,3 +64,12 @@ def neighbors(tok: str):
             "changepoints": changepoint_output,
             "elapsed": timer.snapshot()
         }
+
+@app.get("/neighbors/cached")
+def neighbors_is_cached(tok: str):
+    key = redis_cache.get_cache_key(neighbors, tok)
+    (_, in_cache) = redis_cache.check_cache(key)
+    return {
+        "token": tok,
+        "is_cached": True if in_cache is not None else False
+    }

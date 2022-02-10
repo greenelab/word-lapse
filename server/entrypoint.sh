@@ -7,6 +7,13 @@ function dir_is_empty {
 # enable reloading if DEBUG is 1
 [[ ${DEBUG:-0} -eq 1 ]] && DO_RELOAD="--reload" || DO_RELOAD=""
 
+# enable inline redis (i.e., as a forked process), if USE_INLINE_REDIS is 1
+if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
+    # fork off a redis process and override REDIS_URL to use this local one
+    redis-server /redis/redis.conf --save 60 1 --loglevel warning &
+    export REDIS_URL="redis://localhost:6379"
+fi
+
 # if /app/data is populated, attempt a git lfs pull
 # if it's not, clone word-lapse-models into it and then pull
 if [ "${UPDATE_DATA:-1}" = "1" ]; then
