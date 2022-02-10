@@ -15,3 +15,7 @@ services:
 
   redis:
     image: redis:latest
+    volumes:
+      - "$PWD/services/redis/redis.conf:/usr/local/etc/redis"
+      - 'redis_cache:/redis/data'
+    command: /usr/local/etc/redis/redis.conf
