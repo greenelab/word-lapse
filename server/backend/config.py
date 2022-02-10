@@ -55,7 +55,19 @@ PARALLEL_POOLS = int(os.environ.get('PARALLEL_POOLS', 4))
 # options are listed here: https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
 PARALLEL_BACKEND = os.environ.get('PARALLEL_BACKEND', 'loky')
 
+def get_config_values():
+    return {
+        'DEBUG': DEBUG,
+        'USE_MEMMAP': USE_MEMMAP,
+        'MATERIALIZE_MODELS': MATERIALIZE_MODELS,
+        'WARM_CACHE': WARM_CACHE,
+        'PARALLELIZE_QUERY': PARALLELIZE_QUERY,
+        'PARALLEL_POOLS': PARALLEL_POOLS,
+        'PARALLEL_BACKEND': PARALLEL_BACKEND,
+    }
+
 def emit_config():
+    print("Debug enabled (DEBUG)?: %s" % DEBUG, flush=True)
     print("Memory-mapped models (USE_MEMMAP)?: %s" % USE_MEMMAP, flush=True)
     print("Materialized models (MATERIALIZE_MODELS)?: %s" % MATERIALIZE_MODELS, flush=True)
     print("Pre-warmed model cache (WARM_CACHE)?: %s" % WARM_CACHE, flush=True)
