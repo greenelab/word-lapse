@@ -4,6 +4,9 @@ function dir_is_empty {
     [ -n "$(find "$1" -maxdepth 0 -type d -empty 2>/dev/null)" ]
 }
 
+# enable reloading if DEBUG is 1
+[[ ${DEBUG:-0} -eq 1 ]] && DO_RELOAD="--reload" || DO_RELOAD=""
+
 # if /app/data is populated, attempt a git lfs pull
 # if it's not, clone word-lapse-models into it and then pull
 if [ "${UPDATE_DATA:-1}" = "1" ]; then
@@ -43,11 +46,11 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
 
     # finally, run the server
     cd /app
-    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443 \
+    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443  ${DO_RELOAD} \
         --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
         --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
 else
     # finally, run the server
     cd /app
-    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80
+    /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80 ${DO_RELOAD}
 fi

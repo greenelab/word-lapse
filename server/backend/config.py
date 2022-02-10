@@ -30,6 +30,9 @@ def is_truthy(v):
         (isinstance(v, str) and v.lower() in ("1", "yes", "y", "true", "t"))
     )
 
+# when DEBUG is true, uvicorn will run in debug mode with autoreload enabled
+DEBUG = is_truthy(os.environ.get('DEBUG', False))
+
 # if env var USE_MEMMAP is truthy, loads word2vec models using the mmap='r' flag,
 # which largely keeps them on disk and keeps a single copy when sharing between
 # processes
