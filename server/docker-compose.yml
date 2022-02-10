@@ -1,0 +1,17 @@
+version: '3.9'
+
+volumes:
+  redis_cache:
+
+services:
+  api:
+    build: .
+    env_file: instance_env
+    environment:
+      - "REDIS_URL=redis://redis:6379"
+      - "USE_INLINE_REDIS=0"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
