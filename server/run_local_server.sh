@@ -19,6 +19,7 @@ TAG=$COMMIT_SHA
     docker run --name word-lapse-api --rm -it \
         -p 8080:80 \
         -v $PWD:/app \
+        -v $PWD/data:/app/data \
         -v redis_data:/redis/data \
         -e USE_HTTPS=0 -e UPDATE_DATA=0 \
         -e USE_INLINE_REDIS=1 \
