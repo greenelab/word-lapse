@@ -149,28 +149,25 @@ def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neig
     result = []
     word_vectors = model if use_keyedvec else model.wv
 
-    word_model_cutoff = {
-        "model": word_vectors,
-        "cutoff_index": min(
-            map(
-                lambda x: (
-                    999999 if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff else x[0]
-                ),
-                enumerate(word_vectors.index_to_key),
-            )
-        ),
-    }
+    cutoff_index = min(
+        map(
+            lambda x: (
+                999999 if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff else x[0]
+            ),
+            enumerate(word_vectors.index_to_key),
+        )
+    )
 
     # Check to see if token is in the vocab
-    vocab = set(word_model_cutoff["model"].key_to_index.keys())
+    vocab = set(word_vectors.key_to_index.keys())
 
     if tok in vocab:
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
-        word_neighbors = word_model_cutoff["model"].most_similar(
+        word_neighbors = word_vectors.most_similar(
             tok,
             topn=neighbors,
-            clip_end=word_model_cutoff["cutoff_index"],
+            clip_end=cutoff_index,
         )
 
         # Append neighbor to word_neighbor_map
