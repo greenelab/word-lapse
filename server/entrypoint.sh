@@ -9,9 +9,26 @@ function dir_is_empty {
 
 # enable inline redis (i.e., as a forked process), if USE_INLINE_REDIS is 1
 if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
+    echo "* Booting redis-server..."
     # fork off a redis process and override REDIS_URL to use this local one
-    redis-server /redis/redis.conf --save 60 1 --loglevel warning &
+    redis-server /redis/redis.conf --save 60 1 --loglevel warning \
+        >  /var/log/redis.stdout \
+        2> /var/log/redis.stderr &
+    
     export REDIS_URL="redis://localhost:6379"
+fi
+
+# enable inline rq (a task queue), if USE_INLINE_RQ is 1
+if [ ${USE_INLINE_RQ:-0} -eq 1 ]; then
+    mkdir -p /var/log/w2v_worker/
+
+    echo "* Booting rq worker..."
+    (
+        cd /app
+        python -m backend.w2v_worker w2v_queries \
+            >  /var/log/w2v_worker/stdout \
+            2> /var/log/w2v_worker/stderr &
+    )
 fi
 
 # time before gunicorn decides a worker is "dead"
@@ -57,11 +74,13 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
     # finally, run the server (with HTTPS)
     cd /app
 
-    if [[ ${USE_UVICORN:-0} -eq 1 ]]; then
+    if [[ ${USE_UVICORN:-1} -eq 1 ]]; then
+        echo "* Booting uvicorn..."
         /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443 ${DO_RELOAD} \
             --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
             --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
     else
+        echo "* Booting gunicorn w/${WEB_CONCURRENCY:-4} workers..."
         gunicorn backend.main:app --bind 0.0.0.0:443 ${DO_RELOAD} \
             --timeout ${GUNICORN_TIMEOUT} \
             --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker \
@@ -72,9 +91,11 @@ else
     # finally, run the server (with just HTTP)
     cd /app
 
-    if [[ ${USE_UVICORN:-0} -eq 1 ]]; then
+    if [[ ${USE_UVICORN:-1} -eq 1 ]]; then
+        echo "* Booting uvicorn..."
         /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80 ${DO_RELOAD}
     else
+        echo "* Booting gunicorn w/${WEB_CONCURRENCY:-4} workers..."
         gunicorn backend.main:app --bind 0.0.0.0:80 ${DO_RELOAD} \
             --timeout ${GUNICORN_TIMEOUT} \
             --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker 

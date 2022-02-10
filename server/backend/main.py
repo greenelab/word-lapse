@@ -1,30 +1,30 @@
+import asyncio
 import logging
 import os
 from typing import Optional
 
-from fastapi import FastAPI
+import redis
+from fastapi import FastAPI, HTTPException
 from fastapi_redis_cache import FastApiRedisCache, cache
+from rq import Queue, Worker
 
+from .config import get_config_values
 from .neighbors import cutoff_points, extract_frequencies, extract_neighbors
 from .tracking import ExecTimer
 
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
-redis_cache : FastApiRedisCache = None # populated in init_redis_cache, used in neighbors_is_cached
 
-@app.on_event('startup')
-async def check_warm_cache():
-    from .config import MATERIALIZE_MODELS, WARM_CACHE, emit_config
-    from .neighbors import materialized_word_models
+# populated in init_redis_cache(), used in neighbors_is_cached
+redis_cache : FastApiRedisCache = None 
+# populated in init_rq(), used in neighbors()
+queue : Queue = None
 
-    # print out app_config's settings for debugging
-    emit_config()
-
-    if MATERIALIZE_MODELS and WARM_CACHE:
-        # invoke to cache word models into 'word_models'
-        print("Warming enabled, preloading word2vec models...", flush=True)
-        materialized_word_models()
+# @app.on_event('startup')
+# async def emit_config():
+#     from .config import emit_config
+#     emit_config()
 
 @app.on_event("startup")
 async def init_redis_cache():
@@ -34,39 +34,52 @@ async def init_redis_cache():
         host_url=os.environ.get("REDIS_URL")
     )
 
+@app.on_event("startup")
+async def init_rq():
+    global queue
+    r = redis.from_url(os.environ.get("REDIS_URL"))
+    queue = Queue('w2v_queries', connection=r)
+
+async def enqueue_and_wait(func, *args, **kwargs):
+    """
+    Helper method to pass 'func' with any extra args
+    to the w2v_queries queue.
+    """
+    job = queue.enqueue(func, *args, **kwargs)
+
+    try:
+        while not job.is_finished:
+            await asyncio.sleep(1)
+            if job.get_status(refresh=True) == 'failed':
+                raise Exception("job failed!", job.exc_info)
+
+        return job.result
+    except Exception as ex:
+        raise HTTPException(
+            status_code=500, detail="Job process exception: %s" % ex
+        )
+
+
 @app.get("/")
 async def read_root():
     return {
         "name": "Word Lapse API",
-        "commit_sha": os.environ.get("COMMIT_SHA", "unknown")
+        "commit_sha": os.environ.get("COMMIT_SHA", "unspecified"),
+        "config": get_config_values()
+    }
+
+@app.get("/ping")
+async def ping_workers():
+    from .w2v_worker import ping
+    return {
+        'result': await enqueue_and_wait(ping, 'hello?')
     }
 
 @app.get("/neighbors")
 @cache()
-def neighbors(tok: str):
-    with ExecTimer() as timer:
-        # Extract the frequencies
-        frequency_output = extract_frequencies(tok)
-        logger.info("finished extract_frequencies()...")
-
-        # Extract Estimated Cutoff Points
-        changepoint_output = cutoff_points(tok)
-        logger.info("finished cutoff_points()...")
-
-        # Extract the neighbors
-        word_neighbor_map = extract_neighbors(tok)
-        logger.info("finished word_neighbor_map()...")
-
-        # Final Return Object
-        # DN: This object doesn't contain the umap plot needed for visualization.
-        # On my todolist of things to get done.
-
-        return {
-            "neighbors": word_neighbor_map,
-            "frequency": frequency_output,
-            "changepoints": changepoint_output,
-            "elapsed": timer.snapshot()
-        }
+async def neighbors(tok: str):
+    from .w2v_worker import get_neighbors
+    return await enqueue_and_wait(get_neighbors, tok=tok, job_timeout=800)
 
 @app.get("/neighbors/cached")
 async def neighbors_is_cached(tok: str):
