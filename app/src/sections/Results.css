@@ -18,7 +18,9 @@
   flex-direction: column;
   width: calc(var(--page) / 2 - 40px);
   max-width: 100%;
-  transition: box-shadow var(--fast);
+}
+
+.chart svg {
   box-shadow: 0 2px 5px 2px var(--lightGray);
 }
 

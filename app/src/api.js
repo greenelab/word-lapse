@@ -37,7 +37,7 @@ export const getResults = async (query) => {
     if (!response.ok) throw new Error("Response not OK");
 
     const results = await response.json();
-    if (results?.detail?.msg) throw new Error(results.detail.msg);
+    if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
     // transform data as needed
     results.changepoints = results.changepoints.map(({ changepoint_idx }) =>
