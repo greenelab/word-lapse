@@ -47,6 +47,5 @@ library.add(
   fas.faPause,
   fas.faPlay,
   fas.faRightLong,
-  fas.faSpinner,
   fas.faSpinner
 );
