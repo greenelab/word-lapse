@@ -9,8 +9,8 @@ import Matrix from "./Matrix";
 const Status = () => {
   const { status } = useContext(AppContext);
 
-  // if successful, don't show status (show results instead)
-  if (status === statuses.success) return <></>;
+  // don't show falsey statuses
+  if (!status) return <></>;
 
   let message;
 

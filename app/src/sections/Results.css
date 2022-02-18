@@ -33,10 +33,6 @@
 }
 
 @media (max-width: 600px) {
-  .chart {
-    /* box-shadow: none; */
-  }
-
   .chart-controls {
     flex-wrap: wrap;
   }

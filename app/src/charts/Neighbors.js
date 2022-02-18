@@ -123,7 +123,7 @@ const Neighbors = () => {
                   symbol = compareProps.neither.symbol;
                 }
               } else {
-                color = blended;
+                color = inB ? blended : lightGray;
                 tooltip = `In ${count(word, neighbors)} of the year(s)`;
               }
 

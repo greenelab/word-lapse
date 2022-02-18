@@ -22,6 +22,11 @@ const App = () => {
   const [status, setStatus] = useState(statuses.empty);
   const [fullscreen, setFullscreen] = useState(true);
 
+  // scroll to top when fullscreen set to true
+  useEffect(() => {
+    if (fullscreen) window.scrollTo(0, 0);
+  }, [fullscreen]);
+
   // when search query changes
   useEffect(() => {
     (async () => {
@@ -31,30 +36,30 @@ const App = () => {
           .filter((w) => w)
           .join(" · ");
 
-        // if search empty, reset app
-        if (!search.trim()) {
-          window.scrollTo(0, 0);
-          setResults(null);
-          setStatus(statuses.empty);
-          setFullscreen(true);
-          return;
-        }
+        // go into results mode
+        setResults();
+        setStatus();
+        setFullscreen(false);
 
         // check if results for search already cached
         // and display appropriate loading status
         if (await getCached(search)) setStatus(statuses.loadingCached);
         else setStatus(statuses.loading);
 
-        // go into results mode
-        setResults(null);
-        setFullscreen(false);
-
         // perform query
         setResults(await getResults(search));
-        setStatus(statuses.success);
+        setStatus();
       } catch (error) {
-        if (error.message !== statuses.old) setStatus(error.message);
-        setResults(null);
+        // if not latest query
+        if (error.message === statuses.stale) {
+          // don't do anything, leaving most recent query to do its thing
+          console.info(`Search "${search}" superceded`);
+        } else {
+          // set status message from thrown error
+          setResults();
+          setStatus(error.message);
+          setFullscreen(error.message === statuses.empty);
+        }
       }
     })();
   }, [search]);
