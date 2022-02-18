@@ -1,15 +1,9 @@
-// generate counting sequence
-export const range = (n) =>
+// generate counting sequence with optional multiples
+export const range = (n, i = 1) =>
   Array(n)
     .fill(0)
-    .map((_, i) => i);
-
-// generate n evenly spaced numbers between 0 and max, always including 0 and max
-export const spacedRange = (n, max) => {
-  const steps = range(n).map((value) => value * Math.round(max / (n - 1)));
-  while (max - steps[steps.length - 1] < 2) steps.pop();
-  return [...steps, max];
-};
+    .map((_, i) => i)
+    .filter((n) => n % i === 0);
 
 // linearly interpolate
 export const interpolate = (valueA, valueB, mix) =>

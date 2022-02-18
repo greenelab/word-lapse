@@ -1,11 +1,17 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
 
 // debounce (rate limit) value
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
-    const handler = window.setTimeout(() => setDebouncedValue(value), delay);
-    return () => window.clearTimeout(handler);
+    const timeout = window.setTimeout(() => setDebouncedValue(value), delay);
+    return () => window.clearTimeout(timeout);
   }, [value, delay]);
   return debouncedValue;
 };
@@ -16,10 +22,10 @@ export const useBbox = () => {
   const [bbox, setBbox] = useState({});
 
   // attach resize observer
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!element.current) return;
     const observer = new ResizeObserver(() =>
-      setBbox(element.current.getBoundingClientRect())
+      setBbox(element.current?.getBoundingClientRect() || {})
     );
     observer.observe(element.current);
     return () => observer.disconnect();
@@ -33,8 +39,9 @@ export const useViewBox = (padding = 0) => {
   const svg = useRef();
 
   const setViewBox = useCallback(() => {
-    // if svg not mounted yet, exit
+    // if svg not mounted yet (or anymore), exit
     if (!svg.current) return;
+
     // get bbox of content in svg
     const { x, y, width, height } = svg.current.getBBox();
     // set view box to bbox, essentially fitting view to content

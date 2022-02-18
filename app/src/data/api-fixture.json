@@ -541,7 +541,7 @@
       "reemergence"
     ]
   },
-  "timeline": [
+  "frequency": [
     { "year": 2000, "frequency": 0.0000040559 },
     { "year": 2001, "frequency": 0.0000067864 },
     { "year": 2002, "frequency": 0.0000051355 },

@@ -19,7 +19,7 @@
   width: calc(var(--page) / 2 - 40px);
   max-width: 100%;
   transition: box-shadow var(--fast);
-  box-shadow: 0 0 0 2px var(--lightGray);
+  box-shadow: 0 2px 5px 2px var(--lightGray);
 }
 
 .chart-controls {
@@ -31,6 +31,10 @@
 }
 
 @media (max-width: 600px) {
+  .chart {
+    /* box-shadow: none; */
+  }
+
   .chart-controls {
     flex-wrap: wrap;
   }

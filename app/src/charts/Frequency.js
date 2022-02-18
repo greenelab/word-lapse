@@ -7,7 +7,7 @@ import {
   axisBottom,
   area,
   line,
-  curveCatmullRom,
+  curveLinear,
   easeLinear,
   easeElasticOut,
 } from "d3";
@@ -16,10 +16,10 @@ import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
 import { useViewBox } from "../util/hooks";
-import "./Timeline.css";
+import "./Frequency.css";
 
 // unique id of this chart
-const id = "timeline";
+const id = "frequency";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
@@ -29,46 +29,46 @@ const height = 300;
 const duration = 1000;
 
 // d3 code for chart
-const chart = (timeline, changepoints, timelineIndex) => {
+const chart = (frequency, changepoints, frequencyIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
-  // get subset of timeline for animation purposes
-  const animatedTimeline = timeline.slice(0, timelineIndex);
+  // get subset of frequency for animation purposes
+  const animatedFrequency = frequency.slice(0, frequencyIndex);
 
   // get range of values for x/y axes
-  const xExtent = extent(timeline, (d) => d.year);
-  const yExtent = extent(timeline, (d) => d.frequency);
+  const xExtent = extent(frequency, (d) => d.year);
+  const yExtent = extent(frequency, (d) => d.frequency);
 
   // get scales for x/y that map values to SVG coordinates
   const xScale = scaleLinear().domain(xExtent).range([0, width]);
   const yScale = scaleLinear().domain(yExtent).range([0, -height]);
 
-  // make curve fill from timeline points
+  // make curve fill from frequency points
   const curveFill = area()
-    .curve(curveCatmullRom)
+    .curve(curveLinear)
     .x((d) => xScale(d.year))
     .y1((d) => yScale(d.frequency))
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".curve-fills")
     .selectAll(".curve-fill")
-    .data([timeline])
+    .data([frequency])
     .join("path")
     .attr("class", "curve-fill")
     .attr("d", curveFill)
     .attr("fill", lightGray);
 
-  // make curve stroke from timeline points
+  // make curve stroke from frequency points
   const curveStroke = line()
-    .curve(curveCatmullRom)
+    .curve(curveLinear)
     .x((d) => xScale(d.year))
     .y((d) => yScale(d.frequency));
-  const length = getPathLength(curveStroke(timeline));
+  const length = getPathLength(curveStroke(frequency));
   svg
     .select(".curve-strokes")
     .selectAll(".curve-stroke")
-    .data([timeline])
+    .data([frequency])
     .join((enter) =>
       enter
         .append("path")
@@ -88,14 +88,14 @@ const chart = (timeline, changepoints, timelineIndex) => {
 
   // make changepoints fill
   const changepointFill = area()
-    .curve(curveCatmullRom)
+    .curve(curveLinear)
     .x((d) => xScale(d))
     .y1(() => yScale(yExtent[1]))
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".changepoints")
     .selectAll(".changepoints-fill")
-    .data([changepoints])
+    .data(changepoints)
     .join((enter) =>
       enter
         .append("path")
@@ -119,11 +119,10 @@ const chart = (timeline, changepoints, timelineIndex) => {
     );
 
   // make changepoints text
-  const midX = (xScale(changepoints[0]) + xScale(changepoints[1])) / 2;
   svg
     .select(".changepoints")
     .selectAll(".changepoints-text")
-    .data([changepoints[0]])
+    .data(changepoints)
     .join((enter) =>
       enter
         .append("text")
@@ -134,18 +133,24 @@ const chart = (timeline, changepoints, timelineIndex) => {
         .style("opacity", 1)
     )
     .attr("class", "changepoints-text")
-    .attr("transform", () => `translate(${midX}, ${-height / 2}) rotate(-90)`)
+    .attr(
+      "transform",
+      ([from, to]) =>
+        `translate(${(xScale(from) + xScale(to)) / 2}, ${
+          -height / 2
+        }) rotate(-90)`
+    )
     .style("font-size", "12")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "middle")
     .attr("fill", purple)
     .text("Change point");
 
-  // make dots from timeline points
+  // make dots from frequency points
   svg
     .select(".dots")
     .selectAll(".dot")
-    .data(animatedTimeline)
+    .data(animatedFrequency)
     .join((enter) =>
       enter
         .append("circle")
@@ -170,7 +175,7 @@ const chart = (timeline, changepoints, timelineIndex) => {
 
   // make x/y axes ticks
   const xAxis = axisBottom(xScale)
-    .ticks(timeline.length / 2)
+    .ticks(frequency.length / 2)
     .tickFormat((d) => d);
   const yAxis = axisLeft(yScale)
     .tickValues(yExtent)
@@ -179,33 +184,35 @@ const chart = (timeline, changepoints, timelineIndex) => {
   svg.select(".y-axis").call(yAxis);
 };
 
-// frequency timeline chart
-const Timeline = () => {
+// frequency chart
+const Frequency = () => {
   const { search, results } = useContext(AppContext);
-  const { timeline, changepoints } = results;
-  const [timelineIndex, setTimelineIndex] = useState(0);
-  const [svg, setViewBox] = useViewBox(20);
+  const { frequency, changepoints } = results;
+  const [frequencyIndex, setFrequencyIndex] = useState(0);
+  const [svg, setViewBox] = useViewBox(40);
 
-  // animate timeline timelineIndex
+  // animate frequencyIndex
   useEffect(() => {
-    if (timelineIndex < timeline.length) {
-      setTimelineIndex(timelineIndex);
-      window.setTimeout(
-        () => setTimelineIndex((value) => value + 1),
-        duration / timeline.length
+    let timeout;
+    if (frequencyIndex < frequency.length) {
+      setFrequencyIndex(frequencyIndex);
+      timeout = window.setTimeout(
+        () => setFrequencyIndex((value) => value + 1),
+        duration / frequency.length
       );
     }
-  }, [timelineIndex, timeline.length]);
+    return () => window.clearTimeout(timeout);
+  }, [frequencyIndex, frequency.length]);
 
   // rerun d3 code any time data changes
   useEffect(() => {
-    chart(timeline, changepoints, timelineIndex);
-  }, [timeline, changepoints, timelineIndex]);
+    chart(frequency, changepoints, frequencyIndex);
+  }, [frequency, changepoints, frequencyIndex]);
 
-  // fit svg viewbox after render when timeline changes
+  // fit svg viewbox after render when certain props change
   useEffect(() => {
     setViewBox();
-  }, [timeline.length, setViewBox]);
+  }, [frequency.length, setViewBox]);
 
   return (
     <div className="chart">
@@ -245,4 +252,4 @@ const Timeline = () => {
   );
 };
 
-export default Timeline;
+export default Frequency;

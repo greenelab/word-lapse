@@ -10,3 +10,7 @@
   opacity: 1 !important;
   cursor: help;
 }
+
+.changepoints-text {
+  pointer-events: none;
+}

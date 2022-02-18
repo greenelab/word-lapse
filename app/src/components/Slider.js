@@ -1,19 +1,33 @@
 import RCSlider from "rc-slider";
 import { useEffect } from "react";
 import { useBbox } from "../util/hooks";
-import { spacedRange } from "../util/math";
+import { range } from "../util/math";
 import "./Slider.css";
 
 // number range slider
 const Slider = ({ value, onChange, steps, tooltip, ...rest }) => {
   const [element, bbox] = useBbox();
-  const { width = 1000 } = bbox;
 
-  // slider marks
-  const n = Math.max(2, Math.floor(width / 50));
+  // make slider marks
+
+  // expected avg width of mark text
+  const w = 35;
+  // width of slider minus padding
+  let { width = 1000 } = bbox;
+  width -= 40; // minus padding
+
+  // only take every n indices to fit marks without overlapping
+  const n = Math.ceil((steps.length * w) / width);
+  let r = range(steps.length, n);
+
+  // if 2 or less marks, always include first and last
+  if (r.length <= 2) r = [0, steps.length - 1];
+
+  // format indices to object for rc-slider
   const marks = {};
-  for (const i of spacedRange(n, steps.length - 1)) marks[i] = steps[i];
+  for (const i of r) marks[i] = steps[i];
 
+  // update slider tooltip
   useEffect(() => {
     element?.current
       ?.querySelector(".rc-slider-handle")

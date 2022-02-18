@@ -21,11 +21,31 @@ const Status = () => {
         <span>Enter a word to see results</span>
       </>
     );
+  else if (status === statuses.loadingCached)
+    message = (
+      <>
+        <FontAwesomeIcon
+          icon="spinner"
+          className="fa-spin"
+          style={{ color: "var(--gray)" }}
+        />
+        <span>Loading cached results.</span>
+      </>
+    );
   else if (status === statuses.loading)
     message = (
       <>
         <Matrix />
-        <span>Computing results. This might take a minute.</span>
+        <FontAwesomeIcon
+          icon="spinner"
+          className="fa-spin"
+          style={{ color: "var(--gray)" }}
+        />
+        <span>
+          No one has searched for this word yet!
+          <br />
+          Computing results. This might take a minute.
+        </span>
       </>
     );
   // error
