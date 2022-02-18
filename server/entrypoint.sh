@@ -18,16 +18,23 @@ if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
     export REDIS_URL="redis://localhost:6379"
 fi
 
+# read in RQ_CONCURRENCY, or set to 1 process if unspecified
+# export it so the API can tell us what it's set to, too
+export RQ_CONCURRENCY=${RQ_CONCURRENCY:-1}
+
 # enable inline rq (a task queue), if USE_INLINE_RQ is 1
 if [ ${USE_INLINE_RQ:-0} -eq 1 ]; then
     mkdir -p /var/log/w2v_worker/
 
-    echo "* Booting rq worker..."
+    echo "* Booting ${RQ_CONCURRENCY} rq worker(s)..."
     (
         cd /app
-        python -m backend.w2v_worker w2v_queries \
-            >  /var/log/w2v_worker/stdout \
-            2> /var/log/w2v_worker/stderr &
+        for x in $( seq ${RQ_CONCURRENCY} ); do
+            python -m backend.w2v_worker w2v_queries \
+                >  /var/log/w2v_worker/${x}_stdout \
+                2> /var/log/w2v_worker/${x}_stderr &
+            echo " -> ${x} worker booted"
+        done
     )
 fi
 

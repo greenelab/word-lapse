@@ -55,6 +55,9 @@ PARALLEL_POOLS = int(os.environ.get('PARALLEL_POOLS', 4))
 # options are listed here: https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html
 PARALLEL_BACKEND = os.environ.get('PARALLEL_BACKEND', 'loky')
 
+# number of rq workers available, read from the environment
+RQ_CONCURRENCY=int(os.environ.get('RQ_CONCURRENCY', -1))
+
 def get_config_values():
     return {
         'DEBUG': DEBUG,
@@ -64,6 +67,7 @@ def get_config_values():
         'PARALLELIZE_QUERY': PARALLELIZE_QUERY,
         'PARALLEL_POOLS': PARALLEL_POOLS,
         'PARALLEL_BACKEND': PARALLEL_BACKEND,
+        'RQ_CONCURRENCY': RQ_CONCURRENCY
     }
 
 def emit_config():
