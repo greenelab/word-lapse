@@ -99,12 +99,12 @@ const Neighbors = () => {
               const inB = BNeighbors.includes(word);
               const inBoth = inA && inB;
               const inNeither = !inA && !inB;
+              const disabled = compare ? !inNeither : inB;
 
               // determine props
               let color;
               let symbol;
               let tooltip;
-
               if (compare) {
                 if (inBoth) {
                   color = compareProps.both.color;
@@ -118,7 +118,7 @@ const Neighbors = () => {
                   color = compareProps.b.color;
                   symbol = compareProps.b.symbol;
                   tooltip = `In ${yearB}`;
-                } else {
+                } else if (inNeither) {
                   color = compareProps.neither.color;
                   symbol = compareProps.neither.symbol;
                 }
@@ -137,8 +137,8 @@ const Neighbors = () => {
                     fill: color,
                   }}
                   data-tooltip={tooltip}
-                  aria-hidden={inNeither}
-                  tabIndex={inNeither ? -1 : 0}
+                  aria-hidden={!disabled}
+                  tabIndex={!disabled ? -1 : 0}
                 >
                   {(symbols && symbol ? symbol + " " : "") + toHumanCase(word)}
                 </tspan>
@@ -223,6 +223,7 @@ const Neighbors = () => {
               value={yearAIndex}
               onChange={(value) => setYearAIndex(Number(value))}
               tooltip={yearA}
+              label={`Year A: ${yearA}`}
             />
             <span>vs.</span>
           </>
@@ -238,6 +239,7 @@ const Neighbors = () => {
             setPlaying(false);
           }}
           tooltip={yearB}
+          label={`${compare ? "Year B" : "Year"}: ${yearB}`}
         />
       </div>
     </div>

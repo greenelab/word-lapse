@@ -5,7 +5,7 @@ import { range } from "../util/math";
 import "./Slider.css";
 
 // number range slider
-const Slider = ({ value, onChange, steps, tooltip, ...rest }) => {
+const Slider = ({ value, onChange, steps, tooltip, label, ...rest }) => {
   const [element, bbox] = useBbox();
 
   // make slider marks
@@ -43,6 +43,7 @@ const Slider = ({ value, onChange, steps, tooltip, ...rest }) => {
         min={0}
         max={steps.length - 1}
         step={1}
+        ariaValueTextFormatterForHandle={() => label}
       />
     </div>
   );
