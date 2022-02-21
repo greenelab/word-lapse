@@ -189,7 +189,7 @@ const Frequency = () => {
   const { search, results } = useContext(AppContext);
   const { frequency, changepoints } = results;
   const [frequencyIndex, setFrequencyIndex] = useState(0);
-  const [svg, setViewBox] = useViewBox(40);
+  const [svg, setViewBox] = useViewBox(20);
 
   // animate frequencyIndex
   useEffect(() => {

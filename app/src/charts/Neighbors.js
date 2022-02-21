@@ -44,7 +44,7 @@ const Neighbors = () => {
   const [playing, setPlaying] = useState(true);
   const [compare, setCompare] = useState(false);
   const [symbols, setSymbols] = useState(false);
-  const [svg, setViewBox] = useViewBox(40);
+  const [svg, setViewBox] = useViewBox(20);
 
   // animate year index
   useEffect(() => {
