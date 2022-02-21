@@ -6,6 +6,7 @@ const api = "https://api-wl.greenelab.com";
 
 // api call to see if cached
 export const getCached = async (query) => {
+  if (!query.trim()) throw new Error(statuses.empty);
   // make request
   const url = `${api}/neighbors/cached?tok=${query}`;
   try {
@@ -63,6 +64,6 @@ export const statuses = {
   empty: "empty", // user hasn't searched yet
   loadingCached: "loadingCached", // cached results are fetching
   loading: "loading", // uncached results are fetching
-  old: "old", // results superseded by newer query
+  stale: "stale", // results superseded by newer query
   // else: error fetching results
 };

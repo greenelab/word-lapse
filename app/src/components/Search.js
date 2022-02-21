@@ -7,7 +7,7 @@ import "./Search.css";
 const Search = () => {
   const { search, setSearch } = useContext(AppContext);
   const [value, setValue] = useState(search);
-  const debouncedValue = useDebounce(value, 1000);
+  const debouncedValue = useDebounce(value, 3000);
 
   // when user explicitly submits form by pressing enter
   const onSubmit = (event) => {
