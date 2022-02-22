@@ -6,6 +6,7 @@ from itertools import islice
 
 import redis
 from fastapi import FastAPI, HTTPException
+from starlette.middleware.cors import CORSMiddleware
 from fastapi_redis_cache import FastApiRedisCache, cache
 from rq import Queue
 
@@ -20,6 +21,30 @@ redis_cache : FastApiRedisCache = None
 # populated in init_rq(), used in neighbors()
 queue : Queue = None
 
+app = FastAPI()
+
+# lists all origins that are allowed to hit the API
+# (note that this is enforced by the browser, not by the server, so clients that
+# don't validate CORS -- curl, etc. -- will still work)
+# also, note that both allow_origins and allow_origin_regex are checked.
+# first, the origin is checked against the regex and, if it matches, allows
+# access. the origin is then checked to see if it's in 'origins' and again,
+# if present, allows access.
+origins = [
+    "https://greenelab.github.io/",
+    "http://localhost",
+    "http://localhost:8080"
+]
+origin_regex = "https://deploy-preview-.*--word-lapse.netlify.app"
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_origin_regex=origin_regex,
+    allow_credentials=True,
+    allow_methods=("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"),
+    allow_headers=["*"],
+)
 
 # ========================================================================
 # === handlers that run on server boot
