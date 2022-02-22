@@ -45,5 +45,7 @@ VOLUME [ "/etc/letsencrypt" ]
 
 EXPOSE 80
 EXPOSE 443
+# redis port: needed for workers on other VMs to access redis
+EXPOSE 6379
 
 CMD ["/app/entrypoint.sh"]
