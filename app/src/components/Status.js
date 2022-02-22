@@ -29,7 +29,7 @@ const Status = () => {
           className="fa-spin"
           style={{ color: "var(--gray)" }}
         />
-        <span>Loading cached results.</span>
+        <span>Loading pre-computed results.</span>
       </>
     );
   else if (status === statuses.loading)
