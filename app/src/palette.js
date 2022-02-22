@@ -40,12 +40,12 @@ library.add(
   fas.faAngleDown,
   fas.faDownload,
   fas.faExclamationCircle,
-  fas.faInfoCircle,
-  fas.faSpinner,
-  fas.faPlay,
-  fas.faPause,
-  fas.faLeftRight,
-  fas.faRightLong,
+  fas.faFont,
   fas.faIcons,
-  fas.faFont
+  fas.faInfoCircle,
+  fas.faLeftRight,
+  fas.faPause,
+  fas.faPlay,
+  fas.faRightLong,
+  fas.faSpinner
 );

@@ -9,8 +9,8 @@ import Matrix from "./Matrix";
 const Status = () => {
   const { status } = useContext(AppContext);
 
-  // if successful, don't show status (show results instead)
-  if (status === statuses.success) return <></>;
+  // don't show falsey statuses
+  if (!status) return <></>;
 
   let message;
 
@@ -21,11 +21,31 @@ const Status = () => {
         <span>Enter a word to see results</span>
       </>
     );
+  else if (status === statuses.loadingCached)
+    message = (
+      <>
+        <FontAwesomeIcon
+          icon="spinner"
+          className="fa-spin"
+          style={{ color: "var(--gray)" }}
+        />
+        <span>Loading pre-computed results.</span>
+      </>
+    );
   else if (status === statuses.loading)
     message = (
       <>
         <Matrix />
-        <span>Computing results. This might take a minute.</span>
+        <FontAwesomeIcon
+          icon="spinner"
+          className="fa-spin"
+          style={{ color: "var(--gray)" }}
+        />
+        <span>
+          No one has searched for this word yet!
+          <br />
+          Computing results. This might take a minute.
+        </span>
       </>
     );
   // error

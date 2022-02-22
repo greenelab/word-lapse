@@ -38,3 +38,16 @@
     color: var(--gray);
   }
 }
+
+@media (max-width: 900px) {
+  .matrix span {
+    opacity: 0.5;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .matrix span {
+    opacity: 0.25;
+  }
+}

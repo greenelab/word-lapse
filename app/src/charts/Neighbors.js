@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppContext } from "../App";
 import Slider from "../components/Slider";
-import { blue, lightGray, purple, red } from "../palette";
+import { blue, gray, lightGray, purple, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
 import { toHumanCase } from "../util/string";
@@ -17,11 +17,12 @@ const chars = 56; // adjust so that fitted title text size matches that of other
 // height of lines
 const height = 15;
 
-// symbols for color blind
-const symbolChars = {
-  a: "♥",
-  b: "♠",
-  both: "♦",
+// symbols for color blind, monochrome printing, etc
+const compareProps = {
+  a: { symbol: "♥", color: red },
+  b: { symbol: "♠", color: blue },
+  both: { symbol: "♦", color: purple },
+  neither: { symbol: "♣", color: lightGray },
 };
 
 // neighbors list
@@ -56,10 +57,16 @@ const Neighbors = () => {
     return () => window.clearInterval(interval);
   }, [playing, years.length]);
 
+  // reset year indices when results change
+  useEffect(() => {
+    setYearAIndex(0);
+    setYearBIndex(0);
+  }, [uniqueNeighbors]);
+
   // fit svg viewbox after render when certain props change
   useEffect(() => {
     setViewBox();
-  }, [symbols, uniqueNeighbors.length, setViewBox]);
+  }, [compare, symbols, uniqueNeighbors.length, setViewBox]);
 
   // current year color
   const blended = blendColors(red, blue, yearBIndex / (years.length - 1));
@@ -90,32 +97,33 @@ const Neighbors = () => {
               // determine if word in selected year(s)
               const inA = ANeighbors.includes(word);
               const inB = BNeighbors.includes(word);
+              const inBoth = inA && inB;
+              const inNeither = !inA && !inB;
+              const disabled = compare ? !inNeither : inB;
 
-              // determine symbol
-              let symbol;
-              if (symbols && compare) {
-                if (inA && inB) symbol = symbolChars.both;
-                else if (inA) symbol = symbolChars.a;
-                else if (inB) symbol = symbolChars.b;
-              }
-
-              // determine word color
+              // determine props
               let color;
-              if (compare) {
-                if (inA && inB) color = purple;
-                else if (inA) color = red;
-                else if (inB) color = blue;
-              } else {
-                if (inB) color = blended;
-              }
-
-              // determine tooltip text
+              let symbol;
               let tooltip;
               if (compare) {
-                if (inA && inB) tooltip = `In ${yearA} and ${yearB}`;
-                else if (inA) tooltip = `In ${yearA}`;
-                else if (inB) tooltip = `In ${yearB}`;
+                if (inBoth) {
+                  color = compareProps.both.color;
+                  symbol = compareProps.both.symbol;
+                  tooltip = `In ${yearA} and ${yearB}`;
+                } else if (inA) {
+                  color = compareProps.a.color;
+                  symbol = compareProps.a.symbol;
+                  tooltip = `In ${yearA}`;
+                } else if (inB) {
+                  color = compareProps.b.color;
+                  symbol = compareProps.b.symbol;
+                  tooltip = `In ${yearB}`;
+                } else if (inNeither) {
+                  color = compareProps.neither.color;
+                  symbol = compareProps.neither.symbol;
+                }
               } else {
+                color = inB ? blended : lightGray;
                 tooltip = `In ${count(word, neighbors)} of the year(s)`;
               }
 
@@ -126,37 +134,55 @@ const Neighbors = () => {
                   dx="10"
                   style={{
                     fontSize: 10,
-                    fill: color || lightGray,
+                    fill: color,
                   }}
                   data-tooltip={tooltip}
-                  aria-hidden={!color}
-                  tabIndex={!color ? -1 : 0}
+                  aria-hidden={!disabled}
+                  tabIndex={!disabled ? -1 : 0}
                 >
-                  {(symbol ? symbol + " " : "") + toHumanCase(word)}
+                  {(symbols && symbol ? symbol + " " : "") + toHumanCase(word)}
                 </tspan>
               );
             })}
           </text>
         ))}
-        <text x="0" y="-40" textAnchor="middle" style={{ fontSize: 12 }}>
+
+        <text
+          x="0"
+          y={compare ? -50 : -30}
+          textAnchor="middle"
+          style={{ fontSize: 12 }}
+        >
           Words associated with "{search}" in{" "}
           {compare && (
             <>
-              <tspan fill={red}>
-                {(symbols ? symbolChars.a + " " : "") + yearA}
+              <tspan fill={compareProps.a.color}>
+                {(symbols ? compareProps.a.symbol + " " : "") + yearA}
               </tspan>{" "}
               <tspan>vs.</tspan>{" "}
-              <tspan fill={blue}>
-                {(symbols ? symbolChars.b + " " : "") + yearB}
-              </tspan>{" "}
-              <tspan fill={purple}>
-                {"(or " + (symbols ? symbolChars.both + " " : "") + "both)"}
+              <tspan fill={compareProps.b.color}>
+                {(symbols ? compareProps.b.symbol + " " : "") + yearB}
               </tspan>
             </>
           )}
           {!compare && yearB}
         </text>
+
+        {compare && (
+          <text x="0" y="-30" textAnchor="middle" style={{ fontSize: 10 }}>
+            <tspan>(or</tspan>{" "}
+            <tspan fill={compareProps.both.color}>
+              {(symbols ? compareProps.both.symbol + " " : "") + "both"}
+            </tspan>{" "}
+            <tspan>or</tspan>{" "}
+            <tspan fill={gray}>
+              {(symbols ? compareProps.neither.symbol + " " : "") + "neither"}
+            </tspan>
+            <tspan>)</tspan>
+          </text>
+        )}
       </svg>
+
       <div className="chart-controls">
         <button
           onClick={() => setCompare(!compare)}
@@ -167,6 +193,7 @@ const Neighbors = () => {
             className="fa-fw"
           />
         </button>
+
         {compare && (
           <button
             onClick={() => setSymbols(!symbols)}
@@ -178,6 +205,7 @@ const Neighbors = () => {
             />
           </button>
         )}
+
         <button
           onClick={() => setPlaying(!playing)}
           data-tooltip={playing ? "Pause" : "Play"}
@@ -187,6 +215,7 @@ const Neighbors = () => {
             className="fa-fw"
           />
         </button>
+
         {compare && (
           <>
             <Slider
@@ -194,10 +223,12 @@ const Neighbors = () => {
               value={yearAIndex}
               onChange={(value) => setYearAIndex(Number(value))}
               tooltip={yearA}
+              label={`Year A: ${yearA}`}
             />
             <span>vs.</span>
           </>
         )}
+
         <Slider
           steps={years}
           value={yearBIndex}
@@ -208,6 +239,7 @@ const Neighbors = () => {
             setPlaying(false);
           }}
           tooltip={yearB}
+          label={`${compare ? "Year B" : "Year"}: ${yearB}`}
         />
       </div>
     </div>

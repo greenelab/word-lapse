@@ -15,7 +15,8 @@ const maxLength = Math.max(...words.map((word) => word.length));
 const randomPosition = () =>
   // random distribution that avoids center, i.e. "U" shape
   Math.floor(
-    (Math.pow(Math.random(), 0.5) * (Math.random() > 0.5 ? 1 : -1) * 0.5 + 0.5) *
+    (Math.pow(Math.random(), 0.5) * (Math.random() > 0.5 ? 1 : -1) * 0.5 +
+      0.5) *
       100
   );
 
