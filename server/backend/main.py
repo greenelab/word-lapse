@@ -146,14 +146,12 @@ async def neighbors(tok: str):
     {
         "neighbors": {<year:str>: [<token:str>, ...]},
         "frequency": [{"year": <year:int>, "frequency": <frequency:float>}, ...],
-        "changepoints": [{"changepoint_idx": <year_range:str>}, ...],
+        "changepoints": [ [<year_start:str>, <year_end:str>], ...],
         "elapsed": <elapsed_ms:float>
     }
     ```
 
     Notes:
-    - `year_range` in `changepoints` is the span of years in which the change
-    took place, e.g. 2019-2020.
     - `elapsed_ms` is the length of time the request took to formulate on
     the server.
     """

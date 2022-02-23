@@ -51,13 +51,17 @@ def cutoff_points(tok: str):
         data_folder / Path("cusum_changepoint_abstracts.tsv"), sep="\t"
     )
 
-    return (
+    result = (
         cutoff_points
         >> ply.query("tok == @tok")
         >> ply.select("changepoint_idx")
         >> ply.call(".to_dict", orient="records")
     )
 
+    # split hyphens, unnest from object, and return
+    return [
+        [ y.strip() for y in x['changepoint_idx'].split("-") ] for x in result
+    ]
 
 # ========================================================================
 # === extract_neighbors()

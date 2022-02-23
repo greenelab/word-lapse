@@ -44,9 +44,6 @@ export const getResults = async (query) => {
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
   // transform data as needed
-  results.changepoints = results.changepoints.map(({ changepoint_idx }) =>
-    changepoint_idx.split("-")
-  );
   for (const [key, value] of Object.entries(results.neighbors))
     if (!value.length) delete results.neighbors[key];
 
