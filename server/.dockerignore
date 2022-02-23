@@ -1,7 +1,7 @@
 /.venv
 /.github
 /.vscode
-/server/data
+./data
 
 # # exclude git in general...
 /.git

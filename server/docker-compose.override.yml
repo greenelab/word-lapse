@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  api:
+    ports:
+      - "8080:80"
+    volumes:
+      - '$PWD:/app'
+    environment:
+      - "USE_HTTPS=0"
+      - "UPDATE_DATA=0"
+      - "DEBUG=1"

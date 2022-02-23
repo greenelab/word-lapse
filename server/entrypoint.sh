@@ -4,6 +4,43 @@ function dir_is_empty {
     [ -n "$(find "$1" -maxdepth 0 -type d -empty 2>/dev/null)" ]
 }
 
+# enable reloading if DEBUG is 1
+[[ ${DEBUG:-0} -eq 1 ]] && DO_RELOAD="--reload" || DO_RELOAD=""
+
+# enable inline redis (i.e., as a forked process), if USE_INLINE_REDIS is 1
+if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
+    echo "* Booting redis-server..."
+    # fork off a redis process and override REDIS_URL to use this local one
+    redis-server /redis/redis.conf --save 60 1 --loglevel warning \
+        >  /var/log/redis.stdout \
+        2> /var/log/redis.stderr &
+    
+    export REDIS_URL="redis://localhost:6379"
+fi
+
+# read in RQ_CONCURRENCY, or set to 1 process if unspecified
+# export it so the API can tell us what it's set to, too
+export RQ_CONCURRENCY=${RQ_CONCURRENCY:-1}
+
+# enable inline rq (a task queue), if USE_INLINE_RQ is 1
+if [ ${USE_INLINE_RQ:-0} -eq 1 ]; then
+    mkdir -p /var/log/w2v_worker/
+
+    echo "* Booting ${RQ_CONCURRENCY} rq worker(s)..."
+    (
+        cd /app
+        for x in $( seq ${RQ_CONCURRENCY} ); do
+            python -m backend.w2v_worker w2v_queries \
+                >  /var/log/w2v_worker/${x}_stdout \
+                2> /var/log/w2v_worker/${x}_stderr &
+            echo " -> ${x} worker booted"
+        done
+    )
+fi
+
+# time before gunicorn decides a worker is "dead"
+GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-600}
+
 # if /app/data is populated, attempt a git lfs pull
 # if it's not, clone word-lapse-models into it and then pull
 if [ "${UPDATE_DATA:-1}" = "1" ]; then
@@ -20,11 +57,11 @@ if [ "${UPDATE_DATA:-1}" = "1" ]; then
         # clone submodule into ./data and do an lfs pull
         echo "* ${DATA_DIR} is empty, cloning data into it"
         git clone 'https://github.com/greenelab/word-lapse-models.git' "${DATA_DIR}"
-        cd /app/data && git lfs pull
+        cd "${DATA_DIR}" && git pull --ff-only
     else
         # just attempt to pull new data into the existing folder
         echo "* ${DATA_DIR} is *not* empty, refreshing contents"
-        cd /app/data && git lfs pull
+        cd "${DATA_DIR}" && git pull --ff-only
     fi
 fi
 
@@ -41,13 +78,33 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
         certbot renew
     fi
 
-    # finally, run the server
+    # finally, run the server (with HTTPS)
     cd /app
-    /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 443 \
-        --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
-        --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+
+    if [[ ${USE_UVICORN:-1} -eq 1 ]]; then
+        echo "* Booting uvicorn..."
+        /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443 ${DO_RELOAD} \
+            --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
+            --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+    else
+        echo "* Booting gunicorn w/${WEB_CONCURRENCY:-4} workers..."
+        gunicorn backend.main:app --bind 0.0.0.0:443 ${DO_RELOAD} \
+            --timeout ${GUNICORN_TIMEOUT} \
+            --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker \
+            --keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
+            --certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+    fi
 else
-    # finally, run the server
+    # finally, run the server (with just HTTP)
     cd /app
-    /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 80
+
+    if [[ ${USE_UVICORN:-1} -eq 1 ]]; then
+        echo "* Booting uvicorn..."
+        /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 80 ${DO_RELOAD}
+    else
+        echo "* Booting gunicorn w/${WEB_CONCURRENCY:-4} workers..."
+        gunicorn backend.main:app --bind 0.0.0.0:80 ${DO_RELOAD} \
+            --timeout ${GUNICORN_TIMEOUT} \
+            --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker 
+    fi
 fi

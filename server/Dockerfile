@@ -6,9 +6,19 @@ WORKDIR /app
 
 # install git-lfs, so we can pull lfs files
 # also install letsencrypt, so we can update our SSL cert before running
-RUN apt update && apt install git-lfs letsencrypt -y
+RUN apt update && apt install -y git-lfs letsencrypt redis-server
 
-# COPY ./requirements.txt /tmp/requirements.txt
+# set up redis a bit
+RUN mkdir -p /redis/data
+COPY ./services/redis/redis.conf /redis
+VOLUME ["/redis/data"]
+
+# we split up analysis and server reqs into two requirements files
+# since the analysis ones take a while to install, but the server reqs don't.
+# we use docker's layer caching to make editing the server reqs fast
+COPY ./analysis_requirements.txt /tmp/analysis_requirements.txt
+RUN pip install -r /tmp/analysis_requirements.txt
+
 COPY ./server_requirements.txt /tmp/server_requirements.txt
 RUN pip install -r /tmp/server_requirements.txt
 
@@ -17,6 +27,8 @@ ARG SHORT_SHA=unspecified
 LABEL git_commit=$SHORT_SHA
 ARG COMMIT_SHA=unspecified
 LABEL git_commit_full=$COMMIT_SHA
+ENV SHORT_SHA $SHORT_SHA
+ENV COMMIT_SHA $COMMIT_SHA
 
 COPY . /app
 
@@ -33,5 +45,7 @@ VOLUME [ "/etc/letsencrypt" ]
 
 EXPOSE 80
 EXPOSE 443
+# redis port: needed for workers on other VMs to access redis
+EXPOSE 6379
 
 CMD ["/app/entrypoint.sh"]
