@@ -33,7 +33,7 @@ app = FastAPI()
 # access. the origin is then checked to see if it's in 'origins' and again,
 # if present, allows access.
 origins = [
-    "https://greenelab.github.io/",
+    "https://greenelab.github.io",
     "http://localhost",
     "http://localhost:8080"
 ]
