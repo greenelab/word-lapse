@@ -9,6 +9,8 @@ from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_redis_cache import FastApiRedisCache, cache
 from rq import Queue
+from rq.job import Job
+from rq.exceptions import NoSuchJobError
 
 from .config import get_config_values
 
@@ -79,12 +81,13 @@ async def init_rq():
 # === helper methods
 # ========================================================================
 
-async def enqueue_and_wait(func, *args, **kwargs):
+async def wait_on_job(job):
     """
-    Helper method to pass 'func' with any extra args to the w2v_queries queue.
+    Polls 'job' until it's done, then returns its result if successful.
+    
+    If unsuccessful, throws an HTTPException 500 with details about the job
+    exception included in the details.
     """
-    job = queue.enqueue(func, *args, **kwargs)
-
     try:
         while not job.is_finished:
             await asyncio.sleep(1)
@@ -97,6 +100,14 @@ async def enqueue_and_wait(func, *args, **kwargs):
             status_code=500, detail="Job process exception: %s" % ex
         )
 
+async def enqueue_and_wait(func, *args, **kwargs):
+    """
+    Helper method to pass 'func' with any extra args to the w2v_queries queue.
+    """
+
+    return await wait_on_job(
+        queue.enqueue(func, *args, **kwargs)
+    )
 
 # ========================================================================
 # === endpoints
@@ -152,7 +163,20 @@ async def neighbors(tok: str):
     the server.
     """
     from .w2v_worker import get_neighbors
-    return await enqueue_and_wait(get_neighbors, tok=tok, job_timeout=800)
+
+    # construct unique job id
+    new_job_id = f"get_neighbors__{tok}"
+
+    try:
+        # attempt to fetch and wait on an existing job
+        r = redis.from_url(os.environ.get("REDIS_URL"))
+        existing_job = Job.fetch(new_job_id, connection=r)
+
+        return await wait_on_job(existing_job)
+
+    except NoSuchJobError:
+        # create and fire off a new job
+        return await enqueue_and_wait(get_neighbors, tok=tok, job_timeout=800, job_id=new_job_id)
 
 @app.get("/neighbors/cached")
 async def neighbors_is_cached(tok: str):
