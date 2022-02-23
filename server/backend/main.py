@@ -23,8 +23,6 @@ redis_cache : FastApiRedisCache = None
 # populated in init_rq(), used in neighbors()
 queue : Queue = None
 
-app = FastAPI()
-
 # lists all origins that are allowed to hit the API
 # (note that this is enforced by the browser, not by the server, so clients that
 # don't validate CORS -- curl, etc. -- will still work)
