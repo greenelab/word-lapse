@@ -8,8 +8,11 @@ from gensim.models import KeyedVectors, Word2Vec
 from joblib import Memory, Parallel, delayed
 
 from .config import (
-    USE_MEMMAP, MATERIALIZE_MODELS,
-    PARALLEL_POOLS, PARALLELIZE_QUERY, PARALLEL_BACKEND
+    USE_MEMMAP,
+    MATERIALIZE_MODELS,
+    PARALLEL_POOLS,
+    PARALLELIZE_QUERY,
+    PARALLEL_BACKEND,
 )
 from .tracking import ExecTimer
 
@@ -24,6 +27,7 @@ word_models = None
 # ========================================================================
 # === extract_frequencies(), cutoff_points()
 # ========================================================================
+
 
 def extract_frequencies(tok: str):
     # Extract the frequencies
@@ -59,6 +63,7 @@ def cutoff_points(tok: str):
 # === extract_neighbors()
 # ========================================================================
 
+
 def load_word_model(model_path, use_keyedvec=True):
     """
     Loads a single word model located at 'path'.
@@ -70,7 +75,7 @@ def load_word_model(model_path, use_keyedvec=True):
         # also does a warmup query against the model so the initial
         # delay doesn't occur when a user queries the model for the
         # first time.
-        return KeyedVectors.load(str(model_path), mmap='r' if USE_MEMMAP else None)
+        return KeyedVectors.load(str(model_path), mmap="r" if USE_MEMMAP else None)
         # word_model.most_similar('pandemic') # any query will load the model
     else:
         return Word2Vec.load(str(model_path))
@@ -95,10 +100,10 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
 
     # first, produce a list of word models sorted by year
     # (groupby requires a sorted list, since it accumulates groups linearly)
-    word_models = list((data_folder / Path("word2vec_models")).rglob(f"*/*{model_suffix}"))
-    word_models_sorted = sorted(
-        word_models, key=extract_year
+    word_models = list(
+        (data_folder / Path("word2vec_models")).rglob(f"*/*{model_suffix}")
     )
+    word_models_sorted = sorted(word_models, key=extract_year)
 
     # group all models for a year into a list
     for year, word_model_refs in groupby(word_models_sorted, key=extract_year):
@@ -107,11 +112,16 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
         for idx, word_model_ref in enumerate(sorted(word_model_refs)):
             with ExecTimer(verbose=True):
                 if not just_reference:
-                    print("Loading model %s for year %s..." % (str(word_model_ref), year), flush=True)
-                    word_model = load_word_model(str(word_model_ref), use_keyedvec=use_keyedvec)
+                    print(
+                        "Loading model %s for year %s..." % (str(word_model_ref), year),
+                        flush=True,
+                    )
+                    word_model = load_word_model(
+                        str(word_model_ref), use_keyedvec=use_keyedvec
+                    )
                 else:
                     word_model = str(word_model_ref)
-                    
+
                 yield year, idx, word_model
 
                 # if only_first, skip the remaining years in this series
@@ -135,12 +145,21 @@ def materialized_word_models(**kwargs):
         return word_models
 
     # materialize the word_models_by_year() generator
-    word_models = [ (year, idx, model) for year, idx, model in word_models_by_year(**kwargs) ]
+    word_models = [
+        (year, idx, model) for year, idx, model in word_models_by_year(**kwargs)
+    ]
 
     return word_models
 
 
-def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
+def query_model_for_tok(
+    year,
+    tok,
+    model,
+    word_freq_count_cutoff: int = 30,
+    neighbors: int = 25,
+    use_keyedvec: bool = True,
+):
     print("Querying %s for token '%s'..." % (year, tok), flush=True)
 
     result = []
@@ -149,7 +168,9 @@ def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neig
     cutoff_index = min(
         map(
             lambda x: (
-                999999 if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff else x[0]
+                999999
+                if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
+                else x[0]
             ),
             enumerate(word_vectors.index_to_key),
         )
@@ -174,7 +195,12 @@ def query_model_for_tok(year, tok, model, word_freq_count_cutoff: int = 30, neig
     return result
 
 
-def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int = 25, use_keyedvec:bool = True):
+def extract_neighbors(
+    tok: str,
+    word_freq_count_cutoff: int = 30,
+    neighbors: int = 25,
+    use_keyedvec: bool = True,
+):
     """
     Given a word 'tok', for each year from 2000 to 2020, extracts the top
     'neighbors' entries that occur less than 'word_freq_count_cutoff' times
@@ -189,22 +215,28 @@ def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int
     Returns a dict of the following form: {<year>: [<neighboring word>, ...], ...}
     """
 
-    model_loader = materialized_word_models if MATERIALIZE_MODELS else word_models_by_year
+    model_loader = (
+        materialized_word_models if MATERIALIZE_MODELS else word_models_by_year
+    )
 
     if PARALLELIZE_QUERY:
         with Parallel(
-            n_jobs=PARALLEL_POOLS, backend=PARALLEL_BACKEND,
-            mmap_mode=('r' if USE_MEMMAP else None)
+            n_jobs=PARALLEL_POOLS,
+            backend=PARALLEL_BACKEND,
+            mmap_mode=("r" if USE_MEMMAP else None),
         ) as parallel:
             result = parallel(
                 delayed(
                     lambda year, model: (
-                        year, query_model_for_tok(
-                            year, tok, model,
+                        year,
+                        query_model_for_tok(
+                            year,
+                            tok,
+                            model,
                             word_freq_count_cutoff=word_freq_count_cutoff,
                             neighbors=neighbors,
-                            use_keyedvec=use_keyedvec
-                        )
+                            use_keyedvec=use_keyedvec,
+                        ),
                     )
                 )(year, model)
                 for year, _, model in model_loader(use_keyedvec=use_keyedvec)
@@ -215,10 +247,12 @@ def extract_neighbors(tok: str, word_freq_count_cutoff: int = 30, neighbors: int
 
         for year, _, model in model_loader(use_keyedvec=use_keyedvec):
             word_neighbor_map[year] = query_model_for_tok(
-                year, tok, model,
+                year,
+                tok,
+                model,
                 word_freq_count_cutoff=word_freq_count_cutoff,
                 neighbors=neighbors,
-                use_keyedvec=use_keyedvec
+                use_keyedvec=use_keyedvec,
             )
 
     return word_neighbor_map

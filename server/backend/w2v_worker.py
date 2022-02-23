@@ -8,14 +8,18 @@ import redis
 from rq import Connection, Worker
 
 from .config import MATERIALIZE_MODELS, WARM_CACHE
-from .neighbors import (cutoff_points, extract_frequencies, extract_neighbors,
-                        materialized_word_models)
+from .neighbors import (
+    cutoff_points,
+    extract_frequencies,
+    extract_neighbors,
+    materialized_word_models,
+)
 from .tracking import ExecTimer
 
 logger = logging.getLogger(__name__)
 
 
-def get_neighbors(tok:str):
+def get_neighbors(tok: str):
     with ExecTimer() as timer:
         # Extract the frequencies
         frequency_output = extract_frequencies(tok)
@@ -37,19 +41,21 @@ def get_neighbors(tok:str):
             "neighbors": word_neighbor_map,
             "frequency": frequency_output,
             "changepoints": changepoint_output,
-            "elapsed": timer.snapshot()
+            "elapsed": timer.snapshot(),
         }
 
-def ping(response:str):
+
+def ping(response: str):
     return "pong! %s" % response
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if MATERIALIZE_MODELS and WARM_CACHE:
         # invoke to cache word models into 'word_models'
         logger.info("Warming enabled, preloading word2vec models...")
         materialized_word_models()
 
-    queues = sys.argv[1:] or ['default']
+    queues = sys.argv[1:] or ["default"]
 
     with Connection(redis.from_url(os.environ.get("REDIS_URL"))):
         w = Worker(queues)
