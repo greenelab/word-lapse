@@ -30,7 +30,6 @@ def extract_frequencies(tok: str):
     frequency_table = pd.read_csv(
         data_folder / Path("all_tok_frequencies.tsv.xz"), sep="\t"
     )
-    frequency_table >> ply.slice_rows(5)
 
     frequency_output_df = (
         frequency_table
@@ -38,7 +37,6 @@ def extract_frequencies(tok: str):
         >> ply.select("year", "frequency")
         >> ply.call(".astype", {"year": int})
     )
-    frequency_output_df >> ply.slice_rows(5)
 
     return frequency_output_df >> ply.call(".to_dict", orient="records")
 
@@ -48,7 +46,6 @@ def cutoff_points(tok: str):
     cutoff_points = pd.read_csv(
         data_folder / Path("cusum_changepoint_abstracts.tsv"), sep="\t"
     )
-    cutoff_points >> ply.slice_rows(5)
 
     return (
         cutoff_points
