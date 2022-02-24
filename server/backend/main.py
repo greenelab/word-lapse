@@ -30,7 +30,12 @@ queue: Queue = None
 # first, the origin is checked against the regex and, if it matches, allows
 # access. the origin is then checked to see if it's in 'origins' and again,
 # if present, allows access.
-origins = ["https://greenelab.github.io", "http://localhost", "http://localhost:8080"]
+origins = [
+    "https://greenelab.github.io",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3000"
+]
 origin_regex = "https://deploy-preview-.*--word-lapse.netlify.app"
 
 app.add_middleware(
