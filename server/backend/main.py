@@ -8,7 +8,7 @@ import redis
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from fastapi_redis_cache import FastApiRedisCache, cache
-from rq import Queue
+from rq import Queue, Worker
 from rq.job import Job
 from rq.exceptions import NoSuchJobError
 
@@ -113,15 +113,36 @@ async def enqueue_and_wait(func, *args, **kwargs):
 
 
 @app.get("/")
-async def server_meta():
+async def server_meta(worker_details:bool=False):
     """
     Returns metadata about the server, e.g. config variables, the
     commit that was used to build the server, etc.
     """
+
+    # gather info about worker pools, load, etc.
+    r = redis.from_url(os.environ.get("REDIS_URL"))
+    runtime = {
+        "total_workers": Worker.count(connection=r)
+    }
+
+    if worker_details:
+        workers = Worker.all(connection=r)
+        runtime["worker_info"] = {
+            worker.hostname: {
+                "state": worker.state,
+                "queues": worker.queues,
+                "current_job": getattr(worker, 'current_job', None),
+                "successes": worker.successful_job_count,
+                "failures": worker.failed_job_count
+            }
+            for worker in workers
+        }
+
     return {
         "name": "Word Lapse API",
         "commit_sha": os.environ.get("COMMIT_SHA", "unspecified"),
         "config": get_config_values(),
+        "runtime": runtime
     }
 
 
