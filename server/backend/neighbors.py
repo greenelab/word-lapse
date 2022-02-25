@@ -114,23 +114,22 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
         # yield each model for the current year in order (e.g., 2000_0, 2000_1)
         # differentiated by idx
         for idx, word_model_ref in enumerate(sorted(word_model_refs)):
-            with ExecTimer(verbose=True):
-                if not just_reference:
-                    print(
-                        "Loading model %s for year %s..." % (str(word_model_ref), year),
-                        flush=True,
-                    )
-                    word_model = load_word_model(
-                        str(word_model_ref), use_keyedvec=use_keyedvec
-                    )
-                else:
-                    word_model = str(word_model_ref)
+            if not just_reference:
+                print(
+                    "Loading model %s for year %s..." % (str(word_model_ref), year),
+                    flush=True,
+                )
+                word_model = load_word_model(
+                    str(word_model_ref), use_keyedvec=use_keyedvec
+                )
+            else:
+                word_model = str(word_model_ref)
 
-                yield year, idx, word_model
+            yield year, idx, word_model
 
-                # if only_first, skip the remaining years in this series
-                if only_first:
-                    break
+            # if only_first, skip the remaining years in this series
+            if only_first:
+                break
 
 
 def materialized_word_models(**kwargs):
@@ -166,37 +165,38 @@ def query_model_for_tok(
 ):
     print("Querying %s for token '%s'..." % (year, tok), flush=True)
 
-    result = []
-    word_vectors = model if use_keyedvec else model.wv
+    with ExecTimer(verbose=True):
+        result = []
+        word_vectors = model if use_keyedvec else model.wv
 
-    cutoff_index = min(
-        map(
-            lambda x: (
-                999999
-                if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
-                else x[0]
-            ),
-            enumerate(word_vectors.index_to_key),
-        )
-    )
-
-    # Check to see if token is in the vocab
-    vocab = set(word_vectors.key_to_index.keys())
-
-    if tok in vocab:
-        # If it is grab the neighbors
-        # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
-        word_neighbors = word_vectors.most_similar(
-            tok,
-            topn=neighbors,
-            clip_end=cutoff_index,
+        cutoff_index = min(
+            map(
+                lambda x: (
+                    999999
+                    if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
+                    else x[0]
+                ),
+                enumerate(word_vectors.index_to_key),
+            )
         )
 
-        # Append neighbor to word_neighbor_map
-        for neighbor in word_neighbors:
-            result.append(neighbor[0])
+        # Check to see if token is in the vocab
+        vocab = set(word_vectors.key_to_index.keys())
 
-    return result
+        if tok in vocab:
+            # If it is grab the neighbors
+            # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
+            word_neighbors = word_vectors.most_similar(
+                tok,
+                topn=neighbors,
+                clip_end=cutoff_index,
+            )
+
+            # Append neighbor to word_neighbor_map
+            for neighbor in word_neighbors:
+                result.append(neighbor[0])
+
+        return result
 
 
 def extract_neighbors(
