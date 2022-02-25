@@ -22,7 +22,4 @@ export PARALLELIZE_QUERY=false
 
 
 cd /app
-mkdir -p /var/log/w2v_worker
-python -m backend.w2v_worker w2v_queries \
-    >  /var/log/w2v_worker/stdout \
-    2> /var/log/w2v_worker/stderr
+python -m backend.w2v_worker w2v_queries
