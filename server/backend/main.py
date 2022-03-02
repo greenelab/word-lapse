@@ -108,9 +108,9 @@ async def enqueue_and_wait(func, *args, **kwargs):
 
 
 def lowercase_tok(func):
-    async def lc_tok(tok):
+    async def neighbors(tok):
         return await func(tok.lower())
-    return lc_tok
+    return neighbors
 
 # ========================================================================
 # === endpoints
@@ -216,7 +216,7 @@ async def neighbors_is_cached(tok: str):
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.
     """
-    key = redis_cache.get_cache_key(neighbors, tok).replace("lc_tok", "neighbors")
+    key = redis_cache.get_cache_key(neighbors, tok)
     (_, in_cache) = redis_cache.check_cache(key)
     return {"token": tok, "is_cached": True if in_cache is not None else False}
 
