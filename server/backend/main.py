@@ -107,6 +107,11 @@ async def enqueue_and_wait(func, *args, **kwargs):
     return await wait_on_job(queue.enqueue(func, *args, **kwargs))
 
 
+def lowercase_tok(func):
+    async def lc_tok(tok):
+        return await func(tok.lower())
+    return lc_tok
+
 # ========================================================================
 # === endpoints
 # ========================================================================
@@ -157,6 +162,7 @@ async def ping_workers():
 
 
 @app.get("/neighbors")
+@lowercase_tok
 @cache()
 async def neighbors(tok: str):
     """
@@ -183,9 +189,6 @@ async def neighbors(tok: str):
     """
     from .w2v_worker import get_neighbors
 
-    # force token to lowercase to match model
-    tok = tok.lower()
-
     # construct unique job id
     new_job_id = f"get_neighbors__{tok}"
 
@@ -204,6 +207,7 @@ async def neighbors(tok: str):
 
 
 @app.get("/neighbors/cached")
+@lowercase_tok
 async def neighbors_is_cached(tok: str):
     """
     Queries the cache for 'tok', returning the token in the 'token'
@@ -212,8 +216,7 @@ async def neighbors_is_cached(tok: str):
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.
     """
-    tok = tok.lower()
-    key = redis_cache.get_cache_key(neighbors, tok)
+    key = redis_cache.get_cache_key(neighbors, tok).replace("lc_tok", "neighbors")
     (_, in_cache) = redis_cache.check_cache(key)
     return {"token": tok, "is_cached": True if in_cache is not None else False}
 
