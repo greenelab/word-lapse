@@ -1,0 +1,6 @@
+#cloud-config
+
+bootcmd:
+- fsck.ext4 -tvy /dev/disk/by-id/google-word-lapse-models
+- mkdir -p /mnt/disks/word-lapse-models
+- mount -t ext4 -O ... /dev/disk/by-id/google-word-lapse-models /mnt/disks/word-lapse-models
