@@ -25,9 +25,9 @@ else
     (
         # build it and tag the build both with the commit SHA and as "latest"
         [[ "$BUILDS_SKIPPED" == "1" ]] && echo "skipping remote build..." || \
-        gcloud builds submit --config=cloudbuild.yaml \
+        gcloud builds submit --project=word-lapse --config=cloudbuild.yaml \
             --substitutions=_SHORT_SHA="${SHORT_SHA}",_COMMIT_SHA="${COMMIT_SHA}" && \
-        gcloud container images add-tag --quiet "${IMAGE_WITH_TAG}" "${BASE_IMAGE}:latest"
+        gcloud container images add-tag  --project=word-lapse --quiet "${IMAGE_WITH_TAG}" "${BASE_IMAGE}:latest"
     ) && (
         [[ "$DEPLOY_SKIPPED" == "1" ]] && echo "skipping deploy..." || \
         gcloud compute instances update-container --project=word-lapse word-lapse-api \
