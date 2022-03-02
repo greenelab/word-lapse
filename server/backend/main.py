@@ -183,6 +183,9 @@ async def neighbors(tok: str):
     """
     from .w2v_worker import get_neighbors
 
+    # force token to lowercase to match model
+    tok = tok.lower()
+
     # construct unique job id
     new_job_id = f"get_neighbors__{tok}"
 
