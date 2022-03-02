@@ -212,6 +212,7 @@ async def neighbors_is_cached(tok: str):
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.
     """
+    tok = tok.lower()
     key = redis_cache.get_cache_key(neighbors, tok)
     (_, in_cache) = redis_cache.check_cache(key)
     return {"token": tok, "is_cached": True if in_cache is not None else False}
