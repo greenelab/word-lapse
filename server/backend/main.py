@@ -130,7 +130,7 @@ async def server_meta(worker_details:bool=False):
         runtime["worker_info"] = {
             worker.hostname: {
                 "state": worker.state,
-                "queues": worker.queues,
+                "queues": str(worker.queues),
                 "current_job": getattr(worker, 'current_job', None),
                 "successes": worker.successful_job_count,
                 "failures": worker.failed_job_count
