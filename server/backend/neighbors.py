@@ -165,38 +165,37 @@ def query_model_for_tok(
 ):
     print("Querying %s for token '%s'..." % (year, tok), flush=True)
 
-    with ExecTimer(verbose=True):
-        result = []
-        word_vectors = model if use_keyedvec else model.wv
+    result = []
+    word_vectors = model if use_keyedvec else model.wv
 
-        cutoff_index = min(
-            map(
-                lambda x: (
-                    999999
-                    if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
-                    else x[0]
-                ),
-                enumerate(word_vectors.index_to_key),
-            )
+    cutoff_index = min(
+        map(
+            lambda x: (
+                999999
+                if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
+                else x[0]
+            ),
+            enumerate(word_vectors.index_to_key),
+        )
+    )
+
+    # Check to see if token is in the vocab
+    vocab = set(word_vectors.key_to_index.keys())
+
+    if tok in vocab:
+        # If it is grab the neighbors
+        # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
+        word_neighbors = word_vectors.most_similar(
+            tok,
+            topn=neighbors,
+            clip_end=cutoff_index,
         )
 
-        # Check to see if token is in the vocab
-        vocab = set(word_vectors.key_to_index.keys())
+        # Append neighbor to word_neighbor_map
+        for neighbor in word_neighbors:
+            result.append(neighbor[0])
 
-        if tok in vocab:
-            # If it is grab the neighbors
-            # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
-            word_neighbors = word_vectors.most_similar(
-                tok,
-                topn=neighbors,
-                clip_end=cutoff_index,
-            )
-
-            # Append neighbor to word_neighbor_map
-            for neighbor in word_neighbors:
-                result.append(neighbor[0])
-
-        return result
+    return result
 
 
 def extract_neighbors(
@@ -223,40 +222,41 @@ def extract_neighbors(
         materialized_word_models if MATERIALIZE_MODELS else word_models_by_year
     )
 
-    if PARALLELIZE_QUERY:
-        with Parallel(
-            n_jobs=PARALLEL_POOLS,
-            backend=PARALLEL_BACKEND,
-            mmap_mode=("r" if USE_MEMMAP else None),
-        ) as parallel:
-            result = parallel(
-                delayed(
-                    lambda year, model: (
-                        year,
-                        query_model_for_tok(
+    with ExecTimer(verbose=True):
+        if PARALLELIZE_QUERY:
+            with Parallel(
+                n_jobs=PARALLEL_POOLS,
+                backend=PARALLEL_BACKEND,
+                mmap_mode=("r" if USE_MEMMAP else None),
+            ) as parallel:
+                result = parallel(
+                    delayed(
+                        lambda year, model: (
                             year,
-                            tok,
-                            model,
-                            word_freq_count_cutoff=word_freq_count_cutoff,
-                            neighbors=neighbors,
-                            use_keyedvec=use_keyedvec,
-                        ),
-                    )
-                )(year, model)
-                for year, _, model in model_loader(use_keyedvec=use_keyedvec)
-            )
-            word_neighbor_map = dict(result)
-    else:
-        word_neighbor_map = {}
+                            query_model_for_tok(
+                                year,
+                                tok,
+                                model,
+                                word_freq_count_cutoff=word_freq_count_cutoff,
+                                neighbors=neighbors,
+                                use_keyedvec=use_keyedvec,
+                            ),
+                        )
+                    )(year, model)
+                    for year, _, model in model_loader(use_keyedvec=use_keyedvec)
+                )
+                word_neighbor_map = dict(result)
+        else:
+            word_neighbor_map = {}
 
-        for year, _, model in model_loader(use_keyedvec=use_keyedvec):
-            word_neighbor_map[year] = query_model_for_tok(
-                year,
-                tok,
-                model,
-                word_freq_count_cutoff=word_freq_count_cutoff,
-                neighbors=neighbors,
-                use_keyedvec=use_keyedvec,
-            )
+            for year, _, model in model_loader(use_keyedvec=use_keyedvec):
+                word_neighbor_map[year] = query_model_for_tok(
+                    year,
+                    tok,
+                    model,
+                    word_freq_count_cutoff=word_freq_count_cutoff,
+                    neighbors=neighbors,
+                    use_keyedvec=use_keyedvec,
+                )
 
     return word_neighbor_map
