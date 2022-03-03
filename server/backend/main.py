@@ -6,11 +6,12 @@ from itertools import islice
 
 import redis
 from fastapi import FastAPI, HTTPException
-from starlette.middleware.cors import CORSMiddleware
 from fastapi_redis_cache import FastApiRedisCache, cache
+from pygtrie import PrefixSet
 from rq import Queue, Worker
-from rq.job import Job
 from rq.exceptions import NoSuchJobError
+from rq.job import Job
+from starlette.middleware.cors import CORSMiddleware
 
 from .config import get_config_values
 
@@ -22,6 +23,9 @@ app = FastAPI()
 redis_cache: FastApiRedisCache = None
 # populated in init_rq(), used in neighbors()
 queue: Queue = None
+# populated in init_autocomplete_trie, used in autocomplete()
+trie: PrefixSet = None
+
 
 # lists all origins that are allowed to hit the API
 # (note that this is enforced by the browser, not by the server, so clients that
@@ -257,4 +261,22 @@ async def neighbors_cache(count: int = 100):
         for y in tok_extract.search(x.decode("utf8")).groups("tok")
     ]
 
-    return sorted(toptokens, key=lambda x: x["freq"], reverse=True)
+
+@app.get("/autocomplete")
+async def autocomplete(prefix: str, limit:int=20):
+    """
+    Produces a list of words with prefix 'prefix' from across the entire corpus.
+    Returns up to 'limit' entries (max 100).
+
+    Note that prefixes of length less than three will simply return the prefix.
+    """
+    global trie
+
+    prefix = prefix.lower()
+    limit = min(limit, 100)
+
+    if len(prefix) < 3:
+        return [prefix]
+
+    results = ["".join(x).strip() for x in islice(trie.iter(prefix=prefix), limit)]
+    return results
