@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from itertools import islice
+from functools import wraps
 
 import redis
 from fastapi import FastAPI, HTTPException
@@ -121,9 +122,12 @@ async def enqueue_and_wait(func, *args, **kwargs):
 
 
 def lowercase_tok(func):
-    async def neighbors(tok):
-        return await func(tok.lower())
-    return neighbors
+    @wraps(func)
+    async def anon(tok, *args, **kwargs):
+        return await func(tok.lower(), *args, **kwargs)
+
+    return anon
+
 
 # ========================================================================
 # === endpoints
