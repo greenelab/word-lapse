@@ -22,7 +22,7 @@ on:
     branches:
     - main
     paths:
-      - "server"
+      - "server/**"
 env:
   PROJECT_ID: ${{ secrets.GCE_PROJECT }}
   GCE_INSTANCE: word-lapse-api  # TODO: update to instance name
