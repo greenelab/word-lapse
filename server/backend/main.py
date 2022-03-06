@@ -80,6 +80,15 @@ async def init_rq():
     queue = Queue("w2v_queries", connection=r)
 
 
+@app.on_event("startup")
+def init_autocomplete_trie():
+    global trie
+    with open("./data/full_vocab.txt", "r") as fp:
+        trie = PrefixSet()
+        for line in fp:
+            trie.add(line)
+
+
 # ========================================================================
 # === helper methods
 # ========================================================================
