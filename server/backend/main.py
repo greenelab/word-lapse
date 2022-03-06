@@ -69,7 +69,10 @@ async def init_redis_cache():
     # occasional disk persistence.
     global redis_cache
     redis_cache = FastApiRedisCache()
-    redis_cache.init(host_url=os.environ.get("REDIS_URL"))
+    redis_cache.init(
+        host_url=os.environ.get("REDIS_URL"),
+        prefix="wlc"
+    )
 
 
 @app.on_event("startup")
@@ -110,6 +113,7 @@ async def wait_on_job(job):
 
         return job.result
     except Exception as ex:
+        print(ex)
         raise HTTPException(status_code=500, detail="Job process exception: %s" % ex)
 
 

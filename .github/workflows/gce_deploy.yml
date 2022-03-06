@@ -28,6 +28,10 @@ env:
   GCE_INSTANCE: word-lapse-api  # TODO: update to instance name
   GCE_INSTANCE_ZONE: us-central1-a   # TODO: update to instance zone
 
+defaults:
+  run:
+    working-directory: ./server
+
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
