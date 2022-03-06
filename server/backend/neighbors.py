@@ -31,15 +31,19 @@ word_models = None
 
 def extract_frequencies(tok: str):
     # Extract the frequencies
-    frequency_table = pd.read_csv(
-        data_folder / Path("all_tok_frequencies.tsv.xz"), sep="\t"
-    )
+    frequency_table = pd.read_csv( data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t" )
+
+    # note: previously, frequency was a float column in the above csv, but
+    # it's been replaced with word_count, an integer. since the frontend doesn't
+    # care whether it's a float or an int, we've renamed it here to 'frequency'
+    # so everything continues to work...
 
     frequency_output_df = (
         frequency_table
         >> ply.query("tok == @tok")
-        >> ply.select("year", "frequency")
-        >> ply.call(".astype", {"year": int})
+        >> ply.select("year", "word_count")
+        >> ply.rename({"frequency": "word_count"})
+        >> ply.call(".astype", {"year": int, "frequency": int})
     )
 
     return frequency_output_df >> ply.call(".to_dict", orient="records")
@@ -48,7 +52,7 @@ def extract_frequencies(tok: str):
 def cutoff_points(tok: str):
     # Extract Estimated Cutoff Points
     cutoff_points = pd.read_csv(
-        data_folder / Path("cusum_changepoint_abstracts.tsv"), sep="\t"
+        data_folder / Path("abstract_changepoints.tsv"), sep="\t"
     )
 
     result = (
@@ -59,9 +63,8 @@ def cutoff_points(tok: str):
     )
 
     # split hyphens, unnest from object, and return
-    return [
-        [ y.strip() for y in x['changepoint_idx'].split("-") ] for x in result
-    ]
+    return [[y.strip() for y in x["changepoint_idx"].split("-")] for x in result]
+
 
 # ========================================================================
 # === extract_neighbors()
@@ -100,7 +103,7 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
     model_suffix = "wordvectors" if use_keyedvec else "model"
 
     def extract_year(k):
-        return re.search(r"(\d+)_(\d).%s" % model_suffix, str(k)).group(1)
+        return re.search(r"(\d+)_(\d)[^.]*\.%s" % model_suffix, str(k)).group(1)
 
     # first, produce a list of word models sorted by year
     # (groupby requires a sorted list, since it accumulates groups linearly)
