@@ -139,7 +139,7 @@ def lowercase_tok(func):
 
 
 @app.get("/")
-async def server_meta(worker_details:bool=False):
+async def server_meta(worker_details: bool = False, cache_details: bool = True):
     """
     Returns metadata about the server, e.g. config variables, the
     commit that was used to build the server, etc.
@@ -147,8 +147,13 @@ async def server_meta(worker_details:bool=False):
 
     # gather info about worker pools, load, etc.
     r = redis.from_url(os.environ.get("REDIS_URL"))
-    runtime = {
-        "total_workers": Worker.count(connection=r)
+    runtime = {"total_workers": Worker.count(connection=r)}
+
+    payload = {
+        "name": "Word Lapse API",
+        "commit_sha": os.environ.get("COMMIT_SHA", "unspecified"),
+        "config": get_config_values(),
+        "runtime": runtime,
     }
 
     if worker_details:
@@ -157,19 +162,24 @@ async def server_meta(worker_details:bool=False):
             worker.hostname: {
                 "state": worker.state,
                 "queues": str(worker.queues),
-                "current_job": getattr(worker, 'current_job', None),
+                "current_job": getattr(worker, "current_job", None),
                 "successes": worker.successful_job_count,
-                "failures": worker.failed_job_count
+                "failures": worker.failed_job_count,
             }
             for worker in workers
         }
 
-    return {
-        "name": "Word Lapse API",
-        "commit_sha": os.environ.get("COMMIT_SHA", "unspecified"),
-        "config": get_config_values(),
-        "runtime": runtime
+    if cache_details:
+        # prefix = redis_cache.get_cache_key(neighbors, "").split("tok=")[0]
+        rq_keys = len(r.keys(f"rq:*"))
+        keyspace = r.info("keyspace")
+        payload["cache"] = {
+            # "entries": len(r.keys(f"{prefix}*")),
+            "cached_entries": int(keyspace["db0"]["keys"]) - rq_keys,
+            "keyspace": keyspace,
     }
+
+    return payload
 
 
 @app.get("/ping")
