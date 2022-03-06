@@ -26,16 +26,16 @@ export RQ_CONCURRENCY=${RQ_CONCURRENCY:-1}
 if [ ${USE_INLINE_RQ:-0} -eq 1 ]; then
     mkdir -p /var/log/w2v_worker/
 
-    echo "* Booting ${RQ_CONCURRENCY} rq worker(s)..."
-    (
-        cd /app
-        for x in $( seq ${RQ_CONCURRENCY} ); do
-            python -m backend.w2v_worker w2v_queries \
-                >  /var/log/w2v_worker/${x}_stdout \
-                2> /var/log/w2v_worker/${x}_stderr &
-            echo " -> ${x} worker booted"
-        done
-    )
+    if [[ ${DEBUG:-0} -eq 1 ]] && [[ ${NO_WORKER_RELOAD:-0} -ne 1 ]]; then
+        echo "* RQ: debug enabled, enabling autoreloading"
+        export ENTR_INOTIFY_WORKAROUND=1
+        ( find ./backend | entr -r ./_boot_workers.sh ) &
+    else
+        # just boot them normally
+        # FIXME: find a way to not repeat this block
+        #  (functions don't work w/entr, sadly...)
+        ./_boot_workers.sh &
+    fi
 fi
 
 # time before gunicorn decides a worker is "dead"

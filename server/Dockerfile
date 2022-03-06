@@ -6,7 +6,7 @@ WORKDIR /app
 
 # install git-lfs, so we can pull lfs files
 # also install letsencrypt, so we can update our SSL cert before running
-RUN apt update && apt install -y git-lfs letsencrypt redis-server
+RUN apt update && apt install -y git-lfs letsencrypt redis-server entr
 
 # set up redis a bit
 RUN mkdir -p /redis/data
