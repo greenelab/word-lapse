@@ -9,3 +9,7 @@
 # !/.git/HEAD
 # !/.git/config
 # !/.git/refs
+
+# also ignore pycache and *.pyc files
+__pycache__/
+*.py[cod]
