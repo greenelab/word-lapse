@@ -42,6 +42,7 @@ def extract_frequencies(tok: str):
         frequency_table
         >> ply.query("tok == @tok")
         >> ply.select("year", "word_count")
+        >> ply.arrange("year")
         >> ply.rename({"frequency": "word_count"})
         >> ply.call(".astype", {"year": int, "frequency": int})
     )
