@@ -225,6 +225,8 @@ async def neighbors(request:Request, tok: str):
     """
     from .w2v_worker import get_neighbors
 
+    logger.info("Serving request for %s..." % tok)
+
     # construct unique job id
     new_job_id = f"get_neighbors__{tok}"
 
@@ -233,12 +235,21 @@ async def neighbors(request:Request, tok: str):
         r = redis.from_url(os.environ.get("REDIS_URL"))
         existing_job = Job.fetch(new_job_id, connection=r)
 
+        logger.info("Found existing job! %s" % existing_job)
+
+        if existing_job.get_status() == 'failed':
+            logger.info("..but job %s has staus failed" % existing_job)
+            raise NoSuchJobError()
+
         return await wait_on_job(existing_job)
 
     except NoSuchJobError:
+        logger.info("Creating new job for %s" % tok)
+
         # create and fire off a new job
         return await enqueue_and_wait(
-            get_neighbors, tok=tok, job_timeout=800, job_id=new_job_id
+            get_neighbors, tok=tok, job_timeout=800, job_id=new_job_id,
+            result_ttl=10, failure_ttl=10
         )
 
 
