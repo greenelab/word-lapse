@@ -6,7 +6,7 @@ from itertools import islice
 from functools import wraps
 
 import redis
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi_redis_cache import FastApiRedisCache, cache
 from pygtrie import PrefixSet
 from rq import Queue, Worker
@@ -125,12 +125,17 @@ async def enqueue_and_wait(func, *args, **kwargs):
     return await wait_on_job(queue.enqueue(func, *args, **kwargs))
 
 
-def lowercase_tok(func):
+def lowercase_field(target_field='tok'):
+    def decorator(func):
     @wraps(func)
-    async def anon(tok, *args, **kwargs):
-        return await func(tok.lower(), *args, **kwargs)
+        async def anon(*args, **kwargs):
+            if target_field in kwargs:
+                kwargs[target_field] = kwargs[target_field].lower()
+            return await func(*args, **kwargs)
 
     return anon
+
+    return decorator
 
 
 # ========================================================================
@@ -193,9 +198,9 @@ async def ping_workers():
 
 
 @app.get("/neighbors")
-@lowercase_tok
+@lowercase_field()
 @cache()
-async def neighbors(tok: str):
+async def neighbors(request:Request, tok: str):
     """
     Returns information about the token 'tok' over all the years in the dataset.
 
@@ -238,7 +243,7 @@ async def neighbors(tok: str):
 
 
 @app.get("/neighbors/cached")
-@lowercase_tok
+@lowercase_field()
 async def neighbors_is_cached(tok: str):
     """
     Queries the cache for 'tok', returning the token in the 'token'
