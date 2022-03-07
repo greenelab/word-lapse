@@ -127,13 +127,13 @@ async def enqueue_and_wait(func, *args, **kwargs):
 
 def lowercase_field(target_field='tok'):
     def decorator(func):
-    @wraps(func)
+        @wraps(func)
         async def anon(*args, **kwargs):
             if target_field in kwargs:
                 kwargs[target_field] = kwargs[target_field].lower()
             return await func(*args, **kwargs)
 
-    return anon
+        return anon
 
     return decorator
 
