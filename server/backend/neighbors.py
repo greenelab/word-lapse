@@ -23,6 +23,15 @@ data_folder = Path("./data")
 # (pre-populated on server startup if .config.WARM_CACHE is true)
 word_models = None
 
+# Conccept ID Mapper
+concept_id_mapper = pd.read_csv("all_concept_ids.tsv.xz", sep="\t") >> ply.define(
+    concept_id="concept_id.str.lower()"
+)
+
+concept_id_mapper_dict = dict(
+    zip(concept_id_mapper.concept_id.tolist(), concept_id_mapper.concept.tolist())
+)
+
 
 # ========================================================================
 # === extract_frequencies(), cutoff_points()
@@ -31,7 +40,9 @@ word_models = None
 
 def extract_frequencies(tok: str):
     # Extract the frequencies
-    frequency_table = pd.read_csv( data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t" )
+    frequency_table = pd.read_csv(
+        data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t"
+    )
 
     # note: previously, frequency was a float column in the above csv, but
     # it's been replaced with word_count, an integer. since the frontend doesn't
@@ -163,7 +174,6 @@ def query_model_for_tok(
     year,
     tok,
     model,
-    word_freq_count_cutoff: int = 30,
     neighbors: int = 25,
     use_keyedvec: bool = True,
 ):
@@ -172,39 +182,36 @@ def query_model_for_tok(
     result = []
     word_vectors = model if use_keyedvec else model.wv
 
-    cutoff_index = min(
-        map(
-            lambda x: (
-                999999
-                if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
-                else x[0]
-            ),
-            enumerate(word_vectors.index_to_key),
-        )
-    )
-
     # Check to see if token is in the vocab
     vocab = set(word_vectors.key_to_index.keys())
 
     if tok in vocab:
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
-        word_neighbors = word_vectors.most_similar(
-            tok,
-            topn=neighbors,
-            clip_end=cutoff_index,
-        )
+        word_neighbors = word_vectors.most_similar(tok, topn=neighbors)
 
         # Append neighbor to word_neighbor_map
         for neighbor in word_neighbors:
-            result.append(neighbor[0])
+            word_neighbor = neighbor[0]
+            
+            # Convert tags that contain the following pattern
+            # disease_mesh_####### or chemical_mesh_#######
+            if "mesh" in word_neighbor:
+                word_neighbor = "_".join(word_neighbor.split("_")[1:])
+                
+            # Insert tagged suffix to show users that
+            # some concpets are tagged and some concepts are missed
+            # example: mcf-7 is a cellline but the token itself appears as well 
+            if word_neighbor in concept_id_mapper_dict:
+                word_neighbor = f"{concept_id_mapper_dict[word_neighbor]}_(tagged)"
+            
+            result.append(word_neighbor)
 
     return result
 
 
 def extract_neighbors(
     tok: str,
-    word_freq_count_cutoff: int = 30,
     neighbors: int = 25,
     use_keyedvec: bool = True,
 ):
@@ -241,7 +248,6 @@ def extract_neighbors(
                                 year,
                                 tok,
                                 model,
-                                word_freq_count_cutoff=word_freq_count_cutoff,
                                 neighbors=neighbors,
                                 use_keyedvec=use_keyedvec,
                             ),
@@ -258,7 +264,6 @@ def extract_neighbors(
                     year,
                     tok,
                     model,
-                    word_freq_count_cutoff=word_freq_count_cutoff,
                     neighbors=neighbors,
                     use_keyedvec=use_keyedvec,
                 )
