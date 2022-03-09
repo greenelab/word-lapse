@@ -207,7 +207,7 @@ def query_model_for_tok(
         # Append neighbor to word_neighbor_map
         for neighbor in word_neighbors:
             word_neighbor = neighbor[0]
-            is_tagged = False
+            tag_id = None
 
             # Convert tags that contain the following pattern
             # disease_mesh_####### or chemical_mesh_#######
@@ -218,10 +218,10 @@ def query_model_for_tok(
             # some concpets are tagged and some concepts are missed
             # example: mcf-7 is a cellline but the token itself appears as well
             if word_neighbor in concept_id_mapper_dict:
+                tag_id = word_neighbor
                 word_neighbor = concept_id_mapper_dict[word_neighbor]
-                is_tagged = True
 
-            result.append(dict(token=word_neighbor, is_tagged=is_tagged))
+            result.append(dict(token=word_neighbor, tag_id=tag_id))
 
     return result
 
