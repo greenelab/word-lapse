@@ -23,15 +23,8 @@ data_folder = Path("./data")
 # (pre-populated on server startup if .config.WARM_CACHE is true)
 word_models = None
 
-# Conccept ID Mapper
-concept_id_mapper = pd.read_csv("all_concept_ids.tsv.xz", sep="\t") >> ply.define(
-    concept_id="concept_id.str.lower()"
-)
-
-concept_id_mapper_dict = dict(
-    zip(concept_id_mapper.concept_id.tolist(), concept_id_mapper.concept.tolist())
-)
-
+# Enables tagged concepts to be denormalized (e.g. concept_id -> concept name)
+concept_id_mapper_dict = None
 
 # ========================================================================
 # === extract_frequencies(), cutoff_points()
@@ -81,6 +74,27 @@ def cutoff_points(tok: str):
 # ========================================================================
 # === extract_neighbors()
 # ========================================================================
+
+
+def get_concept_id_mapper():
+    """
+    Loads the concept mapper into a python dictionary format
+    """
+    global concept_id_mapper_dict
+
+    if not concept_id_mapper_dict:
+        concept_id_mapper = pd.read_csv(
+            data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
+        ) >> ply.define(concept_id="concept_id.str.lower()")
+
+        concept_id_mapper_dict = dict(
+            zip(
+                concept_id_mapper.concept_id.tolist(),
+                concept_id_mapper.concept.tolist(),
+            )
+        )
+
+    return concept_id_mapper_dict
 
 
 def load_word_model(model_path, use_keyedvec=True):
@@ -193,19 +207,21 @@ def query_model_for_tok(
         # Append neighbor to word_neighbor_map
         for neighbor in word_neighbors:
             word_neighbor = neighbor[0]
-            
+            is_tagged = False
+
             # Convert tags that contain the following pattern
             # disease_mesh_####### or chemical_mesh_#######
             if "mesh" in word_neighbor:
                 word_neighbor = "_".join(word_neighbor.split("_")[1:])
-                
+
             # Insert tagged suffix to show users that
             # some concpets are tagged and some concepts are missed
-            # example: mcf-7 is a cellline but the token itself appears as well 
-            if word_neighbor in concept_id_mapper_dict:
-                word_neighbor = f"{concept_id_mapper_dict[word_neighbor]}_(tagged)"
-            
-            result.append(word_neighbor)
+            # example: mcf-7 is a cellline but the token itself appears as well
+            if word_neighbor["token"] in concept_id_mapper_dict:
+                word_neighbor = concept_id_mapper_dict[word_neighbor]
+                is_tagged = True
+
+            result.append(dict(token=word_neighbor, is_tagged=is_tagged))
 
     return result
 

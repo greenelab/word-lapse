@@ -39,7 +39,7 @@ origins = [
     "https://greenelab.github.io",
     "http://localhost",
     "http://localhost:8080",
-    "http://localhost:3000"
+    "http://localhost:3000",
 ]
 origin_regex = "https://deploy-preview-.*--word-lapse.netlify.app"
 
@@ -69,10 +69,7 @@ async def init_redis_cache():
     # occasional disk persistence.
     global redis_cache
     redis_cache = FastApiRedisCache()
-    redis_cache.init(
-        host_url=os.environ.get("REDIS_URL"),
-        prefix="wlc"
-    )
+    redis_cache.init(host_url=os.environ.get("REDIS_URL"), prefix="wlc")
 
 
 @app.on_event("startup")
@@ -91,6 +88,12 @@ def init_autocomplete_trie():
         trie = PrefixSet()
         for line in fp:
             trie.add(line)
+
+
+@app.on_event("startup")
+def init_concept_map():
+    # prepopulates concept_id_mapper_dict before anything requests it
+    get_concept_id_mapper()
 
 
 # ========================================================================
@@ -125,7 +128,7 @@ async def enqueue_and_wait(func, *args, **kwargs):
     return await wait_on_job(queue.enqueue(func, *args, **kwargs))
 
 
-def lowercase_field(target_field='tok'):
+def lowercase_field(target_field="tok"):
     def decorator(func):
         @wraps(func)
         async def anon(*args, **kwargs):
@@ -182,7 +185,7 @@ async def server_meta(worker_details: bool = False, cache_details: bool = True):
             # "entries": len(r.keys(f"{prefix}*")),
             "cached_entries": int(keyspace["db0"]["keys"]) - rq_keys,
             "keyspace": keyspace,
-    }
+        }
 
     return payload
 
@@ -200,7 +203,7 @@ async def ping_workers():
 @app.get("/neighbors")
 @lowercase_field()
 @cache()
-async def neighbors(request:Request, tok: str):
+async def neighbors(request: Request, tok: str):
     """
     Returns information about the token 'tok' over all the years in the dataset.
 
@@ -237,7 +240,7 @@ async def neighbors(request:Request, tok: str):
 
         logger.info("Found existing job! %s" % existing_job)
 
-        if existing_job.get_status() == 'failed':
+        if existing_job.get_status() == "failed":
             logger.info("..but job %s has staus failed" % existing_job)
             raise NoSuchJobError()
 
@@ -248,8 +251,12 @@ async def neighbors(request:Request, tok: str):
 
         # create and fire off a new job
         return await enqueue_and_wait(
-            get_neighbors, tok=tok, job_timeout=800, job_id=new_job_id,
-            result_ttl=10, failure_ttl=10
+            get_neighbors,
+            tok=tok,
+            job_timeout=800,
+            job_id=new_job_id,
+            result_ttl=10,
+            failure_ttl=10,
         )
 
 
@@ -306,7 +313,7 @@ async def neighbors_cache(count: int = 100):
 
 
 @app.get("/autocomplete")
-async def autocomplete(prefix: str, limit:int=20):
+async def autocomplete(prefix: str, limit: int = 20):
     """
     Produces a list of words with prefix 'prefix' from across the entire corpus.
     Returns up to 'limit' entries (max 100).
