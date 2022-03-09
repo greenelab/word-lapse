@@ -17,8 +17,9 @@ from .neighbors import (
 )
 from .tracking import ExecTimer
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 def get_neighbors(tok: str):
     with ExecTimer() as timer:

@@ -14,10 +14,13 @@ from rq.exceptions import NoSuchJobError
 from rq.job import Job
 from starlette.middleware.cors import CORSMiddleware
 
-from .config import get_config_values
+from .config import get_config_values, DEBUG
 from .tracking import ExecTimer
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 app = FastAPI()
 
