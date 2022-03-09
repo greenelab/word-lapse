@@ -217,7 +217,7 @@ def query_model_for_tok(
             # Insert tagged suffix to show users that
             # some concpets are tagged and some concepts are missed
             # example: mcf-7 is a cellline but the token itself appears as well
-            if word_neighbor["token"] in concept_id_mapper_dict:
+            if word_neighbor in concept_id_mapper_dict:
                 word_neighbor = concept_id_mapper_dict[word_neighbor]
                 is_tagged = True
 
