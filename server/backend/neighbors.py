@@ -1,3 +1,5 @@
+import os
+import pickle
 import re
 from itertools import groupby
 from pathlib import Path
@@ -76,23 +78,35 @@ def cutoff_points(tok: str):
 # ========================================================================
 
 
-def get_concept_id_mapper():
+def get_concept_id_mapper(use_pickle=True, write_pickle=True):
     """
     Loads the concept mapper into a python dictionary format
     """
     global concept_id_mapper_dict
 
     if not concept_id_mapper_dict:
-        concept_id_mapper = pd.read_csv(
-            data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
-        ) >> ply.define(concept_id="concept_id.str.lower()")
+        # check if a pickled version exists
+        pickled_path = data_folder / Path("concept_dict.pkl")
 
-        concept_id_mapper_dict = dict(
-            zip(
-                concept_id_mapper.concept_id.tolist(),
-                concept_id_mapper.concept.tolist(),
+        if use_pickle and os.path.exists(pickled_path):
+            with open(pickled_path, "rb") as fp:
+                concept_id_mapper_dict = pickle.load(fp)
+        else:
+            concept_id_mapper = pd.read_csv(
+                data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
+            ) >> ply.define(concept_id="concept_id.str.lower()")
+
+            concept_id_mapper_dict = dict(
+                zip(
+                    concept_id_mapper.concept_id.tolist(),
+                    concept_id_mapper.concept.tolist(),
+                )
             )
-        )
+
+            # serialize to a pickle to save us some time
+            if write_pickle:
+                with open(pickled_path, "wb") as fp:
+                    pickle.dump(concept_id_mapper_dict, fp)
 
     return concept_id_mapper_dict
 
