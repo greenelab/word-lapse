@@ -15,6 +15,7 @@ from rq.job import Job
 from starlette.middleware.cors import CORSMiddleware
 
 from .config import get_config_values
+from .tracking import ExecTimer
 
 logger = logging.getLogger(__name__)
 
@@ -84,17 +85,14 @@ async def init_rq():
 @app.on_event("startup")
 def init_autocomplete_trie():
     global trie
-    with open("./data/full_vocab.txt", "r") as fp:
-        trie = PrefixSet()
-        for line in fp:
-            trie.add(line)
 
-
-@app.on_event("startup")
-def init_concept_map():
-    # prepopulates concept_id_mapper_dict before anything requests it
-    get_concept_id_mapper()
-
+    with ExecTimer(verbose=True):
+        logger.info("Starting trie load...")
+        with open("./data/full_vocab.txt", "r") as fp:
+            trie = PrefixSet()
+            for line in fp:
+                trie.add(line)
+        logger.info("...trie loading done!")
 
 # ========================================================================
 # === helper methods
