@@ -53,7 +53,7 @@ export const getResults = async (query) => {
   //  is going to need to be updated...
   results.neighbors = (
     Object.entries(results.neighbors)
-      .map(([year, entries]) => [year, entries.map(({ token }) => token)])
+      .map(([year, entries]) => [year, entries.map((x) => x.token || x)])
       .reduce((coll, [year, entries]) => { coll[year] = entries; return coll; }, {})
   )
 
