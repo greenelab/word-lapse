@@ -7,7 +7,7 @@ import redis
 
 from rq import Connection, Worker
 
-from .config import MATERIALIZE_MODELS, WARM_CACHE
+from .config import MATERIALIZE_MODELS, WARM_CACHE, DEBUG
 from .neighbors import (
     cutoff_points,
     extract_frequencies,
@@ -17,9 +17,8 @@ from .neighbors import (
 )
 from .tracking import ExecTimer
 
-logging.basicConfig()
+logging.basicConfig(stream=sys.stdout, level=logging.INFO if not DEBUG else logging.DEBUG)
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 def get_neighbors(tok: str):
     with ExecTimer() as timer:
