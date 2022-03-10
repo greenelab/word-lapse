@@ -47,6 +47,16 @@ export const getResults = async (query) => {
   for (const [key, value] of Object.entries(results.neighbors))
     if (!value.length) delete results.neighbors[key];
 
+  // remap neighbors to just the token field, removing tagged_id
+  // FIXME: if we want to present the tagged_id field in the UI,
+  //  i presume everything that relies on it just being a list of strings
+  //  is going to need to be updated...
+  results.neighbors = (
+    Object.entries(results.neighbors)
+      .map(([year, entries]) => [year, entries.map(({ token }) => token)])
+      .reduce((coll, [year, entries]) => { coll[year] = entries; return coll; }, {})
+  )
+
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);
 
