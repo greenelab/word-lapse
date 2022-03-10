@@ -1,3 +1,5 @@
+import os
+import pickle
 import re
 from itertools import groupby
 from pathlib import Path
@@ -23,6 +25,8 @@ data_folder = Path("./data")
 # (pre-populated on server startup if .config.WARM_CACHE is true)
 word_models = None
 
+# Enables tagged concepts to be denormalized (e.g. concept_id -> concept name)
+concept_id_mapper_dict = None
 
 # ========================================================================
 # === extract_frequencies(), cutoff_points()
@@ -31,7 +35,9 @@ word_models = None
 
 def extract_frequencies(tok: str):
     # Extract the frequencies
-    frequency_table = pd.read_csv( data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t" )
+    frequency_table = pd.read_csv(
+        data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t"
+    )
 
     # note: previously, frequency was a float column in the above csv, but
     # it's been replaced with word_count, an integer. since the frontend doesn't
@@ -70,6 +76,39 @@ def cutoff_points(tok: str):
 # ========================================================================
 # === extract_neighbors()
 # ========================================================================
+
+
+def get_concept_id_mapper(use_pickle=True, write_pickle=True):
+    """
+    Loads the concept mapper into a python dictionary format
+    """
+    global concept_id_mapper_dict
+
+    if not concept_id_mapper_dict:
+        # check if a pickled version exists
+        pickled_path = data_folder / Path("concept_dict.pkl")
+
+        if use_pickle and os.path.exists(pickled_path):
+            with open(pickled_path, "rb") as fp:
+                concept_id_mapper_dict = pickle.load(fp)
+        else:
+            concept_id_mapper = pd.read_csv(
+                data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
+            ) >> ply.define(concept_id="concept_id.str.lower()")
+
+            concept_id_mapper_dict = dict(
+                zip(
+                    concept_id_mapper.concept_id.tolist(),
+                    concept_id_mapper.concept.tolist(),
+                )
+            )
+
+            # serialize to a pickle to save us some time
+            if write_pickle:
+                with open(pickled_path, "wb") as fp:
+                    pickle.dump(concept_id_mapper_dict, fp)
+
+    return concept_id_mapper_dict
 
 
 def load_word_model(model_path, use_keyedvec=True):
@@ -163,7 +202,6 @@ def query_model_for_tok(
     year,
     tok,
     model,
-    word_freq_count_cutoff: int = 30,
     neighbors: int = 25,
     use_keyedvec: bool = True,
 ):
@@ -172,39 +210,38 @@ def query_model_for_tok(
     result = []
     word_vectors = model if use_keyedvec else model.wv
 
-    cutoff_index = min(
-        map(
-            lambda x: (
-                999999
-                if word_vectors.get_vecattr(x[1], "count") > word_freq_count_cutoff
-                else x[0]
-            ),
-            enumerate(word_vectors.index_to_key),
-        )
-    )
-
     # Check to see if token is in the vocab
     vocab = set(word_vectors.key_to_index.keys())
 
     if tok in vocab:
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
-        word_neighbors = word_vectors.most_similar(
-            tok,
-            topn=neighbors,
-            clip_end=cutoff_index,
-        )
+        word_neighbors = word_vectors.most_similar(tok, topn=neighbors)
 
         # Append neighbor to word_neighbor_map
         for neighbor in word_neighbors:
-            result.append(neighbor[0])
+            word_neighbor = neighbor[0]
+            tag_id = None
+
+            # Convert tags that contain the following pattern
+            # disease_mesh_####### or chemical_mesh_#######
+            if "mesh" in word_neighbor:
+                word_neighbor = "_".join(word_neighbor.split("_")[1:])
+
+            # Insert tagged suffix to show users that
+            # some concpets are tagged and some concepts are missed
+            # example: mcf-7 is a cellline but the token itself appears as well
+            if word_neighbor in concept_id_mapper_dict:
+                tag_id = word_neighbor
+                word_neighbor = concept_id_mapper_dict[word_neighbor]
+
+            result.append(dict(token=word_neighbor, tag_id=tag_id))
 
     return result
 
 
 def extract_neighbors(
     tok: str,
-    word_freq_count_cutoff: int = 30,
     neighbors: int = 25,
     use_keyedvec: bool = True,
 ):
@@ -241,7 +278,6 @@ def extract_neighbors(
                                 year,
                                 tok,
                                 model,
-                                word_freq_count_cutoff=word_freq_count_cutoff,
                                 neighbors=neighbors,
                                 use_keyedvec=use_keyedvec,
                             ),
@@ -258,7 +294,6 @@ def extract_neighbors(
                     year,
                     tok,
                     model,
-                    word_freq_count_cutoff=word_freq_count_cutoff,
                     neighbors=neighbors,
                     use_keyedvec=use_keyedvec,
                 )

@@ -13,11 +13,13 @@ from .neighbors import (
     extract_frequencies,
     extract_neighbors,
     materialized_word_models,
+    get_concept_id_mapper
 )
 from .tracking import ExecTimer
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 def get_neighbors(tok: str):
     with ExecTimer() as timer:
@@ -44,12 +46,25 @@ def get_neighbors(tok: str):
             "elapsed": timer.snapshot(),
         }
 
+def load_concept_map():
+    with ExecTimer(verbose=True):
+        # prepopulates concept_id_mapper_dict before anything requests it
+        logger.info("Starting concept mapper load...")
+        get_concept_id_mapper()
+        logger.info("...concept loading done!")
+
 
 def ping(response: str):
     return "pong! %s" % response
 
 
 if __name__ == "__main__":
+    logger.info("Worker started up")
+
+    # load the concept map
+    load_concept_map()
+
+    # load all the year models
     if MATERIALIZE_MODELS and WARM_CACHE:
         # invoke to cache word models into 'word_models'
         logger.info("Warming enabled, preloading word2vec models...")
