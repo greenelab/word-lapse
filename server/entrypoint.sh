@@ -26,9 +26,18 @@ export RQ_CONCURRENCY=${RQ_CONCURRENCY:-1}
 if [ ${USE_INLINE_RQ:-0} -eq 1 ]; then
     mkdir -p /var/log/w2v_worker/
 
-    if [[ ${DEBUG:-0} -eq 1 ]] && [[ ${NO_WORKER_RELOAD:-0} -ne 1 ]]; then
+    # test if entr could work
+    entr -r 'echo hi' > /dev/null 2>&1
+    ENTR_CODE=$?
+
+    if [[ ${ENTR_CODE} -ne 0 ]]; then
+        echo " * ERROR: entr test failed (code ${ENTR_CODE}), skipping auto-reload"
+    fi
+
+    if [[ ${ENTR_CODE} -eq 0 ]] && [[ ${DEBUG:-0} -eq 1 ]] && [[ ${NO_WORKER_RELOAD:-0} -ne 1 ]]; then
         echo "* RQ: debug enabled, enabling autoreloading"
-        export ENTR_INOTIFY_WORKAROUND=1
+        export ENTR_INOTIFY_WORKAROUND=0
+        
         ( find ./backend | entr -r ./_boot_workers.sh ) &
     else
         # just boot them normally
