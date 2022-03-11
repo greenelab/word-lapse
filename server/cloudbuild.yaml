@@ -3,6 +3,7 @@ steps:
   args: [
     'build',
       '-t', 'gcr.io/$PROJECT_ID/word-lapse-api-image:${_COMMIT_SHA}',
+      '--cache-from', 'gcr.io/$PROJECT_ID/word-lapse-api-image:latest',
       '--build-arg', 'SHORT_SHA=${_SHORT_SHA}',
       '--build-arg', 'COMMIT_SHA=${_COMMIT_SHA}',
       '.'
