@@ -50,18 +50,25 @@ concept_id_mapper_dict = None
 # === extract_frequencies(), cutoff_points()
 # ========================================================================
 
+class CorpusNotFoundException(Exception):
+    def __init__(self, corpus) -> None:
+        self.corpus = corpus
+        self.message = 'Corpus %s not found in set %s' % (corpus, CORPORA_SET)
+        super().__init__(self.message)
 
 def extract_frequencies(tok: str, corpus: str):
     corpus_paths = {
         'abstracts': data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
-        'fulltexts': data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),
-        
+        'fulltexts': data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),   
     }
 
     # Extract the frequencies
-    frequency_table = pd.read_csv(
-        corpus_paths[corpus], sep="\t"
-    )
+    try:
+        frequency_table = pd.read_csv(
+            corpus_paths[corpus], sep="\t"
+        )
+    except KeyError:
+        raise CorpusNotFoundException(corpus=corpus)
 
     # note: previously, frequency was a float column in the above csv, but
     # it's been replaced with word_count, an integer. since the frontend doesn't
@@ -88,7 +95,10 @@ def cutoff_points(tok: str, corpus: str):
     }
 
     # Extract Estimated Cutoff Points
-    cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t" )
+    try:
+        cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t" )
+    except KeyError:
+        raise CorpusNotFoundException(corpus=corpus)
 
     result = (
         cutoff_points
@@ -173,10 +183,7 @@ def word_models_by_year(corpus=None, only_first=True, use_keyedvec=True, just_re
     model_suffix = "wordvectors" if use_keyedvec else "model"
 
     if not corpus or corpus not in CORPORA_SET:
-        logger.info("Corpus %s requested, but not found in %s" % (corpus, CORPORA_SET))
-        raise HTTPException(
-            status_code=400, detail="Requested corpus '%s' not in corpus set %s" % (corpus, CORPORA_SET)
-        )
+        raise CorpusNotFoundException(corpus=corpus)
 
     def extract_year(k):
         return re.search(r"(\d+)_(\d)[^.]*\.%s" % model_suffix, str(k)).group(1)

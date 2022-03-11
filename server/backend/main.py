@@ -14,7 +14,7 @@ from rq.exceptions import NoSuchJobError
 from rq.job import Job
 from starlette.middleware.cors import CORSMiddleware
 
-from .config import get_config_values, DEBUG
+from .config import CORPORA_SET, get_config_values, DEBUG
 from .tracking import ExecTimer
 
 logging.basicConfig()
@@ -229,6 +229,13 @@ async def neighbors(request: Request, tok: str, corpus: str = 'abstracts'):
     the server.
     """
     from .w2v_worker import get_neighbors
+
+    # validate the corpus before we send off a job, since it's hard to read the exception there
+    if corpus not in CORPORA_SET:
+        logger.info("Corpus %s requested, but not found in %s" % (corpus, CORPORA_SET))
+        raise HTTPException(
+            status_code=400, detail="Requested corpus '%s' not in corpus set %s" % (corpus, CORPORA_SET)
+        )
 
     logger.info("Serving request for %s..." % tok)
 
