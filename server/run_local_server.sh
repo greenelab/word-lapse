@@ -17,12 +17,15 @@ TAG=$COMMIT_SHA
             .
 ) && \
     docker run --name word-lapse-api --rm -it \
+        --platform linux/amd64 \
         -p 8080:80 \
         -v $PWD:/app \
         -v $PWD/data:/app/data \
         -v redis_data:/redis/data \
         -e USE_HTTPS=0 -e UPDATE_DATA=0 \
         -e USE_INLINE_REDIS=1 \
-        -e DEBUG=1 \
+        -e RQ_CONCURRENCY=1 \
+        -e REDIS_URL='redis://localhost:6379' \
+        -e DEBUG=0 \
         --env-file=instance_env \
         ${IMAGE}:${TAG} "$@"
