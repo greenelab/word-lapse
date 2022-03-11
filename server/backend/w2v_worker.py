@@ -7,7 +7,7 @@ import redis
 
 from rq import Connection, Worker
 
-from .config import MATERIALIZE_MODELS, WARM_CACHE, DEBUG
+from .config import CORPORA_SET, MATERIALIZE_MODELS, WARM_CACHE, DEBUG
 from .neighbors import (
     cutoff_points,
     extract_frequencies,
@@ -17,10 +17,11 @@ from .neighbors import (
 )
 from .tracking import ExecTimer
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO if not DEBUG else logging.DEBUG)
+logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-def get_neighbors(tok: str):
+def get_neighbors(tok: str, corpus: str):
     with ExecTimer() as timer:
         # Extract the frequencies
         frequency_output = extract_frequencies(tok)
@@ -31,7 +32,7 @@ def get_neighbors(tok: str):
         logger.info("finished cutoff_points()...")
 
         # Extract the neighbors
-        word_neighbor_map = extract_neighbors(tok)
+        word_neighbor_map = extract_neighbors(tok, corpus=corpus)
         logger.info("finished word_neighbor_map()...")
 
         # Final Return Object
@@ -67,7 +68,9 @@ if __name__ == "__main__":
     if MATERIALIZE_MODELS and WARM_CACHE:
         # invoke to cache word models into 'word_models'
         logger.info("Warming enabled, preloading word2vec models...")
-        materialized_word_models()
+        for corpus in CORPORA_SET:
+            logger.info("Materializing '%s' corpus" % corpus)
+            materialized_word_models(corpus=corpus)
 
     queues = sys.argv[1:] or ["default"]
 

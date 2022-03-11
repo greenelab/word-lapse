@@ -34,6 +34,9 @@ def is_truthy(v):
 # when DEBUG is true, uvicorn will run in debug mode with autoreload enabled
 DEBUG = is_truthy(os.environ.get("DEBUG", False))
 
+# the set of corpora in the data folder
+CORPORA_SET = ('abstracts', 'fulltexts')
+
 # if env var USE_MEMMAP is truthy, loads word2vec models using the mmap='r' flag,
 # which largely keeps them on disk and keeps a single copy when sharing between
 # processes
@@ -63,6 +66,7 @@ RQ_CONCURRENCY = int(os.environ.get("RQ_CONCURRENCY", -1))
 def get_config_values():
     return {
         "DEBUG": DEBUG,
+        "CORPORA_SET": CORPORA_SET,
         "USE_MEMMAP": USE_MEMMAP,
         "MATERIALIZE_MODELS": MATERIALIZE_MODELS,
         "WARM_CACHE": WARM_CACHE,
@@ -75,6 +79,7 @@ def get_config_values():
 
 def emit_config():
     print("Debug enabled (DEBUG)?: %s" % DEBUG, flush=True)
+    print("Corpora set: %s" % CORPORA_SET, flush=True)
     print("Memory-mapped models (USE_MEMMAP)?: %s" % USE_MEMMAP, flush=True)
     print(
         "Materialized models (MATERIALIZE_MODELS)?: %s" % MATERIALIZE_MODELS, flush=True
