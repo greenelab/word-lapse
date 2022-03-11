@@ -24,11 +24,11 @@ logger.setLevel(logging.INFO)
 def get_neighbors(tok: str, corpus: str):
     with ExecTimer() as timer:
         # Extract the frequencies
-        frequency_output = extract_frequencies(tok)
+        frequency_output = extract_frequencies(tok, corpus)
         logger.info("finished extract_frequencies()...")
 
         # Extract Estimated Cutoff Points
-        changepoint_output = cutoff_points(tok)
+        changepoint_output = cutoff_points(tok, corpus)
         logger.info("finished cutoff_points()...")
 
         # Extract the neighbors

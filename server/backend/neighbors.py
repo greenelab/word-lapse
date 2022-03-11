@@ -1,4 +1,5 @@
 import logging
+import mmap
 import os
 import pickle
 import re
@@ -50,10 +51,16 @@ concept_id_mapper_dict = None
 # ========================================================================
 
 
-def extract_frequencies(tok: str):
+def extract_frequencies(tok: str, corpus: str):
+    corpus_paths = {
+        'abstracts': data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
+        'fulltexts': data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),
+        
+    }
+
     # Extract the frequencies
     frequency_table = pd.read_csv(
-        data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t"
+        corpus_paths[corpus], sep="\t"
     )
 
     # note: previously, frequency was a float column in the above csv, but
@@ -73,11 +80,15 @@ def extract_frequencies(tok: str):
     return frequency_output_df >> ply.call(".to_dict", orient="records")
 
 
-def cutoff_points(tok: str):
+def cutoff_points(tok: str, corpus: str):
+    corpus_paths = {
+        'abstracts': data_folder / Path("abstract_changepoints.tsv"),
+        'fulltexts': data_folder / Path("fulltext_changepoints.tsv"),
+        
+    }
+
     # Extract Estimated Cutoff Points
-    cutoff_points = pd.read_csv(
-        data_folder / Path("abstract_changepoints.tsv"), sep="\t"
-    )
+    cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t" )
 
     result = (
         cutoff_points
@@ -107,7 +118,8 @@ def get_concept_id_mapper(use_pickle=True, write_pickle=True):
 
         if use_pickle and os.path.exists(pickled_path):
             with open(pickled_path, "rb") as fp:
-                concept_id_mapper_dict = pickle.load(fp)
+                with mmap.mmap(fp.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
+                    concept_id_mapper_dict = pickle.load(mmap_obj)
         else:
             concept_id_mapper = pd.read_csv(
                 data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
