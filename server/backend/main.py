@@ -204,9 +204,10 @@ async def ping_workers():
 @app.get("/neighbors")
 @lowercase_field()
 @cache()
-async def neighbors(request: Request, tok: str):
+async def neighbors(request: Request, tok: str, corpus: str = 'abstracts'):
     """
-    Returns information about the token 'tok' over all the years in the dataset.
+    Returns information about the token 'tok' over all the years in the dataset
+    specified by 'corpus' (either 'abstracts' or 'fulltext', default 'abstracts').
 
     Note that this operation can take a long time (1 minute+) if the word is not
     cached. If it's previously been cached and hasn't been evicted, response times
@@ -232,7 +233,7 @@ async def neighbors(request: Request, tok: str):
     logger.info("Serving request for %s..." % tok)
 
     # construct unique job id
-    new_job_id = f"get_neighbors__{tok}"
+    new_job_id = f"get_neighbors__{corpus}_{tok}"
 
     try:
         # attempt to fetch and wait on an existing job
@@ -253,7 +254,7 @@ async def neighbors(request: Request, tok: str):
         # create and fire off a new job
         return await enqueue_and_wait(
             get_neighbors,
-            tok=tok,
+            tok=tok, corpus=corpus,
             job_timeout=800,
             job_id=new_job_id,
             result_ttl=10,
@@ -263,15 +264,17 @@ async def neighbors(request: Request, tok: str):
 
 @app.get("/neighbors/cached")
 @lowercase_field()
-async def neighbors_is_cached(tok: str):
+async def neighbors_is_cached(tok: str, corpus: str = 'abstracts'):
     """
     Queries the cache for 'tok', returning the token in the 'token'
     field and whether it's cached or not in the 'is_cached' field.
 
+    corpus: which corpus to search (one of 'abstracts, 'fulltexts'), default 'abstracts'
+
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.
     """
-    key = redis_cache.get_cache_key(neighbors, request=None, tok=tok)
+    key = redis_cache.get_cache_key(neighbors, request=None, tok=tok, corpus=corpus)
     (_, in_cache) = redis_cache.check_cache(key)
     return {"token": tok, "is_cached": True if in_cache is not None else False}
 
@@ -296,21 +299,23 @@ async def neighbors_cache(count: int = 100):
     # clamp count to something reasonable
     actual_count = min(count, 1000)
 
-    # determine how the keys are named in redis so we can iterate over them
-    prefix = redis_cache.get_cache_key(neighbors, "").split("tok=")[0]
+    prefix = "wlc"
 
     # extract the token from the key, e.g. "mouse" from "backend.main.neighbors(mouse)"
-    tok_extract = re.compile(r"%stok=(?P<tok>.*)\)$" % re.escape(prefix))
+    tok_extract = re.compile(r".*tok=(?P<token>[^,]+).*?(?:corpus=(?P<corpus>[^)]+))?\)")
 
     # build a list of top "count" tokens, then order it by frequency
     # (note that if there are more than 'count' tokens, we can't guarantee they're the top ones...)
     toptokens = [
-        {"token": y, "freq": r.object("freq", x)}
-        for x in islice(
-            r.scan_iter(match=("%s*" % prefix), count=actual_count), actual_count
-        )
-        for y in tok_extract.search(x.decode("utf8")).groups("tok")
+        {
+            **{"freq": r.object("freq", x)},
+            **(tok_extract.search(x.decode("utf8")).groupdict())
+        }
+        for x in islice(r.scan_iter(match=("%s*" % prefix), count=actual_count), actual_count)
+        if tok_extract.search(x.decode("utf8")) is not None
     ]
+
+    return toptokens
 
 
 @app.get("/autocomplete")

@@ -1,8 +1,12 @@
+import logging
+import mmap
 import os
 import pickle
 import re
 from itertools import groupby
 from pathlib import Path
+import sys
+from fastapi import HTTPException
 
 import pandas as pd
 import plydata as ply
@@ -10,6 +14,7 @@ from gensim.models import KeyedVectors, Word2Vec
 from joblib import Memory, Parallel, delayed
 
 from .config import (
+    CORPORA_SET,
     USE_MEMMAP,
     MATERIALIZE_MODELS,
     PARALLEL_POOLS,
@@ -18,12 +23,25 @@ from .config import (
 )
 from .tracking import ExecTimer
 
+logging.basicConfig(stream=sys.stdout)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 # the root for the word-lapse-models datafiles
 data_folder = Path("./data")
 
 # stores cached word model references; used if MATERIALIZE_MODELS is true
 # (pre-populated on server startup if .config.WARM_CACHE is true)
-word_models = None
+# note that this is a collection of word models over multiple corpora, i.e.
+# abstracts, fulltext, etc. the structure is like the following:
+# {<corpus>: [(year, index, model), ...]}
+# where:
+# 'corpus' is a string and one of abstracts or fulltext,
+# 'year' is the integer year for the model (typically between 2010 and now),
+# 'index' is the integer index of the model for that year (typically 0),
+# 'model' is the Word2Vec or KeyedVectors model instance associated with that
+#   year/index
+word_models = {}
 
 # Enables tagged concepts to be denormalized (e.g. concept_id -> concept name)
 concept_id_mapper_dict = None
@@ -33,10 +51,16 @@ concept_id_mapper_dict = None
 # ========================================================================
 
 
-def extract_frequencies(tok: str):
+def extract_frequencies(tok: str, corpus: str):
+    corpus_paths = {
+        'abstracts': data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
+        'fulltexts': data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),
+        
+    }
+
     # Extract the frequencies
     frequency_table = pd.read_csv(
-        data_folder / Path("all_abstract_tok_frequency.tsv.xz"), sep="\t"
+        corpus_paths[corpus], sep="\t"
     )
 
     # note: previously, frequency was a float column in the above csv, but
@@ -56,11 +80,15 @@ def extract_frequencies(tok: str):
     return frequency_output_df >> ply.call(".to_dict", orient="records")
 
 
-def cutoff_points(tok: str):
+def cutoff_points(tok: str, corpus: str):
+    corpus_paths = {
+        'abstracts': data_folder / Path("abstract_changepoints.tsv"),
+        'fulltexts': data_folder / Path("fulltext_changepoints.tsv"),
+        
+    }
+
     # Extract Estimated Cutoff Points
-    cutoff_points = pd.read_csv(
-        data_folder / Path("abstract_changepoints.tsv"), sep="\t"
-    )
+    cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t" )
 
     result = (
         cutoff_points
@@ -90,7 +118,8 @@ def get_concept_id_mapper(use_pickle=True, write_pickle=True):
 
         if use_pickle and os.path.exists(pickled_path):
             with open(pickled_path, "rb") as fp:
-                concept_id_mapper_dict = pickle.load(fp)
+                with mmap.mmap(fp.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
+                    concept_id_mapper_dict = pickle.load(mmap_obj)
         else:
             concept_id_mapper = pd.read_csv(
                 data_folder / Path("all_concept_ids.tsv.xz"), sep="\t"
@@ -128,7 +157,7 @@ def load_word_model(model_path, use_keyedvec=True):
         return Word2Vec.load(str(model_path))
 
 
-def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False):
+def word_models_by_year(corpus=None, only_first=True, use_keyedvec=True, just_reference=False):
     """
     Generates a sequence of Word2Vec word models for each years' models
     in ./data/word2vec_models/*/*model.
@@ -136,11 +165,18 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
     The models are sorted by year, then by index within that year if there
     are multiple models associated with a specific year.
 
+    corpus: the corpus to retrieve (one of "abstracts", "fulltext" for now), default "abstracts"
     only_first: if true, only returns the first model for each year
     just_reference: if true, only returns the path to the model file
     """
 
     model_suffix = "wordvectors" if use_keyedvec else "model"
+
+    if not corpus or corpus not in CORPORA_SET:
+        logger.info("Corpus %s requested, but not found in %s" % (corpus, CORPORA_SET))
+        raise HTTPException(
+            status_code=400, detail="Requested corpus '%s' not in corpus set %s" % (corpus, CORPORA_SET)
+        )
 
     def extract_year(k):
         return re.search(r"(\d+)_(\d)[^.]*\.%s" % model_suffix, str(k)).group(1)
@@ -148,7 +184,7 @@ def word_models_by_year(only_first=True, use_keyedvec=True, just_reference=False
     # first, produce a list of word models sorted by year
     # (groupby requires a sorted list, since it accumulates groups linearly)
     word_models = list(
-        (data_folder / Path("word2vec_models")).rglob(f"*/*{model_suffix}")
+        (data_folder / Path("word2vec_models") / Path(corpus)).rglob(f"*/*{model_suffix}")
     )
     word_models_sorted = sorted(word_models, key=extract_year)
 
@@ -187,15 +223,17 @@ def materialized_word_models(**kwargs):
 
     global word_models
 
-    if word_models and len(word_models) > 0:
-        return word_models
+    corpus = kwargs.get('corpus')
+
+    if word_models and corpus in word_models and len(word_models[corpus]) > 0:
+        return word_models[corpus]
 
     # materialize the word_models_by_year() generator
-    word_models = [
+    word_models[corpus] = [
         (year, idx, model) for year, idx, model in word_models_by_year(**kwargs)
     ]
 
-    return word_models
+    return word_models[corpus]
 
 
 def query_model_for_tok(
@@ -242,6 +280,7 @@ def query_model_for_tok(
 
 def extract_neighbors(
     tok: str,
+    corpus: str,
     neighbors: int = 25,
     use_keyedvec: bool = True,
 ):
@@ -283,13 +322,13 @@ def extract_neighbors(
                             ),
                         )
                     )(year, model)
-                    for year, _, model in model_loader(use_keyedvec=use_keyedvec)
+                    for year, _, model in model_loader(corpus=corpus, use_keyedvec=use_keyedvec)
                 )
                 word_neighbor_map = dict(result)
         else:
             word_neighbor_map = {}
 
-            for year, _, model in model_loader(use_keyedvec=use_keyedvec):
+            for year, _, model in model_loader(corpus=corpus, use_keyedvec=use_keyedvec):
                 word_neighbor_map[year] = query_model_for_tok(
                     year,
                     tok,
