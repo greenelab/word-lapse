@@ -18,7 +18,6 @@ setCssVariables(palette);
 export const AppContext = createContext({});
 
 const App = () => {
-  const [meta, setMeta] = useState({});
   const [corpus, setCorpus] = useQueryParam(
     "corpus",
     withDefault(StringParam, (meta?.config?.CORPORA_SET || [])[0] || "")
@@ -27,11 +26,6 @@ const App = () => {
   const [search = "", setSearch] = useQueryParam("search", StringParam);
   const [status, setStatus] = useState(statuses.empty);
   const [fullscreen, setFullscreen] = useState(true);
-
-  // get meta data
-  useEffect(() => {
-    (async () => setMeta(await getMetadata()))();
-  }, []);
 
   // scroll to top when fullscreen set to true
   useEffect(() => {
@@ -83,7 +77,6 @@ const App = () => {
   return (
     <AppContext.Provider
       value={{
-        meta,
         corpus,
         setCorpus,
         results,
