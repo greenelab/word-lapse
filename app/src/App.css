@@ -24,7 +24,6 @@ main {
   align-items: center;
   gap: 40px;
   padding: var(--pagePadding);
-  overflow: hidden;
 }
 
 @media (max-width: 600px) {

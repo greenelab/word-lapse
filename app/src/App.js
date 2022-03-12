@@ -47,10 +47,10 @@ const App = () => {
         setResults(await getResults(search, corpus));
         setStatus();
       } catch (error) {
+        console.info(error);
         // if not latest query
         if (error.message === statuses.stale) {
           // don't do anything, leaving most recent query to do its thing
-          console.info(`Search "${search}" superceded`);
         } else {
           // set status message from thrown error
           setResults();
@@ -103,8 +103,8 @@ const updateTitleBar = () => {
   );
   document.title = [
     process.env.REACT_APP_TITLE,
-    `"${search}"`,
-    year,
+    search ? `"${search}"` : "",
+    year ? year : "",
     yearA && yearB ? `${yearA} vs. ${yearB}` : "",
   ]
     .filter((part) => part)

@@ -7,7 +7,6 @@ header {
   gap: 40px;
   padding: var(--pagePadding);
   background: var(--lightGray);
-  overflow: hidden;
   min-height: 100vh;
   z-index: 1;
   transition: min-height var(--fast);

@@ -1,20 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useLayoutEffect,
-} from "react";
-
-// debounce (rate limit) value
-export const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(() => {
-    const timeout = window.setTimeout(() => setDebouncedValue(value), delay);
-    return () => window.clearTimeout(timeout);
-  }, [value, delay]);
-  return debouncedValue;
-};
+import { useState, useCallback, useRef, useLayoutEffect } from "react";
 
 // get bounding box of element
 export const useBbox = () => {

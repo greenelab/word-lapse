@@ -20,12 +20,8 @@ export const getCached = async (query, corpus) => {
   if (!query.trim()) throw new Error(statuses.empty);
   // make request
   const url = `${api}/neighbors/cached?tok=${query}&corpus=${corpus}`;
-  try {
-    const { is_cached = false } = await (await window.fetch(url)).json();
-    return is_cached;
-  } catch (error) {
-    return false;
-  }
+  const { is_cached = false } = await (await window.fetch(url)).json();
+  return is_cached;
 };
 
 // singleton to hold latest request
@@ -56,11 +52,12 @@ export const getResults = async (query, corpus) => {
 
   // transform data as needed
   results.tags = {};
-  for (const [year, words] of Object.entries(results.neighbors)) {
+  for (const [year, words] of Object.entries(results.neighbors))
     if (!words.length) delete results.neighbors[year];
+  for (const [, words] of Object.entries(results.neighbors))
     for (const { token, tag_id } of words) results.tags[token] = tag_id;
+  for (const [year] of Object.entries(results.neighbors))
     results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
-  }
 
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);
@@ -69,6 +66,14 @@ export const getResults = async (query, corpus) => {
   // only return results if this request is latest request.
   if (id === latest) return { query, ...results };
   else throw new Error(statuses.stale);
+};
+
+// get autocomplete results
+export const getAutocomplete = async (query) => {
+  const url = `${api}/autocomplete?prefix=${query}`;
+  const response = await window.fetch(url);
+  if (!response.ok) throw new Error("Response not OK");
+  return (await response.json()).filter((word) => word.trim());
 };
 
 // distinct search states

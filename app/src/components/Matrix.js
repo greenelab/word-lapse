@@ -36,10 +36,15 @@ const timer = (func, period, delay) => {
 };
 
 // text animation like the matrix
-const Matrix = () =>
-  Array(15)
-    .fill(0)
-    .map((_, index) => <Word key={index} />);
+const Matrix = () => (
+  <div className="matrix-container">
+    {Array(15)
+      .fill(0)
+      .map((_, index) => (
+        <Word key={index} />
+      ))}
+  </div>
+);
 
 export default Matrix;
 

@@ -15,9 +15,13 @@ const options = {
 
 // listen for changes to document
 new MutationObserver(() => {
-  for(const element of document.querySelectorAll("[data-tooltip]")) {
-    if (!element._tippy) tippy(element, options)
-    else element._tippy.setContent(element.getAttribute("data-tooltip")?.trim())
+  for (const element of document.querySelectorAll("[data-tooltip]")) {
+    if (!element._tippy) tippy(element, options);
+    else {
+      const content = element.getAttribute("data-tooltip")?.trim();
+      element.setAttribute("aria-label", content);
+      element._tippy.setContent(content);
+    }
   }
 }).observe(document.body, {
   childList: true,
@@ -25,4 +29,3 @@ new MutationObserver(() => {
   attributes: true,
   attributeFilter: ["data-tooltip"],
 });
-
