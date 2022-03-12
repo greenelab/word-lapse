@@ -3,7 +3,7 @@ import { useQueryParam, withDefault } from "use-query-params";
 import Slider from "../components/Slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppContext } from "../App";
-import { id, lineHeight, wrap, YearParam } from "./Neighbors";
+import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
 import { blue, gray, lightGray, purple, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { toHumanCase } from "../util/string";
@@ -21,7 +21,7 @@ const compareProps = {
 const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   // app state
   const { search, results } = useContext(AppContext);
-  const { neighbors, uniqueNeighbors } = results;
+  const { neighbors, uniqueNeighbors, tags } = results;
 
   // other state
   const [symbols, setSymbols] = useState(false);
@@ -61,60 +61,70 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrap(uniqueNeighbors).map((line, lineIndex) => (
-          <text
-            key={lineIndex}
-            x="0"
-            y={lineHeight * lineIndex}
-            textAnchor="middle"
-          >
-            {line.map((word, index) => {
-              // determine if word in selected year(s)
-              const inA = ANeighbors.includes(word);
-              const inB = BNeighbors.includes(word);
-              const inBoth = inA && inB;
-              const inNeither = !inA && !inB;
+        {wrapLines(uniqueNeighbors, symbols ? 60 : 70).map(
+          (line, lineIndex) => (
+            <text
+              key={lineIndex}
+              x="0"
+              y={lineHeight * lineIndex}
+              textAnchor="middle"
+            >
+              {line.map((word, index) => {
+                // determine if word in selected year(s)
+                const inA = ANeighbors.includes(word);
+                const inB = BNeighbors.includes(word);
+                const inBoth = inA && inB;
+                const inNeither = !inA && !inB;
 
-              // determine props
-              let color;
-              let symbol;
-              let tooltip;
-              if (inBoth) {
-                color = compareProps.both.color;
-                symbol = compareProps.both.symbol;
-                tooltip = `In ${yearA} and ${yearB}`;
-              } else if (inA) {
-                color = compareProps.a.color;
-                symbol = compareProps.a.symbol;
-                tooltip = `In ${yearA}`;
-              } else if (inB) {
-                color = compareProps.b.color;
-                symbol = compareProps.b.symbol;
-                tooltip = `In ${yearB}`;
-              } else if (inNeither) {
-                color = compareProps.neither.color;
-                symbol = compareProps.neither.symbol;
-              }
+                // determine props
+                let color;
+                let symbol;
+                let tooltip;
+                if (inBoth) {
+                  color = compareProps.both.color;
+                  symbol = compareProps.both.symbol;
+                  tooltip = `In ${yearA} and ${yearB}. ${
+                    tags[word] ? "Tagged." : "Not tagged."
+                  }`;
+                } else if (inA) {
+                  color = compareProps.a.color;
+                  symbol = compareProps.a.symbol;
+                  tooltip = `In ${yearA}. ${
+                    tags[word] ? "Tagged." : "Not tagged."
+                  }`;
+                } else if (inB) {
+                  color = compareProps.b.color;
+                  symbol = compareProps.b.symbol;
+                  tooltip = `In ${yearB}. ${
+                    tags[word] ? "Tagged." : "Not tagged."
+                  }`;
+                } else if (inNeither) {
+                  color = compareProps.neither.color;
+                  symbol = compareProps.neither.symbol;
+                }
 
-              return (
-                <tspan
-                  key={index}
-                  className="neighbors-word"
-                  dx="10"
-                  style={{
-                    fontSize: 10,
-                    fill: color,
-                  }}
-                  data-tooltip={tooltip}
-                  aria-hidden={inNeither}
-                  tabIndex={inNeither ? -1 : 0}
-                >
-                  {(symbols && symbol ? symbol + " " : "") + toHumanCase(word)}
-                </tspan>
-              );
-            })}
-          </text>
-        ))}
+                return (
+                  <tspan
+                    key={index}
+                    className="neighbors-word"
+                    dx="10"
+                    style={{
+                      fontSize: 10,
+                      fill: color,
+                    }}
+                    data-tooltip={tooltip}
+                    aria-hidden={inNeither}
+                    tabIndex={inNeither ? -1 : 0}
+                  >
+                    {symbols && symbol ? symbol + " " : ""}
+                    {toHumanCase(word)}
+                    {tags[word] && "*"}
+                  </tspan>
+                );
+              })}
+            </text>
+          )
+        )}
 
         <text x="0" y="-50" textAnchor="middle" style={{ fontSize: 12 }}>
           Words associated with "{search}" in{" "}

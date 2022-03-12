@@ -7,18 +7,18 @@ import { BooleanParam, useQueryParam, withDefault } from "use-query-params";
 // unique id of this chart
 export const id = "neighbors";
 
-// max char width of lines
-export const lineChars = 56; // adjust so that fitted title text size matches that of other graphs
 // height of lines
 export const lineHeight = 15;
 
 // func to wrap text into lines by number of characters
 // (because there is no easier way, believe me i tried)
-export const wrap = (uniqueNeighbors) => {
+// adjust line chars so that fitted title text size matches that of other graphs
+export const wrapLines = (uniqueNeighbors, lineChars) => {
   const lines = [[]];
   for (const word of uniqueNeighbors) {
     if (
-      lines[lines.length - 1].reduce((total, word) => total + word.length, 0) >
+      lines[lines.length - 1].reduce((total, word) => total + word.length, 0) +
+        word.length >
       lineChars
     )
       lines.push([]);

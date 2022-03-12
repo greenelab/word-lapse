@@ -55,19 +55,12 @@ export const getResults = async (query, corpus) => {
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
   // transform data as needed
-  for (const [key, value] of Object.entries(results.neighbors))
-    if (!value.length) delete results.neighbors[key];
-
-  // remap neighbors to just the token field, removing tagged_id
-  // FIXME: if we want to present the tagged_id field in the UI,
-  //  i presume everything that relies on it just being a list of strings
-  //  is going to need to be updated...
-  results.neighbors = Object.entries(results.neighbors)
-    .map(([year, entries]) => [year, entries.map((x) => x.token || x)])
-    .reduce((coll, [year, entries]) => {
-      coll[year] = entries;
-      return coll;
-    }, {});
+  results.tags = {};
+  for (const [year, words] of Object.entries(results.neighbors)) {
+    if (!words.length) delete results.neighbors[year];
+    for (const { token, tag_id } of words) results.tags[token] = tag_id;
+    results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
+  }
 
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);

@@ -3,7 +3,7 @@ import { useQueryParam, withDefault } from "use-query-params";
 import Slider from "../components/Slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AppContext } from "../App";
-import { id, lineHeight, wrap, YearParam } from "./Neighbors";
+import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
 import { blue, lightGray, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
@@ -14,7 +14,7 @@ import { count } from "../util/neighbors";
 const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   // app state
   const { search, results } = useContext(AppContext);
-  const { neighbors: neighborsData, uniqueNeighbors } = results;
+  const { neighbors: neighborsData, uniqueNeighbors, tags } = results;
 
   // other state
   const [svg, setViewBox] = useViewBox(20);
@@ -50,7 +50,7 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrap(uniqueNeighbors).map((line, lineIndex) => (
+        {wrapLines(uniqueNeighbors, 70).map((line, lineIndex) => (
           <text
             key={lineIndex}
             x="0"
@@ -66,11 +66,14 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                   fontSize: 10,
                   fill: neighbors.includes(word) ? blended : lightGray,
                 }}
-                data-tooltip={`In ${count(word, neighborsData)} of the year(s)`}
+                data-tooltip={`In ${count(
+                  word,
+                  neighborsData
+                )} of the year(s). ${tags[word] ? `Tagged.` : "Not tagged."}`}
                 aria-hidden={!neighbors.includes(word)}
                 tabIndex={!neighbors.includes(word) ? -1 : 0}
               >
-                {toHumanCase(word)}
+                {toHumanCase(word)} {tags[word] && "✶"}
               </tspan>
             ))}
           </text>
