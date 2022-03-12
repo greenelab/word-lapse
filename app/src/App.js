@@ -5,7 +5,7 @@ import Footer from "./sections/Footer";
 import Results from "./sections/Results";
 import Status from "./components/Status";
 import "./components/tooltip";
-import { getCached, getResults, statuses } from "./api";
+import { defaultCorpora, getCached, getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";
 import { history } from ".";
@@ -18,6 +18,7 @@ setCssVariables(palette);
 export const AppContext = createContext({});
 
 const App = () => {
+  const [corpus, setCorpus] = useState(defaultCorpora[0]);
   const [results, setResults] = useState(null);
   const [search = "", setSearch] = useQueryParam("search", StringParam);
   const [status, setStatus] = useState(statuses.empty);
@@ -39,11 +40,11 @@ const App = () => {
 
         // check if results for search already cached
         // and display appropriate loading status
-        if (await getCached(search)) setStatus(statuses.loadingCached);
+        if (await getCached(search, corpus)) setStatus(statuses.loadingCached);
         else setStatus(statuses.loading);
 
         // perform query
-        setResults(await getResults(search));
+        setResults(await getResults(search, corpus));
         setStatus();
       } catch (error) {
         // if not latest query
@@ -58,7 +59,7 @@ const App = () => {
         }
       }
     })();
-  }, [search]);
+  }, [corpus, search]);
 
   // https://github.com/pbeshai/use-query-params/blob/master/examples/no-router/src/App.js
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -73,6 +74,8 @@ const App = () => {
   return (
     <AppContext.Provider
       value={{
+        corpus,
+        setCorpus,
         results,
         setResults,
         search,

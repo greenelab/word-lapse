@@ -4,11 +4,22 @@ import { sleep } from "./util/debug";
 // api endpoint base url
 const api = "https://api-wl.greenelab.com";
 
+// get set of corpora
+export const defaultCorpora = ["abstracts", "fulltexts"];
+export const getCorpora = async () => {
+  try {
+    const { config } = await (await window.fetch(api)).json();
+    return config.CORPORA_SET;
+  } catch (error) {
+    return [];
+  }
+};
+
 // api call to see if cached
-export const getCached = async (query) => {
+export const getCached = async (query, corpus) => {
   if (!query.trim()) throw new Error(statuses.empty);
   // make request
-  const url = `${api}/neighbors/cached?tok=${query}`;
+  const url = `${api}/neighbors/cached?tok=${query}&corpus=${corpus}`;
   try {
     const { is_cached = false } = await (await window.fetch(url)).json();
     return is_cached;
@@ -21,7 +32,7 @@ export const getCached = async (query) => {
 let latest = null;
 
 // api call to get results
-export const getResults = async (query) => {
+export const getResults = async (query, corpus) => {
   // unique id for this request
   const id = window.performance.now();
   latest = id;
@@ -35,7 +46,7 @@ export const getResults = async (query) => {
   await sleep(1000);
 
   // make request
-  const url = `${api}/neighbors?tok=${query}`;
+  const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
   const response = await window.fetch(url);
   if (!response.ok) throw new Error("Response not OK");
   const results = await response.json();
@@ -51,11 +62,12 @@ export const getResults = async (query) => {
   // FIXME: if we want to present the tagged_id field in the UI,
   //  i presume everything that relies on it just being a list of strings
   //  is going to need to be updated...
-  results.neighbors = (
-    Object.entries(results.neighbors)
-      .map(([year, entries]) => [year, entries.map((x) => x.token || x)])
-      .reduce((coll, [year, entries]) => { coll[year] = entries; return coll; }, {})
-  )
+  results.neighbors = Object.entries(results.neighbors)
+    .map(([year, entries]) => [year, entries.map((x) => x.token || x)])
+    .reduce((coll, [year, entries]) => {
+      coll[year] = entries;
+      return coll;
+    }, {});
 
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);
