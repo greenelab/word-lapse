@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { getAutocomplete } from "../api";
 import { AppContext } from "../App";
+import { meta } from "..";
 import { useCombobox } from "downshift";
 import "./Search.css";
 
 // search box
 const Search = () => {
-  const { search, setSearch, corpus, setCorpus, meta } = useContext(AppContext);
+  const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
   const [value, setValue] = useState(search);
   const [autocomplete, setAutocomplete] = useState([]);
 

@@ -5,10 +5,10 @@ import Footer from "./sections/Footer";
 import Results from "./sections/Results";
 import Status from "./components/Status";
 import "./components/tooltip";
-import { getCached, getMetadata, getResults, statuses } from "./api";
+import { getCached, getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";
-import { history } from ".";
+import { history, meta } from ".";
 import "./App.css";
 
 // add all palette variables to document as CSS variables
