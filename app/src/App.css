@@ -37,7 +37,7 @@ svg {
 }
 
 a {
-  color: var(--darkGray);
+  color: currentColor;
   transition: color var(--purple);
 }
 

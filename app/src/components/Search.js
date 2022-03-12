@@ -1,14 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { defaultCorpora, getAutocomplete, getCorpora } from "../api";
+import { getAutocomplete } from "../api";
 import { AppContext } from "../App";
 import { useCombobox } from "downshift";
 import "./Search.css";
 
 // search box
 const Search = () => {
-  const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
+  const { search, setSearch, corpus, setCorpus, meta } = useContext(AppContext);
   const [value, setValue] = useState(search);
-  const [corpora, setState] = useState(defaultCorpora);
   const [autocomplete, setAutocomplete] = useState([]);
 
   // autocomplete
@@ -28,11 +27,6 @@ const Search = () => {
     onInputValueChange: ({ inputValue }) => setValue(inputValue),
     onSelectedItemChange: () => setSearch(value),
   });
-
-  // get available corpora
-  useEffect(() => {
-    (async () => setState(await getCorpora()))();
-  }, []);
 
   // get autocomplete results
   useEffect(() => {
@@ -90,7 +84,7 @@ const Search = () => {
           onChange={(event) => setCorpus(event.target.value)}
           data-tooltip="What corpus to use in analysis"
         >
-          {corpora.map((corpus, index) => (
+          {(meta?.config?.CORPORA_SET || []).map((corpus, index) => (
             <option key={index} value={corpus}>
               {corpus}
             </option>

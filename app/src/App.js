@@ -1,11 +1,11 @@
 import { useState, createContext, useEffect, useReducer } from "react";
-import { StringParam, useQueryParam } from "use-query-params";
+import { StringParam, withDefault, useQueryParam } from "use-query-params";
 import Header from "./sections/Header";
 import Footer from "./sections/Footer";
 import Results from "./sections/Results";
 import Status from "./components/Status";
 import "./components/tooltip";
-import { defaultCorpora, getCached, getResults, statuses } from "./api";
+import { getCached, getMetadata, getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";
 import { history } from ".";
@@ -18,11 +18,20 @@ setCssVariables(palette);
 export const AppContext = createContext({});
 
 const App = () => {
-  const [corpus, setCorpus] = useState(defaultCorpora[0]);
+  const [meta, setMeta] = useState({});
+  const [corpus, setCorpus] = useQueryParam(
+    "corpus",
+    withDefault(StringParam, (meta?.config?.CORPORA_SET || [])[0] || "")
+  );
   const [results, setResults] = useState(null);
   const [search = "", setSearch] = useQueryParam("search", StringParam);
   const [status, setStatus] = useState(statuses.empty);
   const [fullscreen, setFullscreen] = useState(true);
+
+  // get meta data
+  useEffect(() => {
+    (async () => setMeta(await getMetadata()))();
+  }, []);
 
   // scroll to top when fullscreen set to true
   useEffect(() => {
@@ -74,6 +83,7 @@ const App = () => {
   return (
     <AppContext.Provider
       value={{
+        meta,
         corpus,
         setCorpus,
         results,

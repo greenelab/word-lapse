@@ -4,20 +4,19 @@ import { sleep } from "./util/debug";
 // api endpoint base url
 const api = "https://api-wl.greenelab.com";
 
-// get set of corpora
-export const defaultCorpora = ["abstracts", "fulltexts"];
-export const getCorpora = async () => {
+// get metadata from api
+export const getMetadata = async () => {
   try {
-    const { config } = await (await window.fetch(api)).json();
-    return config.CORPORA_SET;
+    return await (await window.fetch(api)).json();
   } catch (error) {
-    return [];
+    return {};
   }
 };
 
 // api call to see if cached
 export const getCached = async (query, corpus) => {
-  if (!query.trim()) throw new Error(statuses.empty);
+  // nothing searched
+  if (!query.trim() || !corpus.trim()) throw new Error(statuses.empty);
   // make request
   const url = `${api}/neighbors/cached?tok=${query}&corpus=${corpus}`;
   const { is_cached = false } = await (await window.fetch(url)).json();
@@ -34,7 +33,7 @@ export const getResults = async (query, corpus) => {
   latest = id;
 
   // nothing searched
-  if (!query.trim()) throw new Error(statuses.empty);
+  if (!query.trim() || !corpus.trim()) throw new Error(statuses.empty);
 
   // leave this in to briefly show that we are loading cached results
   // and because there is a study that if something complex takes a very
@@ -70,10 +69,18 @@ export const getResults = async (query, corpus) => {
 
 // get autocomplete results
 export const getAutocomplete = async (query) => {
-  const url = `${api}/autocomplete?prefix=${query}`;
-  const response = await window.fetch(url);
-  if (!response.ok) throw new Error("Response not OK");
-  return (await response.json()).filter((word) => word.trim());
+  try {
+    // nothing searched
+    if (!query.trim()) throw new Error(statuses.empty);
+
+    // make request
+    const url = `${api}/autocomplete?prefix=${query}`;
+    const response = await window.fetch(url);
+    if (!response.ok) throw new Error("Response not OK");
+    return (await response.json()).filter((word) => word.trim());
+  } catch (error) {
+    return [];
+  }
 };
 
 // distinct search states
