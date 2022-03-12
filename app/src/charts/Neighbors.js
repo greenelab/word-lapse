@@ -1,249 +1,69 @@
-import { useContext, useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AppContext } from "../App";
-import Slider from "../components/Slider";
-import { blue, gray, lightGray, purple, red } from "../palette";
-import { useViewBox } from "../util/hooks";
-import { blendColors } from "../util/math";
-import { toHumanCase } from "../util/string";
-import { count } from "../util/neighbors";
+import { useState } from "react";
+import NeighborsSingle from "./NeighborsSingle";
 import "./Neighbors.css";
+import NeighborsCompare from "./NeighborsCompare";
+import { BooleanParam, useQueryParam, withDefault } from "use-query-params";
 
 // unique id of this chart
-const id = "neighbors";
+export const id = "neighbors";
 
 // max char width of lines
-const chars = 56; // adjust so that fitted title text size matches that of other graphs
+export const lineChars = 56; // adjust so that fitted title text size matches that of other graphs
 // height of lines
-const height = 15;
+export const lineHeight = 15;
 
-// symbols for color blind, monochrome printing, etc
-const compareProps = {
-  a: { symbol: "♥", color: red },
-  b: { symbol: "♠", color: blue },
-  both: { symbol: "♦", color: purple },
-  neither: { symbol: "♣", color: lightGray },
-};
-
-// neighbors list
-const Neighbors = () => {
-  // app state
-  const { search, results } = useContext(AppContext);
-  const { neighbors, uniqueNeighbors } = results;
-
-  // compute year stuff
-  const years = Object.keys(neighbors);
-  const [yearAIndex, setYearAIndex] = useState(0);
-  const [yearBIndex, setYearBIndex] = useState(0);
-  const yearA = years[yearAIndex];
-  const yearB = years[yearBIndex];
-  const ANeighbors = neighbors[yearA];
-  const BNeighbors = neighbors[yearB];
-
-  // other state
-  const [playing, setPlaying] = useState(true);
-  const [compare, setCompare] = useState(false);
-  const [symbols, setSymbols] = useState(false);
-  const [svg, setViewBox] = useViewBox(20);
-
-  // animate year index
-  useEffect(() => {
-    let interval;
-    if (playing)
-      interval = window.setInterval(
-        () => setYearBIndex((value) => (value + 1) % years.length),
-        1000
-      );
-    return () => window.clearInterval(interval);
-  }, [playing, years.length]);
-
-  // reset year indices when results change
-  useEffect(() => {
-    setYearAIndex(0);
-    setYearBIndex(0);
-  }, [uniqueNeighbors]);
-
-  // fit svg viewbox after render when certain props change
-  useEffect(() => {
-    setViewBox();
-  }, [compare, symbols, uniqueNeighbors.length, setViewBox]);
-
-  // current year color
-  const blended = blendColors(red, blue, yearBIndex / (years.length - 1));
-
-  // wrap text into lines by number of characters
-  // (because there is no easier way, believe me i tried)
+// func to wrap text into lines by number of characters
+// (because there is no easier way, believe me i tried)
+export const wrap = (uniqueNeighbors) => {
   const lines = [[]];
   for (const word of uniqueNeighbors) {
     if (
       lines[lines.length - 1].reduce((total, word) => total + word.length, 0) >
-      chars
+      lineChars
     )
       lines.push([]);
     lines[lines.length - 1].push(word);
   }
+  return lines;
+};
 
-  return (
-    <div className="chart">
-      <svg ref={svg} id={id}>
-        {lines.map((line, lineIndex) => (
-          <text
-            key={lineIndex}
-            x="0"
-            y={height * lineIndex}
-            textAnchor="middle"
-          >
-            {line.map((word, index) => {
-              // determine if word in selected year(s)
-              const inA = ANeighbors.includes(word);
-              const inB = BNeighbors.includes(word);
-              const inBoth = inA && inB;
-              const inNeither = !inA && !inB;
-              const disabled = compare ? !inNeither : inB;
+// encode/decode years to/from url
+export const YearParam = (years) => ({
+  encode: (yearIndex) => {
+    return years[yearIndex];
+  },
+  decode: (year) => {
+    const match = years.findIndex((y) => y === year);
+    return match === -1 ? 0 : match;
+  },
+});
 
-              // determine props
-              let color;
-              let symbol;
-              let tooltip;
-              if (compare) {
-                if (inBoth) {
-                  color = compareProps.both.color;
-                  symbol = compareProps.both.symbol;
-                  tooltip = `In ${yearA} and ${yearB}`;
-                } else if (inA) {
-                  color = compareProps.a.color;
-                  symbol = compareProps.a.symbol;
-                  tooltip = `In ${yearA}`;
-                } else if (inB) {
-                  color = compareProps.b.color;
-                  symbol = compareProps.b.symbol;
-                  tooltip = `In ${yearB}`;
-                } else if (inNeither) {
-                  color = compareProps.neither.color;
-                  symbol = compareProps.neither.symbol;
-                }
-              } else {
-                color = inB ? blended : lightGray;
-                tooltip = `In ${count(word, neighbors)} of the year(s)`;
-              }
+// get default compare state from url
+const getCompare = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("yearA") && params.get("yearB");
+};
 
-              return (
-                <tspan
-                  key={index}
-                  className="neighbors-word"
-                  dx="10"
-                  style={{
-                    fontSize: 10,
-                    fill: color,
-                  }}
-                  data-tooltip={tooltip}
-                  aria-hidden={!disabled}
-                  tabIndex={!disabled ? -1 : 0}
-                >
-                  {(symbols && symbol ? symbol + " " : "") + toHumanCase(word)}
-                </tspan>
-              );
-            })}
-          </text>
-        ))}
-
-        <text
-          x="0"
-          y={compare ? -50 : -30}
-          textAnchor="middle"
-          style={{ fontSize: 12 }}
-        >
-          Words associated with "{search}" in{" "}
-          {compare && (
-            <>
-              <tspan fill={compareProps.a.color}>
-                {(symbols ? compareProps.a.symbol + " " : "") + yearA}
-              </tspan>{" "}
-              <tspan>vs.</tspan>{" "}
-              <tspan fill={compareProps.b.color}>
-                {(symbols ? compareProps.b.symbol + " " : "") + yearB}
-              </tspan>
-            </>
-          )}
-          {!compare && yearB}
-        </text>
-
-        {compare && (
-          <text x="0" y="-30" textAnchor="middle" style={{ fontSize: 10 }}>
-            <tspan>(or</tspan>{" "}
-            <tspan fill={compareProps.both.color}>
-              {(symbols ? compareProps.both.symbol + " " : "") + "both"}
-            </tspan>{" "}
-            <tspan>or</tspan>{" "}
-            <tspan fill={gray}>
-              {(symbols ? compareProps.neither.symbol + " " : "") + "neither"}
-            </tspan>
-            <tspan>)</tspan>
-          </text>
-        )}
-      </svg>
-
-      <div className="chart-controls">
-        <button
-          onClick={() => setCompare(!compare)}
-          data-tooltip={compare ? "View single year" : "Compare two years"}
-        >
-          <FontAwesomeIcon
-            icon={compare ? "right-long" : "left-right"}
-            className="fa-fw"
-          />
-        </button>
-
-        {compare && (
-          <button
-            onClick={() => setSymbols(!symbols)}
-            data-tooltip={symbols ? "Show just text" : "Show symbols"}
-          >
-            <FontAwesomeIcon
-              icon={symbols ? "font" : "icons"}
-              className="fa-fw"
-            />
-          </button>
-        )}
-
-        <button
-          onClick={() => setPlaying(!playing)}
-          data-tooltip={playing ? "Pause" : "Play"}
-        >
-          <FontAwesomeIcon
-            icon={playing ? "pause" : "play"}
-            className="fa-fw"
-          />
-        </button>
-
-        {compare && (
-          <>
-            <Slider
-              steps={years}
-              value={yearAIndex}
-              onChange={(value) => setYearAIndex(Number(value))}
-              tooltip={yearA}
-              label={`Year A: ${yearA}`}
-            />
-            <span>vs.</span>
-          </>
-        )}
-
-        <Slider
-          steps={years}
-          value={yearBIndex}
-          onMouseDown={() => setPlaying(false)}
-          onTouchStart={() => setPlaying(false)}
-          onChange={(value) => {
-            setYearBIndex(Number(value));
-            setPlaying(false);
-          }}
-          tooltip={yearB}
-          label={`${compare ? "Year B" : "Year"}: ${yearB}`}
-        />
-      </div>
-    </div>
+// get default playing state from url
+const getPlaying = () =>
+  !Array.from(new URLSearchParams(window.location.search)).some(([key]) =>
+    key.includes("year")
   );
+
+// neighbors list
+const Neighbors = () => {
+  // other state
+  const [compare, setCompare] = useQueryParam(
+    "compare",
+    withDefault(BooleanParam, getCompare())
+  );
+  const [playing, setPlaying] = useState(getPlaying);
+
+  // pass props down
+  const props = { setCompare, playing, setPlaying };
+
+  if (compare) return <NeighborsCompare {...props} />;
+  return <NeighborsSingle {...props} />;
 };
 
 export default Neighbors;
