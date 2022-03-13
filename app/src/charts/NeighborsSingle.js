@@ -73,7 +73,8 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                 aria-hidden={!neighbors.includes(word)}
                 tabIndex={!neighbors.includes(word) ? -1 : 0}
               >
-                {toHumanCase(word)}{tags[word] && "*"}
+                {toHumanCase(word)}
+                {tags[word] && "*"}
               </tspan>
             ))}
           </text>
