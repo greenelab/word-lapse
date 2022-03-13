@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
-import { useQueryParam, withDefault } from "use-query-params";
+import { useQueryParam } from "use-query-params";
 import Slider from "../components/Slider";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "../components/Button";
 import { AppContext } from "../App";
 import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
 import { blue, lightGray, red } from "../palette";
@@ -21,10 +21,7 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
 
   // compute year stuff
   const years = Object.keys(neighborsData);
-  const [yearIndex = 0, setYearIndex] = useQueryParam(
-    "year",
-    withDefault(YearParam(years), 0)
-  );
+  const [yearIndex, setYearIndex] = useQueryParam("year", YearParam(years));
   const year = years[yearIndex] || "";
   const neighbors = neighborsData[year] || [];
 
@@ -43,6 +40,11 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   useEffect(() => {
     setViewBox();
   }, [uniqueNeighbors.length, setViewBox]);
+
+  // if year not in url on mount, init to 0 and force url encode
+  useEffect(() => {
+    if (yearIndex === undefined) setYearIndex(0);
+  }, [yearIndex, setYearIndex]);
 
   // current year color
   const blended = blendColors(red, blue, yearIndex / (years.length - 1));
@@ -86,21 +88,17 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
       </svg>
 
       <div className="chart-controls">
-        <button
+        <Button
+          icon="left-right"
           onClick={() => setCompare(true)}
           data-tooltip="Compare two years"
-        >
-          <FontAwesomeIcon icon="left-right" className="fa-fw" />
-        </button>
-        <button
+        />
+
+        <Button
+          icon={playing ? "pause" : "play"}
           onClick={() => setPlaying(!playing)}
           data-tooltip={playing ? "Pause" : "Play"}
-        >
-          <FontAwesomeIcon
-            icon={playing ? "pause" : "play"}
-            className="fa-fw"
-          />
-        </button>
+        />
 
         <Slider
           steps={years}

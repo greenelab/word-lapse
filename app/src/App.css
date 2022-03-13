@@ -42,25 +42,9 @@ a {
 }
 
 a:hover {
-  color: var(--purple)
-}
-
-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  background: none;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 999px;
-  background: var(--lightGray);
-  color: var(--gray);
-  cursor: pointer;
-  transition: background var(--fast), color var(--fast);
-}
-
-button:hover {
-  background: var(--lightPurple);
   color: var(--purple);
+}
+
+*:focus-visible {
+  outline-color: var(--purple);
 }

@@ -1,76 +1,17 @@
-.form {
+.search {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 0;
-  width: 300px;
-  max-width: 100%;
-  text-align: center;
-}
-
-.form-controls {
-  position: relative;
-  display: flex;
-  align-items: center;
   gap: 10px;
-  width: 100%;
-}
-
-.search {
-  position: relative;
-  width: 100%;
-}
-
-.autocomplete {
-  position: absolute;
-  width: 100%;
-  top: 110%;
-}
-
-.autocomplete > div {
-  max-height: min(50vh, 300px);
-  overflow-y: auto;
-  background: white;
-  border: solid 2px var(--darkGray);
-  border-radius: 5px;
-}
-
-.option {
-  padding: 5px 10px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.option[data-highlighted="true"] {
-  background: var(--gray);
-}
-
-.input {
-  width: 100%;
-  padding: 10px 20px;
-  border: solid 2px var(--gray);
-  border-radius: 999px;
-  font-size: 1rem;
-  text-align: center;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  max-width: 300px;
 }
 
 .corpus {
-  padding: 2.5px 5px;
+  padding: 1px 5px;
   border: solid 2px var(--gray);
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 0.9rem;
   cursor: pointer;
-}
-
-header[data-fullscreen="true"] .corpus {
-  position: absolute;
-  right: 0;
-  transform: translateX(110%);
 }
 
 header[data-fullscreen="false"] .search-label {

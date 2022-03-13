@@ -29,12 +29,10 @@ export const wrapLines = (uniqueNeighbors, lineChars) => {
 
 // encode/decode years to/from url
 export const YearParam = (years) => ({
-  encode: (yearIndex) => {
-    return years[yearIndex];
-  },
+  encode: (yearIndex) => years[yearIndex],
   decode: (year) => {
     const match = years.findIndex((y) => y === year);
-    return match === -1 ? 0 : match;
+    return match === -1 ? undefined : match;
   },
 });
 

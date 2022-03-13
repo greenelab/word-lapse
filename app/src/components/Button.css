@@ -1,0 +1,32 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 999px;
+  background: var(--lightGray);
+  color: var(--gray);
+  cursor: pointer;
+  transition: background var(--fast), color var(--fast);
+}
+
+.button:hover {
+  background: var(--lightPurple);
+  color: var(--purple);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--purple);
+}
+
+.button[data-square="true"] {
+  margin: 0;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}

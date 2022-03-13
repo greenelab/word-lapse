@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
-import { useQueryParam, withDefault } from "use-query-params";
+import { useQueryParam } from "use-query-params";
 import Slider from "../components/Slider";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "../components/Button";
 import { AppContext } from "../App";
 import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
 import { blue, gray, lightGray, purple, red } from "../palette";
@@ -29,14 +29,8 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
 
   // compute year stuff
   const years = Object.keys(neighbors);
-  const [yearAIndex, setYearAIndex] = useQueryParam(
-    "yearA",
-    withDefault(YearParam(years), 0)
-  );
-  const [yearBIndex, setYearBIndex] = useQueryParam(
-    "yearB",
-    withDefault(YearParam(years), 0)
-  );
+  const [yearAIndex, setYearAIndex] = useQueryParam("yearA", YearParam(years));
+  const [yearBIndex, setYearBIndex] = useQueryParam("yearB", YearParam(years));
   const yearA = years[yearAIndex] || "";
   const yearB = years[yearBIndex] || "";
   const ANeighbors = neighbors[yearA] || [];
@@ -57,6 +51,12 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   useEffect(() => {
     setViewBox();
   }, [symbols, uniqueNeighbors.length, setViewBox]);
+
+  // if years not in url on mount, init to 0 and force url encode
+  useEffect(() => {
+    if (yearAIndex === undefined) setYearAIndex(0);
+    if (yearBIndex === undefined) setYearBIndex(0);
+  }, [yearAIndex, setYearAIndex, yearBIndex, setYearBIndex]);
 
   return (
     <div className="chart">
@@ -151,32 +151,23 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
       </svg>
 
       <div className="chart-controls">
-        <button
+        <Button
+          icon="right-long"
           onClick={() => setCompare(false)}
           data-tooltip="View single year"
-        >
-          <FontAwesomeIcon icon="right-long" className="fa-fw" />
-        </button>
+        />
 
-        <button
+        <Button
+          icon={symbols ? "font" : "icons"}
           onClick={() => setSymbols(!symbols)}
           data-tooltip={symbols ? "Show just text" : "Show symbols"}
-        >
-          <FontAwesomeIcon
-            icon={symbols ? "font" : "icons"}
-            className="fa-fw"
-          />
-        </button>
+        />
 
-        <button
+        <Button
+          icon={playing ? "pause" : "play"}
           onClick={() => setPlaying(!playing)}
           data-tooltip={playing ? "Pause" : "Play"}
-        >
-          <FontAwesomeIcon
-            icon={playing ? "pause" : "play"}
-            className="fa-fw"
-          />
-        </button>
+        />
 
         <Slider
           steps={years}

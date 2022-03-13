@@ -1,5 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { downloadSvg } from "../util/dom";
+import Button from "./Button";
 
 // download charts as svg
 const download = () => {
@@ -18,10 +18,7 @@ const download = () => {
 
 // download button
 const Download = () => (
-  <button className="download" onClick={() => download()}>
-    <FontAwesomeIcon icon="download" />
-    <span>Download SVGs</span>
-  </button>
+  <Button text="Download SVGs" icon="download" onClick={download} />
 );
 
 export default Download;

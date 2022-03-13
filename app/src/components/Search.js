@@ -1,101 +1,35 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { getAutocomplete } from "../api";
 import { AppContext } from "../App";
 import { meta } from "..";
-import { useCombobox } from "downshift";
+import Combobox from "./Combobox";
 import "./Search.css";
+import Select from "./Select";
 
 // search box
 const Search = () => {
   const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
-  const [value, setValue] = useState(search);
-  const [autocomplete, setAutocomplete] = useState([]);
-
-  // autocomplete
-  // https://github.com/downshift-js/downshift/tree/master/src/hooks/useCombobox
-  const {
-    isOpen,
-    getLabelProps,
-    getMenuProps,
-    getInputProps,
-    getComboboxProps,
-    highlightedIndex,
-    getItemProps,
-    closeMenu,
-  } = useCombobox({
-    items: autocomplete,
-    inputValue: value,
-    onInputValueChange: ({ inputValue }) => setValue(inputValue),
-    onSelectedItemChange: () => setSearch(value),
-  });
-
-  // get autocomplete results
-  useEffect(() => {
-    (async () => {
-      setAutocomplete(await getAutocomplete(value));
-    })();
-  }, [value]);
-
-  // when user explicitly submits form by pressing enter
-  const onSubmit = (event) => {
-    // if autocomplete result highlighted, let downshift do its thing
-    if (highlightedIndex !== -1) return;
-    // avoid navigating away from page
-    event.preventDefault();
-    // update search immediately
-    setSearch(value);
-  };
-
-  // when search changes upstream, update input value here
-  useEffect(() => {
-    setValue(search);
-    closeMenu();
-  }, [search, closeMenu]);
 
   return (
-    <form onSubmit={onSubmit} className="form">
-      <div className="form-controls">
-        <div {...getComboboxProps()} className="search">
-          <input
-            {...getInputProps()}
-            className="input"
-            placeholder="Enter a word"
-            autoFocus
-          />
-        </div>
-        <div {...getMenuProps()} className="autocomplete">
-          {isOpen && !!autocomplete.length && (
-            <div>
-              {autocomplete.map((item, index) => (
-                <div
-                  key={index}
-                  {...getItemProps({ item, index })}
-                  className="option"
-                  data-highlighted={highlightedIndex === index}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <select
-          className="corpus"
+    <>
+      <div className="search">
+        <Combobox
+          options={getAutocomplete}
+          value={search}
+          onChange={setSearch}
+          placeholder="Type a word"
+        />
+        <Select
+          options={meta?.config?.CORPORA_SET || []}
           value={corpus}
-          onChange={(event) => setCorpus(event.target.value)}
-          data-tooltip="What corpus to use in analysis"
-        >
-          {(meta?.config?.CORPORA_SET || []).map((corpus, index) => (
-            <option key={index} value={corpus}>
-              {corpus}
-            </option>
-          ))}
-        </select>
+          onChange={setCorpus}
+          data-tooltip="Select corpus to use in analysis"
+        />
       </div>
-      <label {...getLabelProps()} className="search-label" htmlFor="input">
+      <div className="search-label">
         Explore how a word changes in meaning over time
-      </label>
-    </form>
+      </div>
+    </>
   );
 };
 
