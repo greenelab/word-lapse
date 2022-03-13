@@ -6,14 +6,10 @@
   max-width: 300px;
 }
 
-.corpus {
-  padding: 1px 5px;
-  border: solid 2px var(--gray);
-  border-radius: 5px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
 header[data-fullscreen="false"] .search-label {
   display: none;
+}
+
+header[data-fullscreen="true"] .search {
+  transform: translateX(20px);
 }
