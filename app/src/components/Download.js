@@ -8,11 +8,8 @@ const download = () => {
     downloadSvg(
       svg,
       `word-lapse-${svg.id}`,
-      [
-        ["xmlns", "http://www.w3.org/2000/svg"],
-        ["style", "font-family: sans-serif;"],
-      ],
-      ["data-tooltip"]
+      { style: "font-family: sans-serif;" },
+      [/^data-.*/, /^aria-.*/]
     );
 };
 
