@@ -10,16 +10,33 @@ export const setCssVariables = (variables) => {
 export const downloadSvg = (
   element,
   filename = "chart",
-  addAttrs = [],
-  deleteAttrs = []
+  addAttrs = {},
+  removeAttrs = []
 ) => {
   if (!element) return;
+
+  // make clone of node to work with
   const clone = element.cloneNode(true);
-  for (const [key, value] of addAttrs) clone.setAttribute(key, value);
-  for (const deleteAttr of deleteAttrs)
-    clone
-      .querySelectorAll(`[${deleteAttr}]`)
-      .forEach((el) => el.removeAttribute(deleteAttr));
+
+  // always ensure xmlns so svg is valid outside of html
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  // set other custom attributes on top level svg element
+  for (const [key, value] of Object.entries(addAttrs))
+    clone.setAttribute(key, value);
+
+  // remove specific attributes from all elements
+  for (const element of clone.querySelectorAll("*"))
+    for (const removeAttr of removeAttrs)
+      for (const { name, value } of element.attributes) {
+        console.log(removeAttr, name, value)
+        if (name.match(removeAttr)) {
+          element.removeAttribute(name);
+          continue;
+        }
+      }
+
+  // download clone as svg file
   const data = clone.outerHTML;
   const blob = new Blob([data], { type: "image/svg+xml" });
   const url = window.URL.createObjectURL(blob);
