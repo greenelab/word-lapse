@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 # list of words with which to populate the cache
 WORD_LIST = os.environ.get('WORD_LIST', "./google-10000-english-usa.txt")
+CORPUS = os.environ.get('CORPUS', 'abstracts').strip()
 
 # get the root server URL from the env, if possible
 # remove possible trailing slash so we can construct URLs more easily
@@ -50,7 +51,7 @@ def main():
     print("Building requests set...")
     with open(WORD_LIST) as fp:
         reqs = [
-            grq.get(f"{SERVER_URL}/neighbors?tok={word.strip()}")
+            grq.get(f"{SERVER_URL}/neighbors?tok={word.strip()}&corpus={CORPUS}")
             for word in tqdm(fp.readlines())
         ]
     

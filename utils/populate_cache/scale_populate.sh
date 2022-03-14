@@ -13,6 +13,11 @@ DESIRED_JOBS=31
 # nodes to keep after we're done
 FINAL_NODES=1
 
+function fail_w_msg {
+    echo "$1"
+    exit 1
+}
+
 # --------------------------
 # --- startup, execution, cleanup
 # --------------------------
@@ -22,13 +27,17 @@ rm -f non_200s.log
 
 # scale up to the number of nodes we want
 echo "Scaling up nodes to ${DESIRED_NODES}..."
-gcloud compute instance-groups managed resize ${INSTANCE_GROUP}  --project=word-lapse --zone=us-central1-a --size=${DESIRED_NODES}
+gcloud compute instance-groups managed resize ${INSTANCE_GROUP}  --project=word-lapse --zone=us-central1-a --size=${DESIRED_NODES} \
+    || fail_w_msg "unable to scale instance groups"
 gcloud compute instance-groups managed wait-until --project=word-lapse --zone=us-central1-a --stable ${INSTANCE_GROUP}
 echo "...done!"
 
 # run the cache populater w/the desired number of jobs
 export SERVER_URL="https://api-wl.greenelab.com"
 export RQ_CONCURRENCY=${DESIRED_JOBS}
+
+export WORD_LIST=${WORD_LIST}
+export CORPUS=${CORPUS:-"abstracts"}
 
 ${UTILS_PYTHON} populate_cache.py
 
