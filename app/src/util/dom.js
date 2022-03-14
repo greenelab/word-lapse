@@ -15,7 +15,7 @@ export const downloadSvg = (
 ) => {
   if (!element) return;
 
-  // make clone of node to work with
+  // make clone of node to work with and mutate
   const clone = element.cloneNode(true);
 
   // always ensure xmlns so svg is valid outside of html
@@ -28,13 +28,11 @@ export const downloadSvg = (
   // remove specific attributes from all elements
   for (const element of clone.querySelectorAll("*"))
     for (const removeAttr of removeAttrs)
-      for (const { name, value } of element.attributes) {
-        console.log(removeAttr, name, value)
+      for (const { name } of element.attributes)
         if (name.match(removeAttr)) {
           element.removeAttribute(name);
           continue;
         }
-      }
 
   // download clone as svg file
   const data = clone.outerHTML;
