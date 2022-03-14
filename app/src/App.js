@@ -1,4 +1,5 @@
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useReducer } from "react";
+import { StringParam, withDefault, useQueryParam } from "use-query-params";
 import Header from "./sections/Header";
 import Footer from "./sections/Footer";
 import Results from "./sections/Results";
@@ -7,7 +8,7 @@ import "./components/tooltip";
 import { getCached, getResults, statuses } from "./api";
 import * as palette from "./palette";
 import { setCssVariables } from "./util/dom";
-import { useQueryState } from "./util/hooks";
+import { history, meta } from ".";
 import "./App.css";
 
 // add all palette variables to document as CSS variables
@@ -17,8 +18,12 @@ setCssVariables(palette);
 export const AppContext = createContext({});
 
 const App = () => {
+  const [corpus, setCorpus] = useQueryParam(
+    "corpus",
+    withDefault(StringParam, (meta?.config?.CORPORA_SET || [])[0] || "")
+  );
   const [results, setResults] = useState(null);
-  const [search, setSearch] = useQueryState("search", "");
+  const [search = "", setSearch] = useQueryParam("search", StringParam);
   const [status, setStatus] = useState(statuses.empty);
   const [fullscreen, setFullscreen] = useState(true);
 
@@ -31,11 +36,6 @@ const App = () => {
   useEffect(() => {
     (async () => {
       try {
-        // set title bar
-        document.title = [process.env.REACT_APP_TITLE, search.trim()]
-          .filter((w) => w)
-          .join(" · ");
-
         // go into results mode
         setResults();
         setStatus();
@@ -43,17 +43,17 @@ const App = () => {
 
         // check if results for search already cached
         // and display appropriate loading status
-        if (await getCached(search)) setStatus(statuses.loadingCached);
+        if (await getCached(search, corpus)) setStatus(statuses.loadingCached);
         else setStatus(statuses.loading);
 
         // perform query
-        setResults(await getResults(search));
+        setResults(await getResults(search, corpus));
         setStatus();
       } catch (error) {
+        console.info(error);
         // if not latest query
         if (error.message === statuses.stale) {
           // don't do anything, leaving most recent query to do its thing
-          console.info(`Search "${search}" superceded`);
         } else {
           // set status message from thrown error
           setResults();
@@ -62,11 +62,23 @@ const App = () => {
         }
       }
     })();
-  }, [search]);
+  }, [corpus, search]);
+
+  // https://github.com/pbeshai/use-query-params/blob/master/examples/no-router/src/App.js
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  useEffect(() => {
+    history.listen(() => {
+      forceUpdate();
+      updateTitleBar();
+    });
+    updateTitleBar();
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
+        corpus,
+        setCorpus,
         results,
         setResults,
         search,
@@ -86,3 +98,18 @@ const App = () => {
 };
 
 export default App;
+
+// update title bar to reflect url state
+const updateTitleBar = () => {
+  const { search, year, yearA, yearB } = Object.fromEntries(
+    new URLSearchParams(window.location.search)
+  );
+  document.title = [
+    process.env.REACT_APP_TITLE,
+    search ? `"${search}"` : "",
+    year ? year : "",
+    yearA && yearB ? `${yearA} vs. ${yearB}` : "",
+  ]
+    .filter((part) => part)
+    .join(" · ");
+};

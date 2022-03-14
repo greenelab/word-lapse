@@ -38,6 +38,7 @@ export {
 // font awesome icons
 library.add(
   fas.faAngleDown,
+  fas.faBook,
   fas.faDownload,
   fas.faExclamationCircle,
   fas.faFont,

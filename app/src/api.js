@@ -4,30 +4,36 @@ import { sleep } from "./util/debug";
 // api endpoint base url
 const api = "https://api-wl.greenelab.com";
 
-// api call to see if cached
-export const getCached = async (query) => {
-  if (!query.trim()) throw new Error(statuses.empty);
-  // make request
-  const url = `${api}/neighbors/cached?tok=${query}`;
+// get metadata from api
+export const getMetadata = async () => {
   try {
-    const { is_cached = false } = await (await window.fetch(url)).json();
-    return is_cached;
+    return await (await window.fetch(api)).json();
   } catch (error) {
-    return false;
+    return {};
   }
+};
+
+// api call to see if cached
+export const getCached = async (query, corpus) => {
+  // nothing searched
+  if (!query.trim() || !corpus.trim()) throw new Error(statuses.empty);
+  // make request
+  const url = `${api}/neighbors/cached?tok=${query}&corpus=${corpus}`;
+  const { is_cached = false } = await (await window.fetch(url)).json();
+  return is_cached;
 };
 
 // singleton to hold latest request
 let latest = null;
 
 // api call to get results
-export const getResults = async (query) => {
+export const getResults = async (query, corpus) => {
   // unique id for this request
   const id = window.performance.now();
   latest = id;
 
   // nothing searched
-  if (!query.trim()) throw new Error(statuses.empty);
+  if (!query.trim() || !corpus.trim()) throw new Error(statuses.empty);
 
   // leave this in to briefly show that we are loading cached results
   // and because there is a study that if something complex takes a very
@@ -35,7 +41,7 @@ export const getResults = async (query) => {
   await sleep(1000);
 
   // make request
-  const url = `${api}/neighbors?tok=${query}`;
+  const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
   const response = await window.fetch(url);
   if (!response.ok) throw new Error("Response not OK");
   const results = await response.json();
@@ -44,18 +50,13 @@ export const getResults = async (query) => {
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
   // transform data as needed
-  for (const [key, value] of Object.entries(results.neighbors))
-    if (!value.length) delete results.neighbors[key];
-
-  // remap neighbors to just the token field, removing tagged_id
-  // FIXME: if we want to present the tagged_id field in the UI,
-  //  i presume everything that relies on it just being a list of strings
-  //  is going to need to be updated...
-  results.neighbors = (
-    Object.entries(results.neighbors)
-      .map(([year, entries]) => [year, entries.map((x) => x.token || x)])
-      .reduce((coll, [year, entries]) => { coll[year] = entries; return coll; }, {})
-  )
+  results.tags = {};
+  for (const [year, words] of Object.entries(results.neighbors))
+    if (!words.length) delete results.neighbors[year];
+  for (const [, words] of Object.entries(results.neighbors))
+    for (const { token, tag_id } of words) results.tags[token] = tag_id;
+  for (const [year] of Object.entries(results.neighbors))
+    results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
 
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);
@@ -64,6 +65,22 @@ export const getResults = async (query) => {
   // only return results if this request is latest request.
   if (id === latest) return { query, ...results };
   else throw new Error(statuses.stale);
+};
+
+// get autocomplete results
+export const getAutocomplete = async (query) => {
+  try {
+    // nothing searched
+    if (!query.trim()) throw new Error(statuses.empty);
+
+    // make request
+    const url = `${api}/autocomplete?prefix=${query}`;
+    const response = await window.fetch(url);
+    if (!response.ok) throw new Error("Response not OK");
+    return (await response.json()).filter((word) => word.trim());
+  } catch (error) {
+    return [];
+  }
 };
 
 // distinct search states

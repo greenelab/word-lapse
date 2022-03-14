@@ -31,7 +31,8 @@ const height = 25;
 
 // app title in header
 const Title = () => (
-  <div
+  <a
+    href="."
     className="title"
     role="heading"
     aria-level={1}
@@ -55,7 +56,7 @@ const Title = () => (
         ))}
       </svg>
     ))}
-  </div>
+  </a>
 );
 
 export default Title;

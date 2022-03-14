@@ -1,44 +1,35 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { getAutocomplete } from "../api";
 import { AppContext } from "../App";
-import { useDebounce } from "../util/hooks";
+import { meta } from "..";
+import Combobox from "./Combobox";
 import "./Search.css";
+import Select from "./Select";
 
 // search box
 const Search = () => {
-  const { search, setSearch } = useContext(AppContext);
-  const [value, setValue] = useState(search);
-  const debouncedValue = useDebounce(value, 3000);
-
-  // when user explicitly submits form by pressing enter
-  const onSubmit = (event) => {
-    // avoid navigating away from page
-    event.preventDefault();
-    // update search immediately
-    setSearch(value);
-  };
-
-  // when user types
-  useEffect(() => {
-    // update search after debounce
-    setSearch(debouncedValue);
-  }, [setSearch, debouncedValue]);
-
-  // when search changes upstream, update input value here
-  useEffect(() => setValue(search), [search]);
+  const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
 
   return (
-    <form onSubmit={onSubmit} id="form">
-      <input
-        id="search"
-        value={value}
-        onChange={({ target }) => setValue(target.value)}
-        placeholder="Enter a word"
-        autoFocus
-      />
-      <label id="search-label" htmlFor="search">
+    <>
+      <div className="search">
+        <Combobox
+          options={getAutocomplete}
+          value={search}
+          onChange={setSearch}
+          placeholder="Type a word"
+        />
+        <Select
+          options={meta?.config?.CORPORA_SET || []}
+          value={corpus}
+          onChange={setCorpus}
+          data-tooltip={`Select corpus to use in analysis. Using "${corpus}".`}
+        />
+      </div>
+      <div className="search-label">
         Explore how a word changes in meaning over time
-      </label>
-    </form>
+      </div>
+    </>
   );
 };
 

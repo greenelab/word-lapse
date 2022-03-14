@@ -5,10 +5,10 @@ header {
   align-items: center;
   justify-content: center;
   gap: 40px;
+  min-height: 100vh;
   padding: var(--pagePadding);
   background: var(--lightGray);
-  overflow: hidden;
-  min-height: 100vh;
+  text-align: center;
   z-index: 1;
   transition: min-height var(--fast);
 }

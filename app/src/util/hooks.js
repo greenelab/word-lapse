@@ -1,20 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-  useLayoutEffect,
-} from "react";
-
-// debounce (rate limit) value
-export const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(() => {
-    const timeout = window.setTimeout(() => setDebouncedValue(value), delay);
-    return () => window.clearTimeout(timeout);
-  }, [value, delay]);
-  return debouncedValue;
-};
+import { useState, useCallback, useRef, useLayoutEffect } from "react";
 
 // get bounding box of element
 export const useBbox = () => {
@@ -34,10 +18,12 @@ export const useBbox = () => {
   return [element, bbox];
 };
 
-// get fitted view box of svg
+// set fitted view box of svg
 export const useViewBox = (padding = 0) => {
+  // reference to attach to svg element
   const svg = useRef();
 
+  // function to call to set fitted viewbox on svg
   const setViewBox = useCallback(() => {
     // if svg not mounted yet (or anymore), exit
     if (!svg.current) return;
@@ -58,59 +44,6 @@ export const useViewBox = (padding = 0) => {
   }, [padding]);
 
   return [svg, setViewBox];
-};
-
-// useState react hook, but synced to url parameter
-export const useQueryState = (key, defaultValue) => {
-  // get param from url
-  const getQuery = useCallback(
-    (key) => new URLSearchParams(window.location.search).get(key),
-    []
-  );
-
-  // set param in url and set url
-  const setQuery = useCallback((key, value) => {
-    // get current url
-    const { pathname, href, search } = window.location;
-    const url = new URL(pathname, href).href;
-
-    // get new search param
-    const params = new URLSearchParams();
-    params.set(key, value);
-    const newSearch = value.trim() ? "?" + params.toString() : "";
-
-    // don't update if already on desired search param
-    if (search === newSearch) return;
-
-    // update url
-    window.history.pushState(null, null, url + newSearch);
-  }, []);
-
-  // state value, defaults to param gotten from url
-  const [value, setValue] = useState(getQuery(key));
-
-  // when user navigates back/forward
-  useEffect(() => {
-    // get value from url again as if page had just loaded again
-    const onNav = () => setValue(getQuery(key));
-
-    // listen for user back/forward nav
-    window.addEventListener("popstate", onNav);
-    return () => window.removeEventListener("popstate", onNav);
-  }, [getQuery, key]);
-
-  // modified setState func to return
-  const setState = useCallback(
-    (value) => {
-      // update state
-      setValue(value);
-      // update url
-      setQuery(key, value);
-    },
-    [setQuery, key]
-  );
-
-  return [value || defaultValue, setState];
 };
 
 // unique id for component instance
