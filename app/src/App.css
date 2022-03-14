@@ -45,6 +45,11 @@ a:hover {
   color: var(--purple);
 }
 
-*:focus-visible {
+:focus {
   outline-color: var(--purple);
+}
+
+svg :focus {
+  outline-width: 0.4px;
+  outline-style: solid;
 }
