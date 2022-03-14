@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useCombobox } from "downshift";
+import { useDebounce } from "use-debounce";
 import "./Combobox.css";
 
 // combo box, i.e. input box with dropdown autocomplete
 // https://github.com/downshift-js/downshift/tree/master/src/hooks/useCombobox
 const Combobox = ({ value, onChange, options, ...props }) => {
   const [input, setInput] = useState(value);
+  const [debouncedInput] = useDebounce(input, 50);
   const [autocomplete, setAutocomplete] = useState([]);
 
   // downshift props
@@ -26,10 +28,8 @@ const Combobox = ({ value, onChange, options, ...props }) => {
 
   // get autocomplete results
   useEffect(() => {
-    (async () => {
-      setAutocomplete(await options(input));
-    })();
-  }, [options, input]);
+    (async () => setAutocomplete(await options(debouncedInput)))();
+  }, [options, debouncedInput]);
 
   // when value changes upstream, update local input value here
   useEffect(() => {

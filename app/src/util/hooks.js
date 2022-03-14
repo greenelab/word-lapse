@@ -18,10 +18,12 @@ export const useBbox = () => {
   return [element, bbox];
 };
 
-// get fitted view box of svg
+// set fitted view box of svg
 export const useViewBox = (padding = 0) => {
+  // reference to attach to svg element
   const svg = useRef();
 
+  // function to call to set fitted viewbox on svg
   const setViewBox = useCallback(() => {
     // if svg not mounted yet (or anymore), exit
     if (!svg.current) return;
