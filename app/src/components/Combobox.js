@@ -7,7 +7,7 @@ import "./Combobox.css";
 // https://github.com/downshift-js/downshift/tree/master/src/hooks/useCombobox
 const Combobox = ({ value, onChange, options, ...props }) => {
   const [input, setInput] = useState(value);
-  const [debouncedInput] = useDebounce(input, 50);
+  const [debouncedInput] = useDebounce(input, 100);
   const [autocomplete, setAutocomplete] = useState([]);
 
   // downshift props
