@@ -8,7 +8,7 @@ Explore how a word changes over time
 
 ### How does it work?
 
-Type in a word, and Word Lapse will tell you things about it that have changed per year, like associated words or frequency of use.
+Type in a word, and Word Lapse will tell you information about how that word has changed per year in terms of associated words or frequency of use.
 
 The information is computed from a XXX machine learning model by XXX.
 The model was trained on over XXX abstracts and full-texts from XXX.
