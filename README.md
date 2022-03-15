@@ -13,7 +13,7 @@ Type in a word, and Word Lapse will tell you information about how that word has
 The information is computed from a XXX machine learning model by XXX.
 The model was trained on over XXX abstracts and full-texts from XXX.
 
-For more information, [read this paper]().
+For more information about the approach that generated the data for this website, please [read this paper](https://greenelab.github.io/word_lapse_manuscript/).
 
 ### API
 
