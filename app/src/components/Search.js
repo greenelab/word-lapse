@@ -6,6 +6,8 @@ import Combobox from "./Combobox";
 import "./Search.css";
 import Select from "./Select";
 
+const description = process.env.REACT_APP_DESCRIPTION;
+
 // search box
 const Search = () => {
   const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
@@ -26,9 +28,7 @@ const Search = () => {
           data-tooltip={`Select corpus to use in analysis. Using "${corpus}".`}
         />
       </div>
-      <div className="search-label">
-        Explore how a word changes in meaning over time
-      </div>
+      <div className="search-label">{description}</div>
     </>
   );
 };
