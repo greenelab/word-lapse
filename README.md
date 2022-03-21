@@ -33,6 +33,9 @@ See [the license file](https://github.com/greenelab/word-lapse/blob/main/LICENSE
 To separate concerns and to make cloning and developing this repo easier, the model data (~26+ GB) for this project is stored in a separate submodule repo.
 See [`SUBMODULES.md`](https://github.com/greenelab/word-lapse/blob/main/SUBMODULES.md) for more information.
 
-The backend for this app (under `/server`) is *basic 1-2 sentence description of backend*.
+The backend for this app (under `/server`) consists of three components:
+- a RESTful API implemented in [FastAPI](https://fastapi.tiangolo.com/)
+- a [Redis](https://redis.io/) in-memory cache with writethrough to disk
+- a set of [RQ](https://python-rq.org/) workers that process word statistic lookups
 
 The front-facing app (under `/app`) is made with React, bootstrapped with `create-react-app`.
