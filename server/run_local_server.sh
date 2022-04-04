@@ -26,6 +26,6 @@ TAG=$COMMIT_SHA
         -e USE_INLINE_REDIS=1 \
         -e RQ_CONCURRENCY=1 \
         -e REDIS_URL='redis://localhost:6379' \
-        -e DEBUG=0 \
+        -e DEBUG=0 -e LOG_LEVEL=INFO \
         --env-file=instance_env \
         ${IMAGE}:${TAG} "$@"
