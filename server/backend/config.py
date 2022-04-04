@@ -35,10 +35,10 @@ def is_truthy(v):
 DEBUG = is_truthy(os.environ.get("DEBUG", False))
 
 # when not in debug, sets the loglevel to this value if specified
-LOG_LEVEL = os.environ.get('LOG_LEVEL')
+LOG_LEVEL = os.environ.get("LOG_LEVEL")
 
 # the set of corpora in the data folder
-CORPORA_SET = ('abstracts', 'fulltexts')
+CORPORA_SET = ("abstracts", "fulltexts")
 
 # if env var USE_MEMMAP is truthy, loads word2vec models using the mmap='r' flag,
 # which largely keeps them on disk and keeps a single copy when sharing between
