@@ -34,6 +34,9 @@ def is_truthy(v):
 # when DEBUG is true, uvicorn will run in debug mode with autoreload enabled
 DEBUG = is_truthy(os.environ.get("DEBUG", False))
 
+# when not in debug, sets the loglevel to this value if specified
+LOG_LEVEL = os.environ.get('LOG_LEVEL')
+
 # the set of corpora in the data folder
 CORPORA_SET = ('abstracts', 'fulltexts')
 
