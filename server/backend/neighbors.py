@@ -1,25 +1,28 @@
 import logging
+import lzma
 import mmap
 import os
 import pickle
 import re
+import sys
+from contextlib import contextmanager
+from csv import DictReader
 from itertools import groupby
 from pathlib import Path
-import sys
-from fastapi import HTTPException
 
 import pandas as pd
 import plydata as ply
 from gensim.models import KeyedVectors, Word2Vec
-from joblib import Memory, Parallel, delayed
+from joblib import Parallel, delayed
+from pygtrie import CharTrie
 
 from .config import (
     CORPORA_SET,
-    USE_MEMMAP,
     MATERIALIZE_MODELS,
+    PARALLEL_BACKEND,
     PARALLEL_POOLS,
     PARALLELIZE_QUERY,
-    PARALLEL_BACKEND,
+    USE_MEMMAP,
 )
 from .tracking import ExecTimer
 
@@ -50,23 +53,23 @@ concept_id_mapper_dict = None
 # === extract_frequencies(), cutoff_points()
 # ========================================================================
 
+
 class CorpusNotFoundException(Exception):
     def __init__(self, corpus) -> None:
         self.corpus = corpus
-        self.message = 'Corpus %s not found in set %s' % (corpus, CORPORA_SET)
+        self.message = "Corpus %s not found in set %s" % (corpus, CORPORA_SET)
         super().__init__(self.message)
+
 
 def extract_frequencies(tok: str, corpus: str):
     corpus_paths = {
-        'abstracts': data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
-        'fulltexts': data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),   
+        "abstracts": data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
+        "fulltexts": data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),
     }
 
     # Extract the frequencies
     try:
-        frequency_table = pd.read_csv(
-            corpus_paths[corpus], sep="\t"
-        )
+        frequency_table = pd.read_csv(corpus_paths[corpus], sep="\t")
     except KeyError:
         raise CorpusNotFoundException(corpus=corpus)
 
@@ -89,14 +92,13 @@ def extract_frequencies(tok: str, corpus: str):
 
 def cutoff_points(tok: str, corpus: str):
     corpus_paths = {
-        'abstracts': data_folder / Path("abstract_changepoints.tsv"),
-        'fulltexts': data_folder / Path("fulltext_changepoints.tsv"),
-        
+        "abstracts": data_folder / Path("abstract_changepoints.tsv"),
+        "fulltexts": data_folder / Path("fulltext_changepoints.tsv"),
     }
 
     # Extract Estimated Cutoff Points
     try:
-        cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t" )
+        cutoff_points = pd.read_csv(corpus_paths[corpus], sep="\t")
     except KeyError:
         raise CorpusNotFoundException(corpus=corpus)
 
@@ -116,6 +118,43 @@ def cutoff_points(tok: str, corpus: str):
 # ========================================================================
 
 
+def get_concept_trie():
+    logger.info("Starting concept trie load...")
+
+    concept_trie_pickle = data_folder / Path("concept_trie.pkl")
+
+    # attempt to use pickled trie b/c generating it takes 45 minutes(!)
+    if os.path.exists(concept_trie_pickle):
+        with open(concept_trie_pickle, "rb") as fp:
+            with mmap.mmap(fp.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
+                concept_trie = pickle.load(mmap_obj)
+    else:
+        logger.info(
+            " - concept trie pickle not found, regenerating (this will take a while)..."
+        )
+        concept_trie = CharTrie()
+        for row in get_concept_lines():
+            concept_trie[row["concept"]] = row["concept_id"]
+
+        logger.info(" - writing pickle...")
+        with open(concept_trie_pickle, "wb") as fp:
+            pickle.dump(concept_trie, fp)
+        logger.info(" - done!")
+
+    logger.info("...concept trie loading done!")
+
+    return concept_trie
+
+
+def get_concept_lines():
+    with lzma.open(data_folder / Path("all_concept_ids.tsv.xz"), "rt") as fp:
+        reader = DictReader(
+            fp, dialect="excel-tab", fieldnames=("concept_id", "concept")
+        )
+        for row in reader:
+            yield row
+
+
 def get_concept_id_mapper(use_pickle=True, write_pickle=True):
     """
     Loads the concept mapper into a python dictionary format
@@ -128,7 +167,9 @@ def get_concept_id_mapper(use_pickle=True, write_pickle=True):
 
         if use_pickle and os.path.exists(pickled_path):
             with open(pickled_path, "rb") as fp:
-                with mmap.mmap(fp.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
+                with mmap.mmap(
+                    fp.fileno(), length=0, access=mmap.ACCESS_READ
+                ) as mmap_obj:
                     concept_id_mapper_dict = pickle.load(mmap_obj)
         else:
             concept_id_mapper = pd.read_csv(
@@ -167,7 +208,9 @@ def load_word_model(model_path, use_keyedvec=True):
         return Word2Vec.load(str(model_path))
 
 
-def word_models_by_year(corpus=None, only_first=True, use_keyedvec=True, just_reference=False):
+def word_models_by_year(
+    corpus=None, only_first=True, use_keyedvec=True, just_reference=False
+):
     """
     Generates a sequence of Word2Vec word models for each years' models
     in ./data/word2vec_models/*/*model.
@@ -191,7 +234,9 @@ def word_models_by_year(corpus=None, only_first=True, use_keyedvec=True, just_re
     # first, produce a list of word models sorted by year
     # (groupby requires a sorted list, since it accumulates groups linearly)
     word_models = list(
-        (data_folder / Path("word2vec_models") / Path(corpus)).rglob(f"*/*{model_suffix}")
+        (data_folder / Path("word2vec_models") / Path(corpus)).rglob(
+            f"*/*{model_suffix}"
+        )
     )
     word_models_sorted = sorted(word_models, key=extract_year)
 
@@ -230,7 +275,7 @@ def materialized_word_models(**kwargs):
 
     global word_models
 
-    corpus = kwargs.get('corpus')
+    corpus = kwargs.get("corpus")
 
     if word_models and corpus in word_models and len(word_models[corpus]) > 0:
         return word_models[corpus]
@@ -329,13 +374,17 @@ def extract_neighbors(
                             ),
                         )
                     )(year, model)
-                    for year, _, model in model_loader(corpus=corpus, use_keyedvec=use_keyedvec)
+                    for year, _, model in model_loader(
+                        corpus=corpus, use_keyedvec=use_keyedvec
+                    )
                 )
                 word_neighbor_map = dict(result)
         else:
             word_neighbor_map = {}
 
-            for year, _, model in model_loader(corpus=corpus, use_keyedvec=use_keyedvec):
+            for year, _, model in model_loader(
+                corpus=corpus, use_keyedvec=use_keyedvec
+            ):
                 word_neighbor_map[year] = query_model_for_tok(
                     year,
                     tok,
