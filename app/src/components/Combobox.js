@@ -24,7 +24,7 @@ const Combobox = ({ value, onChange, options, ...props }) => {
     inputValue: input,
     onInputValueChange: ({ inputValue }) => setInput(inputValue),
     onSelectedItemChange: ({ selectedItem }) =>
-      onChange(selectedItem.id || selectedItem.word),
+      onChange(selectedItem.concept || selectedItem.vocab),
   });
 
   // get autocomplete results
@@ -71,8 +71,8 @@ const Combobox = ({ value, onChange, options, ...props }) => {
                 className="dropdown-option"
                 data-highlighted={highlightedIndex === index}
               >
-                <span className="dropdown-cell">{item.word}</span>
-                <span className="dropdown-cell">{item.id || ""}</span>
+                <span className="dropdown-cell">{item.vocab}</span>
+                <span className="dropdown-cell">{item.concept || ""}</span>
               </div>
             ))}
           </div>

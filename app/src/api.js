@@ -2,7 +2,7 @@ import { getUnique } from "./util/neighbors";
 import { sleep } from "./util/debug";
 
 // api endpoint base url
-const api = "http://word-lapse-beta.ddns.net"; // for testing
+const api = "https://word-lapse-beta.ddns.net"; // for testing
 // const api = "https://api-wl.greenelab.com";
 
 // get metadata from api
@@ -80,11 +80,10 @@ export const getAutocomplete = async (query) => {
     if (!response.ok) throw new Error("Response not OK");
 
     // format results
-    const { vocab, concept } = await response.json();
-    return [
-      ...vocab.map((word) => ({ word, id: null })),
-      ...concept.map(([word, id]) => ({ word, id })),
-    ].sort((a,b)=> a.word?.length - b.word?.length);
+    const results = await response.json();
+    results.sort((a, b) => a.vocab?.length - b.vocab?.length);
+
+    return results;
   } catch (error) {
     return [];
   }
