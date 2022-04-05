@@ -18,9 +18,17 @@
 .dropdown {
   position: absolute;
   min-width: 100%;
-  max-width: max(300px, 100%);
-  right: 0;
+  max-width: 90vw;
   top: calc(100% + 5px);
+}
+
+header[data-fullscreen="true"] .dropdown {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+header[data-fullscreen="false"] .dropdown {
+  right: 0;
 }
 
 .dropdown-list {
@@ -33,11 +41,24 @@
 
 .dropdown-option {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 10px;
   height: 25px;
   padding: 0 10px;
   text-align: left;
   cursor: pointer;
+}
+
+.dropdown-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-cell:last-child {
+  color: var(--gray);
+  direction: rtl;
 }
 
 .dropdown-option[data-highlighted="true"] {
