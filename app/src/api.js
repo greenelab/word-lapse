@@ -2,8 +2,8 @@ import { getUnique } from "./util/neighbors";
 import { sleep } from "./util/debug";
 
 // api endpoint base url
-const api = "https://word-lapse-beta.ddns.net"; // for testing
-// const api = "https://api-wl.greenelab.com";
+// const api = "https://word-lapse-beta.ddns.net"; // for testing
+const api = "https://api-wl.greenelab.com";
 
 // get metadata from api
 export const getMetadata = async () => {
