@@ -7,6 +7,16 @@ function dir_is_empty {
 # enable reloading if DEBUG is 1
 [[ ${DEBUG:-0} -eq 1 ]] && DO_RELOAD="--reload" || DO_RELOAD=""
 
+# enables renewing the certificate via certbot
+# if disabled, whatever certificate (if there is one) will be used
+RENEW_OR_OBTAIN_CERT="${RENEW_OR_OBTAIN_CERT:-1}"
+
+# set the hostname, or use a default value if unspecified
+DNS_NAME="${DNS_NAME:-api-wl.greenelab.com}"
+
+# if 1, updates ddns using the env vars NOIP_DDNS_USERNAME and NOIP_DDNS_PASSWORD
+UPDATE_DDNS=${UPDATE_DDNS:-0}
+
 # enable inline redis (i.e., as a forked process), if USE_INLINE_REDIS is 1
 if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
     echo "* Booting redis-server..."
@@ -74,17 +84,30 @@ if [ "${UPDATE_DATA:-1}" = "1" ]; then
     fi
 fi
 
+# # FIXME: right now i don't know how to get secrets, but once we do we can enable this
+# if [ "${UPDATE_DDNS}" = "1" ]; then
+#     # FIXME: attempt to acquire secrets
+#     if [[ ! -z "${NOIP_DDNS_USERNAME}" ]] && [[ ! -z "${NOIP_DDNS_PASSWORD}" ]]; then
+#         EXTERNAL_IP=$( curl -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip )
+#         curl "http://${NOIP_DDNS_USERNAME}:${NOIP_DDNS_PASSWORD}@dynupdate.no-ip.com/nic/update?hostname=${DNS_NAME}&myip=${EXTERNAL_IP}"
+#     else
+#         echo "* Warning: UPDATE_DDNS was ${UPDATE_DDNS}, but NOIP_DDNS_USERNAME/PASSWORD were unset!"
+#     fi
+# fi
+
 if [ "${USE_HTTPS:-1}" = "1" ]; then
     # check if our certificate needs to be created (e.g., if it's missing)
     # or if we just need to renew
-    if dir_is_empty /etc/letsencrypt/; then
-        certbot certonly \
-            --non-interactive --standalone --agree-tos \
-            -m "${ADMIN_EMAIL:-faisal.alquaddoomi@cuanschutz.edu}" \
-            -d "${DNS_NAME:-api-wl.greenelab.com}"
-    else
-        # most of the time this is a no-op, since it won't renew if it's not near expiring
-        certbot renew
+    if [ "${RENEW_OR_OBTAIN_CERT:-1}" = "1" ]; then
+        if dir_is_empty /etc/letsencrypt/ || [[ ! -d /etc/letsencrypt/live/${DNS_NAME}/ ]]; then
+            certbot certonly \
+                --non-interactive --standalone --agree-tos \
+                -m "${ADMIN_EMAIL:-faisal.alquaddoomi@cuanschutz.edu}" \
+                -d "${DNS_NAME}"
+        else
+            # most of the time this is a no-op, since it won't renew if it's not near expiring
+            certbot renew
+        fi
     fi
 
     # finally, run the server (with HTTPS)
@@ -93,15 +116,15 @@ if [ "${USE_HTTPS:-1}" = "1" ]; then
     if [[ ${USE_UVICORN:-1} -eq 1 ]]; then
         echo "* Booting uvicorn..."
         /usr/local/bin/uvicorn backend.main:app --host 0.0.0.0 --port 443 ${DO_RELOAD} \
-            --ssl-keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
-            --ssl-certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+            --ssl-keyfile=/etc/letsencrypt/live/${DNS_NAME}/privkey.pem \
+            --ssl-certfile=/etc/letsencrypt/live/${DNS_NAME}/fullchain.pem
     else
         echo "* Booting gunicorn w/${WEB_CONCURRENCY:-4} workers..."
         gunicorn backend.main:app --bind 0.0.0.0:443 ${DO_RELOAD} \
             --timeout ${GUNICORN_TIMEOUT} \
             --workers ${WEB_CONCURRENCY:-4} --worker-class uvicorn.workers.UvicornWorker \
-            --keyfile=/etc/letsencrypt/live/api-wl.greenelab.com/privkey.pem \
-            --certfile=/etc/letsencrypt/live/api-wl.greenelab.com/fullchain.pem
+            --keyfile=/etc/letsencrypt/live/${DNS_NAME}/privkey.pem \
+            --certfile=/etc/letsencrypt/live/${DNS_NAME}/fullchain.pem
     fi
 else
     # finally, run the server (with just HTTP)
