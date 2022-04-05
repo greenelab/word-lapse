@@ -13,13 +13,14 @@ from .neighbors import (
     extract_frequencies,
     extract_neighbors,
     materialized_word_models,
-    get_concept_id_mapper
+    get_concept_id_mapper,
 )
 from .tracking import ExecTimer
 
 logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 def get_neighbors(tok: str, corpus: str):
     with ExecTimer() as timer:
@@ -45,6 +46,7 @@ def get_neighbors(tok: str, corpus: str):
             "changepoints": changepoint_output,
             "elapsed": timer.snapshot(),
         }
+
 
 def load_concept_map():
     with ExecTimer(verbose=True):
