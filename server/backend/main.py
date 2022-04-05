@@ -390,7 +390,7 @@ async def autocomplete(
 
         try:
             results["vocab"] = [
-                ("".join(x).strip(), None)
+                "".join(x).strip()
                 for x in islice(vocab_trie.iter(prefix=prefix), vocab_limit)
             ]
         except KeyError:
