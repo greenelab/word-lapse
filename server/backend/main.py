@@ -352,25 +352,25 @@ async def autocomplete(
     concept_limit: int = 20,
 ):
     """
-    Produces a dict with two subkeys, 'vocab' and 'concept'. Each subkey contains a
-    list of terms with prefix 'prefix' from two sources: the full-text
-    vocabulary list, and the list of concept labels. The 'vocab' list is just
-    term strings, whereas each element 'concept' list is a tuple of a term string
-    and a concept ID string.
+    Produces a list containing elements with two subkeys, 'vocab' and 'concept',
+    where each entry's 'vocab' value starts with 'prefix'. The entries are drawn
+    from two sources: the full-text vocabulary list, and the list of concept
+    labels. The 'concept' key is either the associated concept ID if it's from
+    the concept ID mapping, or null if it's from the vocab list.
 
-    Note that prefixes of length less than three will simply return a dict like
-    `{'vocab': [<prefix>], 'concept': []}`.
+    Note that prefixes of length less than three will simply return a value like
+    `[{'vocab': <prefix>, 'concept': null}]`.
     Note also that if both 'include_vocab' and 'include_concepts' are false,
-    a dict like `{'vocab': [], 'concept': []}` will be returned.
+    an empty list will be returned.
 
     If 'include_vocab' is true, the results include entries from the vocabulary list.
     If 'include_concepts' is true, the results include entries from the concept map.
     'vocab_limit' limits the number of vocabulary entries returned (max 100).
     'concept_limit' limits the number of concept map entries returned (max 100).
 
-    Returns a dict of the following form:
+    Returns a list of the following form:
     ```
-    {'vocab': [<term:str>,...], 'concept': [ [<term:str>, <concept_id:str>], ... ]}
+    [ {'vocab': <term:str?>, 'concept': <concept_id:str?> }, ... ]
     ```
     """
     global vocab_trie, concept_trie
@@ -381,16 +381,16 @@ async def autocomplete(
     prefix = prefix.lower()
 
     if len(prefix) < 3:
-        return {"vocab": [prefix], "concept": []}
+        return [{"vocab": prefix, "concept": None}]
 
-    results = {"vocab": [], "concept": []}
+    results = []
 
     if include_vocab:
         vocab_limit = min(vocab_limit, 100)
 
         try:
-            results["vocab"] = [
-                "".join(x).strip()
+            results += [
+                {'vocab': "".join(x).strip(), 'concept': None}
                 for x in islice(vocab_trie.iter(prefix=prefix), vocab_limit)
             ]
         except KeyError:
@@ -401,8 +401,8 @@ async def autocomplete(
         concept_limit = min(concept_limit, 100)
 
         try:
-            results["concept"] = [
-                (label.strip(), concept_id)
+            results += [
+                {'vocab': label.strip(), 'concept': concept_id}
                 for label, concept_id in islice(
                     concept_trie.iteritems(prefix=prefix), concept_limit
                 )
