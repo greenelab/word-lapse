@@ -314,14 +314,6 @@ def query_model_for_tok(
         if tok != original_tok:
             logger.info(f"remapped token {original_tok} to {tok}")
 
-        tok = (
-            f"disease_{tok}"
-            if f"disease_{tok}" in vocab
-            else f"chemical_{tok}"
-            if f"chemical_{tok}" in vocab
-            else tok
-        )
-
     if tok in vocab:
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
