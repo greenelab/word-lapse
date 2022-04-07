@@ -303,7 +303,17 @@ def query_model_for_tok(
     # Check to see if token is in the vocab
     vocab = set(word_vectors.key_to_index.keys())
 
-    if "mesh" in tok:
+    if tok.startswith("mesh_"):
+        original_tok = tok
+        tok = (
+            f"disease_{tok}" if f"disease_{tok}" in vocab
+            else f"chemical_{tok}" if f"chemical_{tok}" in vocab
+            else tok
+        )
+
+        if tok != original_tok:
+            logger.info(f"remapped token {original_tok} to {tok}")
+
         tok = (
             f"disease_{tok}"
             if f"disease_{tok}" in vocab
