@@ -232,10 +232,10 @@ async def ping_workers():
 @app.get("/neighbors")
 @lowercase_field()
 @cache()
-async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
+async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     """
     Returns information about the token 'tok' over all the years in the dataset
-    specified by 'corpus' (either 'abstracts' or 'fulltext', default 'abstracts').
+    specified by 'corpus' (either 'pubtator' or 'preprints', default 'pubtator').
 
     Note that this operation can take a long time (1 minute+) if the word is not
     cached. If it's previously been cached and hasn't been evicted, response times
@@ -301,12 +301,12 @@ async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
 
 @app.get("/neighbors/cached")
 @lowercase_field()
-async def neighbors_is_cached(tok: str, corpus: str = "abstracts"):
+async def neighbors_is_cached(tok: str, corpus: str = "pubtator"):
     """
     Queries the cache for 'tok', returning the token in the 'token'
     field and whether it's cached or not in the 'is_cached' field.
 
-    corpus: which corpus to search (one of 'abstracts, 'fulltexts'), default 'abstracts'
+    corpus: which corpus to search (one of 'pubtator, 'preprints'), default 'pubtator'
 
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.

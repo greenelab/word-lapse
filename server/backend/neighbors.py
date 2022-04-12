@@ -36,10 +36,10 @@ data_folder = Path("./data")
 # stores cached word model references; used if MATERIALIZE_MODELS is true
 # (pre-populated on server startup if .config.WARM_CACHE is true)
 # note that this is a collection of word models over multiple corpora, i.e.
-# abstracts, fulltext, etc. the structure is like the following:
+# pubtator, preprints, etc. the structure is like the following:
 # {<corpus>: [(year, index, model), ...]}
 # where:
-# 'corpus' is a string and one of abstracts or fulltext,
+# 'corpus' is a string and one of pubtator or preprints,
 # 'year' is the integer year for the model (typically between 2010 and now),
 # 'index' is the integer index of the model for that year (typically 0),
 # 'model' is the Word2Vec or KeyedVectors model instance associated with that
@@ -63,8 +63,8 @@ class CorpusNotFoundException(Exception):
 
 def extract_frequencies(tok: str, corpus: str):
     corpus_paths = {
-        "abstracts": data_folder / Path("all_abstract_tok_frequency.tsv.xz"),
-        "fulltexts": data_folder / Path("all_fulltext_tok_frequency.tsv.xz"),
+        "pubtator": data_folder / Path("all_pubtator_tok_frequency.tsv.xz"),
+        # "preprints": data_folder / Path("all_preprints_tok_frequency.tsv.xz"),
     }
 
     # Extract the frequencies
@@ -92,8 +92,8 @@ def extract_frequencies(tok: str, corpus: str):
 
 def cutoff_points(tok: str, corpus: str):
     corpus_paths = {
-        "abstracts": data_folder / Path("abstract_changepoints.tsv"),
-        "fulltexts": data_folder / Path("fulltext_changepoints.tsv"),
+        "pubtator": data_folder / Path("pubtator_changepoints.tsv"),
+        # "preprints": data_folder / Path("preprints_changepoints.tsv"),
     }
 
     # Extract Estimated Cutoff Points
@@ -218,7 +218,7 @@ def word_models_by_year(
     The models are sorted by year, then by index within that year if there
     are multiple models associated with a specific year.
 
-    corpus: the corpus to retrieve (one of "abstracts", "fulltext" for now), default "abstracts"
+    corpus: the corpus to retrieve (one of "pubtator", "preprints" for now)
     only_first: if true, only returns the first model for each year
     just_reference: if true, only returns the path to the model file
     """
