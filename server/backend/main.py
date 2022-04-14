@@ -292,7 +292,7 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
             get_neighbors,
             tok=tok,
             corpus=corpus,
-            job_timeout=800,
+            job_timeout=1200,
             job_id=new_job_id,
             result_ttl=10,
             failure_ttl=10,
