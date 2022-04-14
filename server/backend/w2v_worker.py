@@ -33,8 +33,9 @@ def get_neighbors(tok: str, corpus: str):
         logger.info("finished cutoff_points()...")
 
         # Extract the neighbors
-        word_neighbor_map = extract_neighbors(tok, corpus=corpus)
-        logger.info("finished word_neighbor_map()...")
+        with ExecTimer(verbose=True):
+            word_neighbor_map = extract_neighbors(tok, corpus=corpus)
+            logger.info("finished word_neighbor_map()...")
 
         # Final Return Object
         # DN: This object doesn't contain the umap plot needed for visualization.
