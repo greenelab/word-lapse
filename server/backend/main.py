@@ -258,12 +258,19 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     """
     from .w2v_worker import get_neighbors
 
+    # check if the specified corpus is a label in CORPORA_SET, not an id.
+    # if it's there, replace 'corpus' with the corpus id
+    if corpus and corpus in CORPORA_SET.values():
+        corpus = next((id for id, label in CORPORA_SET.items() if label == corpus), None)
+
     # validate the corpus before we send off a job, since it's hard to read the exception there
-    if corpus not in CORPORA_SET:
-        logger.info("Corpus %s requested, but not found in %s" % (corpus, CORPORA_SET))
+    corpora_ids = list(CORPORA_SET.keys())
+
+    if corpus not in corpora_ids:
+        logger.info("Corpus %s requested, but not found in %s" % (corpus, corpora_ids))
         raise HTTPException(
             status_code=400,
-            detail="Requested corpus '%s' not in corpus set %s" % (corpus, CORPORA_SET),
+            detail="Requested corpus '%s' not in corpus set %s" % (corpus, corpora_ids),
         )
 
     logger.info("Serving request for %s..." % tok)

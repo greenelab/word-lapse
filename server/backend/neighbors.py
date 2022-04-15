@@ -57,7 +57,7 @@ concept_id_mapper_dict = None
 class CorpusNotFoundException(Exception):
     def __init__(self, corpus) -> None:
         self.corpus = corpus
-        self.message = "Corpus %s not found in set %s" % (corpus, CORPORA_SET)
+        self.message = "Corpus %s not found in set %s" % (corpus, list(CORPORA_SET.keys()))
         super().__init__(self.message)
 
 
@@ -218,14 +218,20 @@ def word_models_by_year(
     The models are sorted by year, then by index within that year if there
     are multiple models associated with a specific year.
 
-    corpus: the corpus to retrieve (one of "pubtator", "preprints" for now)
+    corpus: the corpus to retrieve (one of the keys *or* values in
+      config.CORPORA_SET; either will work)
     only_first: if true, only returns the first model for each year
     just_reference: if true, only returns the path to the model file
     """
 
     model_suffix = "wordvectors" if use_keyedvec else "model"
 
-    if not corpus or corpus not in CORPORA_SET:
+    # check if the specified corpus is a label in CORPORA_SET, not an id.
+    # if it's there, replace 'corpus' with the corpus id
+    if corpus and corpus in CORPORA_SET.values():
+        corpus = next((id for id, label in CORPORA_SET.items() if label == corpus), None)
+
+    if not corpus or corpus not in CORPORA_SET.keys():
         raise CorpusNotFoundException(corpus=corpus)
 
     def extract_year(k):
