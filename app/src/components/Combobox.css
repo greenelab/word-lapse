@@ -48,6 +48,7 @@ header[data-fullscreen="false"] .dropdown {
   padding: 0 10px;
   text-align: left;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dropdown-cell {

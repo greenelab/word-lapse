@@ -20,7 +20,7 @@ export const AppContext = createContext({});
 const App = () => {
   const [corpus, setCorpus] = useQueryParam(
     "corpus",
-    withDefault(StringParam, (meta?.config?.CORPORA_SET || [])[0] || "")
+    withDefault(StringParam, Object.values(meta?.config?.CORPORA_SET || {})[0] || "")
   );
   const [results, setResults] = useState(null);
   const [search = "", setSearch] = useQueryParam("search", StringParam);
