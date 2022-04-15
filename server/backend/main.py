@@ -9,7 +9,7 @@ from itertools import islice
 import redis
 from fastapi import FastAPI, HTTPException, Request
 from fastapi_redis_cache import FastApiRedisCache, cache
-from pygtrie import CharTrie, PrefixSet
+from pygtrie import CharTrie
 from rq import Queue, Worker
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
@@ -33,7 +33,7 @@ redis_cache: FastApiRedisCache = None
 # populated in init_rq(), used in neighbors()
 queue: Queue = None
 # trie of vocab words; populated in init_autocomplete_trie, used in autocomplete()
-vocab_trie: PrefixSet = None
+vocab_trie: CharTrie = None
 # trie of concept labels to IDs; populated in init_autocomplete_trie, used in autocomplete()
 concept_trie: CharTrie = None
 
@@ -109,7 +109,7 @@ def init_autocomplete_trie():
         else:
             logger.info("...no pickle found, generating...")
             with open("./data/full_vocab.txt", "r") as fp:
-                vocab_trie = PrefixSet()
+                vocab_trie = CharTrie()
                 for line in fp:
                     vocab_trie.add(line)
 
@@ -414,7 +414,7 @@ async def autocomplete(
         try:
             results += [
                 {'vocab': "".join(x).strip(), 'concept': None}
-                for x in islice(vocab_trie.iter(prefix=prefix), vocab_limit)
+                for x in islice(vocab_trie.iterkeys(prefix=prefix), vocab_limit)
             ]
         except KeyError:
             # pygtrie throws a KeyError if it can't find the prefix, but that's not an error per se
