@@ -33,8 +33,9 @@ def get_neighbors(tok: str, corpus: str):
         logger.info("finished cutoff_points()...")
 
         # Extract the neighbors
-        word_neighbor_map = extract_neighbors(tok, corpus=corpus)
-        logger.info("finished word_neighbor_map()...")
+        with ExecTimer(verbose=True):
+            word_neighbor_map = extract_neighbors(tok, corpus=corpus)
+            logger.info("finished word_neighbor_map()...")
 
         # Final Return Object
         # DN: This object doesn't contain the umap plot needed for visualization.
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     if MATERIALIZE_MODELS and WARM_CACHE:
         # invoke to cache word models into 'word_models'
         logger.info("Warming enabled, preloading word2vec models...")
-        for corpus in CORPORA_SET:
+        for corpus in CORPORA_SET.keys():
             logger.info("Materializing '%s' corpus" % corpus)
             materialized_word_models(corpus=corpus)
 

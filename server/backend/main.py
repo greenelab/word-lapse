@@ -9,7 +9,7 @@ from itertools import islice
 import redis
 from fastapi import FastAPI, HTTPException, Request
 from fastapi_redis_cache import FastApiRedisCache, cache
-from pygtrie import CharTrie, PrefixSet
+from pygtrie import CharTrie
 from rq import Queue, Worker
 from rq.exceptions import NoSuchJobError
 from rq.job import Job
@@ -33,7 +33,7 @@ redis_cache: FastApiRedisCache = None
 # populated in init_rq(), used in neighbors()
 queue: Queue = None
 # trie of vocab words; populated in init_autocomplete_trie, used in autocomplete()
-vocab_trie: PrefixSet = None
+vocab_trie: CharTrie = None
 # trie of concept labels to IDs; populated in init_autocomplete_trie, used in autocomplete()
 concept_trie: CharTrie = None
 
@@ -109,7 +109,7 @@ def init_autocomplete_trie():
         else:
             logger.info("...no pickle found, generating...")
             with open("./data/full_vocab.txt", "r") as fp:
-                vocab_trie = PrefixSet()
+                vocab_trie = CharTrie()
                 for line in fp:
                     vocab_trie.add(line)
 
@@ -232,10 +232,10 @@ async def ping_workers():
 @app.get("/neighbors")
 @lowercase_field()
 @cache()
-async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
+async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     """
     Returns information about the token 'tok' over all the years in the dataset
-    specified by 'corpus' (either 'abstracts' or 'fulltext', default 'abstracts').
+    specified by 'corpus' (either 'pubtator' or 'preprints', default 'pubtator').
 
     Note that this operation can take a long time (1 minute+) if the word is not
     cached. If it's previously been cached and hasn't been evicted, response times
@@ -258,12 +258,19 @@ async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
     """
     from .w2v_worker import get_neighbors
 
+    # check if the specified corpus is a label in CORPORA_SET, not an id.
+    # if it's there, replace 'corpus' with the corpus id
+    if corpus and corpus in CORPORA_SET.values():
+        corpus = next((id for id, label in CORPORA_SET.items() if label == corpus), None)
+
     # validate the corpus before we send off a job, since it's hard to read the exception there
-    if corpus not in CORPORA_SET:
-        logger.info("Corpus %s requested, but not found in %s" % (corpus, CORPORA_SET))
+    corpora_ids = list(CORPORA_SET.keys())
+
+    if corpus not in corpora_ids:
+        logger.info("Corpus %s requested, but not found in %s" % (corpus, corpora_ids))
         raise HTTPException(
             status_code=400,
-            detail="Requested corpus '%s' not in corpus set %s" % (corpus, CORPORA_SET),
+            detail="Requested corpus '%s' not in corpus set %s" % (corpus, corpora_ids),
         )
 
     logger.info("Serving request for %s..." % tok)
@@ -292,7 +299,7 @@ async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
             get_neighbors,
             tok=tok,
             corpus=corpus,
-            job_timeout=800,
+            job_timeout=1200,
             job_id=new_job_id,
             result_ttl=10,
             failure_ttl=10,
@@ -301,12 +308,12 @@ async def neighbors(request: Request, tok: str, corpus: str = "abstracts"):
 
 @app.get("/neighbors/cached")
 @lowercase_field()
-async def neighbors_is_cached(tok: str, corpus: str = "abstracts"):
+async def neighbors_is_cached(tok: str, corpus: str = "pubtator"):
     """
     Queries the cache for 'tok', returning the token in the 'token'
     field and whether it's cached or not in the 'is_cached' field.
 
-    corpus: which corpus to search (one of 'abstracts, 'fulltexts'), default 'abstracts'
+    corpus: which corpus to search (one of 'pubtator, 'preprints'), default 'pubtator'
 
     Note that querying for the token will increase its cache count,
     making it less likely to be evicted.
@@ -407,7 +414,7 @@ async def autocomplete(
         try:
             results += [
                 {'vocab': "".join(x).strip(), 'concept': None}
-                for x in islice(vocab_trie.iter(prefix=prefix), vocab_limit)
+                for x in islice(vocab_trie.iterkeys(prefix=prefix), vocab_limit)
             ]
         except KeyError:
             # pygtrie throws a KeyError if it can't find the prefix, but that's not an error per se
