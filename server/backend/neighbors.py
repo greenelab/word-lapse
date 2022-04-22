@@ -57,7 +57,10 @@ concept_id_mapper_dict = None
 class CorpusNotFoundException(Exception):
     def __init__(self, corpus) -> None:
         self.corpus = corpus
-        self.message = "Corpus %s not found in set %s" % (corpus, list(CORPORA_SET.keys()))
+        self.message = "Corpus %s not found in set %s" % (
+            corpus,
+            list(CORPORA_SET.keys()),
+        )
         super().__init__(self.message)
 
 
@@ -229,7 +232,9 @@ def word_models_by_year(
     # check if the specified corpus is a label in CORPORA_SET, not an id.
     # if it's there, replace 'corpus' with the corpus id
     if corpus and corpus in CORPORA_SET.values():
-        corpus = next((id for id, label in CORPORA_SET.items() if label == corpus), None)
+        corpus = next(
+            (id for id, label in CORPORA_SET.items() if label == corpus), None
+        )
 
     if not corpus or corpus not in CORPORA_SET.keys():
         raise CorpusNotFoundException(corpus=corpus)
@@ -312,8 +317,10 @@ def query_model_for_tok(
     if tok.startswith("mesh_"):
         original_tok = tok
         tok = (
-            f"disease_{tok}" if f"disease_{tok}" in vocab
-            else f"chemical_{tok}" if f"chemical_{tok}" in vocab
+            f"disease_{tok}"
+            if f"disease_{tok}" in vocab
+            else f"chemical_{tok}"
+            if f"chemical_{tok}" in vocab
             else tok
         )
 
@@ -321,6 +328,10 @@ def query_model_for_tok(
             logger.info(f"remapped token {original_tok} to {tok}")
 
     if tok in vocab:
+
+        # Get initial word vector for query token
+        result.append(dict(token=tok, vector=word_vectors[tok], is_query=True))
+
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
         word_neighbors = word_vectors.most_similar(tok, topn=neighbors)
@@ -329,6 +340,7 @@ def query_model_for_tok(
         for neighbor in word_neighbors:
             word_neighbor = neighbor[0]
             tag_id = None
+            word_vector = word_vectors[word_neighbor]
 
             # Convert tags that contain the following pattern
             # disease_mesh_####### or chemical_mesh_#######
@@ -342,7 +354,14 @@ def query_model_for_tok(
                 tag_id = word_neighbor
                 word_neighbor = concept_id_mapper_dict[word_neighbor]
 
-            result.append(dict(token=word_neighbor, tag_id=tag_id))
+            result.append(
+                dict(
+                    token=word_neighbor,
+                    tag_id=tag_id,
+                    vector=word_vector,
+                    is_query=False,
+                )
+            )
 
     return result
 

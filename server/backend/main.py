@@ -246,6 +246,7 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     ```
     {
         "neighbors": {<year:str>: [<token:str>, ...]},
+        "umap_coords": [{"year":<year:int>, "is_query":<is_query:bool>, "token":<token:str> ,"umap_x_coord":<umap_x_coord:float>, "umap_y_coord":<umap_y_coord:float>}, ...],
         "frequency": [{"year": <year:int>, "frequency": <frequency:float>}, ...],
         "changepoints": [ [<year_start:str>, <year_end:str>], ...],
         "elapsed": <elapsed_ms:float>
