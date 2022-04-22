@@ -102,8 +102,8 @@ def split_and_generate_umap_embeddings(word_neighbor_map: dict, neighbors: int =
             year=int(tok_label[0]),
             token=tok_label[1],
             is_query=tok_label[2],
-            umap_x_coord=umap_coord[0],
-            umap_y_coord=umap_coord[1],
+            umap_x_coord=float(umap_coord[0]),
+            umap_y_coord=float(umap_coord[1]),
         )
         for tok_label, umap_coord in zip(tok_label_list, umap_embeddings)
     ]
