@@ -176,7 +176,7 @@ def lowercase_field(target_field="tok"):
 
 
 @app.get("/")
-async def server_meta(worker_details: bool = False, cache_details: bool = True):
+async def server_meta(worker_details: bool = False):
     """
     Returns metadata about the server, e.g. config variables, the
     commit that was used to build the server, etc.
@@ -204,16 +204,6 @@ async def server_meta(worker_details: bool = False, cache_details: bool = True):
                 "failures": worker.failed_job_count,
             }
             for worker in workers
-        }
-
-    if cache_details:
-        # prefix = redis_cache.get_cache_key(neighbors, "").split("tok=")[0]
-        rq_keys = len(r.keys(f"rq:*"))
-        keyspace = r.info("keyspace")
-        payload["cache"] = {
-            # "entries": len(r.keys(f"{prefix}*")),
-            "cached_entries": int(keyspace["db0"]["keys"]) - rq_keys,
-            "keyspace": keyspace,
         }
 
     return payload
