@@ -3,6 +3,9 @@
 import logging
 import os
 import sys
+
+import numpy as np
+import umap
 import redis
 
 from rq import Connection, Worker
@@ -38,15 +41,74 @@ def get_neighbors(tok: str, corpus: str):
             logger.info("finished word_neighbor_map()...")
 
         # Final Return Object
-        # DN: This object doesn't contain the umap plot needed for visualization.
-        # On my todolist of things to get done.
+
+        word_neighbor_map, umap_embeddings = split_and_generate_umap_embeddings(
+            word_neighbor_map
+        )
 
         return {
             "neighbors": word_neighbor_map,
+            "umap_coords": umap_embeddings,
             "frequency": frequency_output,
             "changepoints": changepoint_output,
             "elapsed": timer.snapshot(),
         }
+
+
+def split_and_generate_umap_embeddings(word_neighbor_map: dict, neighbors: int = 25):
+    """
+    This function splits the word neighbor data structure into token neighbors
+    and their corresponding umap embeddings.
+    input:
+        word_neighbor_map - the word neighbor map
+        neighbors - the number of neighbors used to generate the neighbor map
+    Return:
+        filtered word_neighbor_map - the word neighbor map with the corresponding vectors missing
+        a list of data points for the frontend to use for generating the umap plot
+    """
+
+    word_neighbor_map_returned = dict()
+    embeddings_matrix = list()
+    tok_label_list = list()
+
+    # Extract the vectors for umap
+    for year in word_neighbor_map:
+        word_neighbor_map_returned[year] = list()
+
+        for idx, tok_entry in enumerate(word_neighbor_map[year]):
+            embeddings_matrix.append(tok_entry["vector"])
+            tok_label_list.append((year, tok_entry["token"], tok_entry["is_query"]))
+
+            # Include the neighbors for the object return
+            if idx > 0:
+                word_neighbor_map_returned[year].append(
+                    dict(token=tok_entry["token"], tag_id=tok_entry["tag_id"])
+                )
+
+    umap_model = umap.UMAP(
+        verbose=True,
+        metric="cosine",
+        random_state=100,
+        low_memory=True,
+        n_neighbors=neighbors,
+        min_dist=0.99,
+        n_epochs=25,
+    )
+
+    umap_embeddings = umap_model.fit_transform(np.vstack(embeddings_matrix))
+
+    umap_return_dict = [
+        dict(
+            year=tok_label[0],
+            token=tok_label[1],
+            is_query=tok_label[2],
+            umap_x_coord=umap_coord[0],
+            umap_y_coord=umap_coord[1],
+        )
+        for tok_label, umap_coord in zip(tok_label_list, umap_embeddings)
+    ]
+
+    return word_neighbor_map_returned, umap_return_dict
 
 
 def load_concept_map():
