@@ -99,7 +99,7 @@ def split_and_generate_umap_embeddings(word_neighbor_map: dict, neighbors: int =
 
     umap_return_dict = [
         dict(
-            year=tok_label[0],
+            year=int(tok_label[0]),
             token=tok_label[1],
             is_query=tok_label[2],
             umap_x_coord=umap_coord[0],
