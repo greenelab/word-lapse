@@ -13,8 +13,8 @@ const Results = () => {
     return (
       <>
         <div className="results">
-          <Neighbors />
-          <Frequency />
+          {/* <Neighbors />
+          <Frequency /> */}
           <Umap />
         </div>
         <Download />

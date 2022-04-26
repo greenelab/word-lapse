@@ -1,11 +1,18 @@
 import { useEffect, useContext } from "react";
-import { select, extent, scaleLinear } from "d3";
+import {
+  select,
+  extent,
+  scaleLinear,
+  forceSimulation,
+  pointer,
+  forceCollide,
+} from "d3";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
-import { blue, darkGray, gray, red } from "../palette";
-import { blendColors } from "../util/math";
-import "./Umap.css";
+import { blue, darkGray, red } from "../palette";
+import { blendColors, dist } from "../util/math";
 import { elbow, shorten } from "../util/vector";
+import "./Umap.css";
 
 // unique id of this chart
 const id = "umap";
@@ -28,16 +35,79 @@ const chart = (umap) => {
   const yScale = scaleLinear().domain(yExtent).range([0, -height]);
 
   // get scaled x/y coordinates
-  umap.neighbors = umap.neighbors.map((point) => ({
-    ...point,
-    x: xScale(point.x),
-    y: yScale(point.y),
+  umap.neighbors = umap.neighbors.map((d) => ({
+    ...d,
+    // coordinates in physics simulation
+    x: xScale(d.x),
+    y: yScale(d.y),
+    // original/raw coordinates
+    originalX: xScale(d.x),
+    originalY: yScale(d.y),
   }));
-  umap.trajectory = umap.trajectory.map((point) => ({
-    ...point,
-    x: xScale(point.x),
-    y: yScale(point.y),
+  umap.trajectory = umap.trajectory.map((d) => ({
+    ...d,
+    x: xScale(d.x),
+    y: yScale(d.y),
   }));
+
+  // hold mouse position
+  const mouse = { x: 0, y: 0 };
+
+  // get distance between neighbor and mouse, normalized and clamped to 0-1
+  const strength = (d) =>
+    Math.min(dist(d.originalX, d.originalY, mouse.x, mouse.y) / 50, 1);
+
+  // create physics simulation to push neighbors apart for readability
+  const simulation = forceSimulation(umap.neighbors)
+    // custom force to attract each neighbor to its original point
+    // https://github.com/ericsoco/d3-force-attract/blob/master/lib/forceAttract.js
+    .force("attract", (alpha) => {
+      for (const d of umap.neighbors) {
+        d.vx += (d.originalX - d.x) * strength(d) * alpha;
+        d.vy += (d.originalY - d.y) * strength(d) * alpha;
+      }
+    })
+    // force to push apart neighbors
+    .force("collide", forceCollide().iterations(5))
+
+    // each tick of simulation
+    .on("tick", () => {
+      svg
+        .select(".neighbor-labels")
+        .selectAll(".neighbor-label")
+        // update position
+        .attr("x", (d) => d.x)
+        .attr("y", (d) => d.y)
+        // update other attributes
+        .style("opacity", (d) => (strength(d) < 1 ? 1 : 0.25));
+
+      // make collision radii update
+      simulation
+        .force("collide")
+        // push apart the closer neighbor is to mouse
+        .radius((d) => (strength(d) < 1 ? d.token.length : 0));
+    });
+
+  // when mouse moves over svg
+  svg.on("mousemove", (event) => {
+    // update mouse position
+    const p = pointer(event);
+    mouse.x = p[0];
+    mouse.y = p[1];
+    // reheat simulation
+    simulation.alpha(0.1);
+    simulation.restart();
+  });
+
+  // get unique years in neighbors and apply color gradient
+  const years = Object.fromEntries(
+    [...new Set(umap.neighbors.map((d) => d.year))]
+      .sort((a, b) => a - b)
+      .map((year, index, array) => [
+        year,
+        blendColors(red, blue, index / (array.length - 1)),
+      ])
+  );
 
   // make neighbor labels from umap coordinates
   svg
@@ -49,7 +119,7 @@ const chart = (umap) => {
     .attr("x", (d) => d.x)
     .attr("y", (d) => d.y)
     .text((d) => d.token)
-    .attr("fill", gray)
+    .attr("fill", (d) => years[d.year])
     .style("font-size", "8")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "middle");
