@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AppContext } from "../App";
 import Frequency from "../charts/Frequency";
 import Neighbors from "../charts/Neighbors";
+import Umap from "../charts/Umap";
 import Download from "../components/Download";
 import "./Results.css";
 
@@ -14,6 +15,7 @@ const Results = () => {
         <div className="results">
           <Neighbors />
           <Frequency />
+          <Umap />
         </div>
         <Download />
       </>

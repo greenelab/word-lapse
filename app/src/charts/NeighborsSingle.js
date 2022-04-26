@@ -3,7 +3,7 @@ import { useQueryParam } from "use-query-params";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
+import { id, lineHeight, tagSymbol, wrapLines, YearParam } from "./Neighbors";
 import { blue, lightGray, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
@@ -76,7 +76,7 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                 tabIndex={!neighbors.includes(word) ? -1 : 0}
               >
                 {toHumanCase(word)}
-                {tags[word] && "*"}
+                {tags[word] && " " + tagSymbol}
               </tspan>
             ))}
           </text>

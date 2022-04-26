@@ -3,7 +3,7 @@ import { useQueryParam } from "use-query-params";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, wrapLines, YearParam } from "./Neighbors";
+import { id, lineHeight, tagSymbol, wrapLines, YearParam } from "./Neighbors";
 import { blue, gray, lightGray, purple, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { toHumanCase } from "../util/string";
@@ -118,7 +118,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
                   >
                     {symbols && symbol ? symbol + " " : ""}
                     {toHumanCase(word)}
-                    {tags[word] && "*"}
+                    {tags[word] && " " + tagSymbol}
                   </tspan>
                 );
               })}

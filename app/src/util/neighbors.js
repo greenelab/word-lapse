@@ -3,7 +3,7 @@
 // alphabetical compare
 const byAlphabetical = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
 
-// count how many years word appears in neighbors
+// count how many years a word appears in neighbors
 export const count = (word, neighbors) =>
   Object.values(neighbors).filter((year) => year.includes(word)).length;
 

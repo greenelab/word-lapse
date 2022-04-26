@@ -1,5 +1,9 @@
 /* styles we don't want/need in downloaded svg */
 
-.neighbors-word {
+#neighbors .neighbors-word {
   transition: fill var(--fast);
+}
+
+#neighbors .emoji {
+  filter: saturate(0);
 }

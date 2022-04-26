@@ -1,0 +1,9 @@
+/* styles we don't want/need in downloaded svg */
+
+#umap .neighbor-label {
+  /* opacity: 0.25; */
+}
+
+#umap .neighbor-label:hover {
+  opacity: 1;
+}

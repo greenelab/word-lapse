@@ -1,15 +1,15 @@
 /* styles we don't want/need in downloaded svg */
 
-.dot:hover {
+#frequency .dot:hover {
   stroke-width: 2px;
   cursor: help;
 }
 
-.changepoints-fill:hover {
+#frequency .changepoints-fill:hover {
   opacity: 1 !important;
   cursor: help;
 }
 
-.changepoints-text {
+#frequency .changepoints-text {
   pointer-events: none;
 }

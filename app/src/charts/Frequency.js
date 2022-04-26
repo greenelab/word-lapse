@@ -33,9 +33,6 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
-  // get subset of frequency for animation purposes
-  const animatedFrequency = frequency.slice(0, frequencyIndex);
-
   // get range of values for x/y axes
   const xExtent = extent(frequency, (d) => d.year);
   const yExtent = extent(frequency, (d) => d.frequency);
@@ -44,11 +41,21 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   const xScale = scaleLinear().domain(xExtent).range([0, width]);
   const yScale = scaleLinear().domain(yExtent).range([0, -height]);
 
+  // get scaled x/y coordinates
+  frequency = frequency.map((d) => ({
+    ...d,
+    x: xScale(d.year),
+    y: yScale(d.frequency),
+  }));
+
+  // get subset of frequency for animation purposes
+  const animatedFrequency = frequency.slice(0, frequencyIndex);
+
   // make curve fill from frequency points
   const curveFill = area()
     .curve(curveLinear)
-    .x((d) => xScale(d.year))
-    .y1((d) => yScale(d.frequency))
+    .x((d) => d.x)
+    .y1((d) => d.y)
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".curve-fills")
@@ -62,8 +69,8 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   // make curve stroke from frequency points
   const curveStroke = line()
     .curve(curveLinear)
-    .x((d) => xScale(d.year))
-    .y((d) => yScale(d.frequency));
+    .x((d) => d.x)
+    .y((d) => d.y);
   const length = getPathLength(curveStroke(frequency));
   svg
     .select(".curve-strokes")
@@ -84,7 +91,9 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .attr("d", curveStroke)
     .attr("fill", "none")
     .attr("stroke", gray)
-    .attr("stroke-width", 2);
+    .attr("stroke-width", 2)
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round");
 
   // make changepoints fill
   const changepointFill = area()
@@ -166,8 +175,8 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     )
     .attr("stroke", "black")
     .attr("stroke-width", "1")
-    .attr("cx", (d) => xScale(d.year))
-    .attr("cy", (d) => yScale(d.frequency))
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
     .attr(
       "data-tooltip",
       (d) => `Year: ${d.year}<br>Frequency: ${d.frequency.toExponential(2)}`

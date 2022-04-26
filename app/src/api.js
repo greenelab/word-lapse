@@ -1,5 +1,6 @@
 import { getUnique } from "./util/neighbors";
 import { sleep } from "./util/debug";
+import fixture from "./data/api-fixture.json";
 
 // api endpoint base url
 // const api = "https://word-lapse-beta.ddns.net"; // for testing
@@ -8,7 +9,10 @@ const api = "https://api-wl.greenelab.com";
 // get metadata from api
 export const getMetadata = async () => {
   try {
-    return await (await window.fetch(api)).json();
+    const meta = await (await window.fetch(api)).json();
+    if (meta?.config?.CORPORA_SET)
+      meta.config.CORPORA_SET = Object.values(meta.config.CORPORA_SET);
+    return meta;
   } catch (error) {
     return {};
   }
@@ -42,22 +46,42 @@ export const getResults = async (query, corpus) => {
   await sleep(1000);
 
   // make request
-  const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
-  const response = await window.fetch(url);
-  if (!response.ok) throw new Error("Response not OK");
-  const results = await response.json();
+  // const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
+  // const response = await window.fetch(url);
+  // if (!response.ok) throw new Error("Response not OK");
+  // const results = await response.json();
+  const results = JSON.parse(JSON.stringify(fixture));
 
   // api error
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
   // transform data as needed
-  results.tags = {};
+
+  // delete empty years
   for (const [year, words] of Object.entries(results.neighbors))
     if (!words.length) delete results.neighbors[year];
+
+  // create map for conveniently looking up whether a (plain string) word is tagged
+  results.tags = {};
   for (const [, words] of Object.entries(results.neighbors))
     for (const { token, tag_id } of words) results.tags[token] = tag_id;
+
+  // make year into array of plain string words (tokens) for easier visualizations
   for (const [year] of Object.entries(results.neighbors))
     results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
+
+  // rename some field names to be easier to work with in D3
+  results.umap = results.umap.map((point) => ({
+    ...point,
+    x: point.umap_x_coord,
+    y: point.umap_y_coord,
+  }));
+
+  // split umap data into searched word and neighbors
+  results.umap = {
+    trajectory: results.umap.filter((point) => point.token === query),
+    neighbors: results.umap.filter((point) => point.token !== query),
+  };
 
   // get computed data
   results.uniqueNeighbors = getUnique(results.neighbors);

@@ -22,7 +22,7 @@ const Search = () => {
           placeholder="Type a word"
         />
         <Select
-          options={Object.values(meta?.config?.CORPORA_SET || {})}
+          options={meta?.config?.CORPORA_SET || []}
           value={corpus}
           onChange={setCorpus}
           data-tooltip={`Select corpus to use in analysis. Using "${corpus}".`}

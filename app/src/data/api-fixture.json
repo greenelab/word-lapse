@@ -1,568 +1,3221 @@
 {
   "neighbors": {
     "2000": [
-      "introduction",
-      "pathogen",
-      "isolation",
-      "genomics",
-      "materials",
-      "objectives",
-      "aims",
-      "sets",
-      "toxins",
-      "numerical",
-      "background",
-      "escherichia_coli",
-      "transmission",
-      "saudi",
-      "middle",
-      "profiles",
-      "plant",
-      "comparative",
-      "commercial",
-      "debate",
-      "give",
-      "theory",
-      "discussion",
-      "center",
-      "framework"
+      {
+        "token": "introduction",
+        "tag_id": null
+      },
+      {
+        "token": "pathogen",
+        "tag_id": null
+      },
+      {
+        "token": "isolation",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "genomics",
+        "tag_id": null
+      },
+      {
+        "token": "materials",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "objectives",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "aims",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "sets",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "toxins",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "numerical",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "background",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "escherichia_coli",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "transmission",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "saudi",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "middle",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "profiles",
+        "tag_id": null
+      },
+      {
+        "token": "plant",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "comparative",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "commercial",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "debate",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "give",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "theory",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "discussion",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "center",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "framework",
+        "tag_id": "species_1234"
+      }
     ],
     "2001": [
-      "endemic",
-      "netherlands",
-      "world",
-      "countries",
-      "africa",
-      "outbreaks",
-      "north",
-      "transmitted",
-      "emerged",
-      "epidemic",
-      "worldwide",
-      "epidemiology",
-      "united",
-      "past",
-      "far",
-      "aids",
-      "widespread",
-      "decades",
-      "influenza",
-      "outbreak",
-      "country",
-      "american",
-      "rare",
-      "gastroenteritis",
-      "million"
+      {
+        "token": "endemic",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "netherlands",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "world",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "countries",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "africa",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "north",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "transmitted",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "emerged",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "worldwide",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemiology",
+        "tag_id": null
+      },
+      {
+        "token": "united",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "past",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "far",
+        "tag_id": null
+      },
+      {
+        "token": "aids",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "widespread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "decades",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "country",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "american",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "rare",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "gastroenteritis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "million",
+        "tag_id": "species_1234"
+      }
     ],
     "2002": [
-      "uk",
-      "practitioners",
-      "mental",
-      "pediatric",
-      "doctors",
-      "campaign",
-      "epidemic",
-      "department",
-      "nursing",
-      "october",
-      "placement",
-      "la",
-      "outpatient",
-      "inappropriate",
-      "university",
-      "specialist",
-      "july",
-      "71",
-      "influenza",
-      "medicare",
-      "record",
-      "version",
-      "china",
-      "combining",
-      "april"
+      {
+        "token": "uk",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "practitioners",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "mental",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pediatric",
+        "tag_id": null
+      },
+      {
+        "token": "doctors",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "campaign",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "department",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "nursing",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "october",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "placement",
+        "tag_id": null
+      },
+      {
+        "token": "la",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outpatient",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "inappropriate",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "university",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "specialist",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "july",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "71",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "medicare",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "record",
+        "tag_id": null
+      },
+      {
+        "token": "version",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "china",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "combining",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "april",
+        "tag_id": "species_1234"
+      }
     ],
     "2003": [
-      "spread",
-      "epidemic",
-      "outbreaks",
-      "emerging",
-      "outbreak",
-      "epidemiology",
-      "worldwide",
-      "transmission",
-      "lymphatic_filariasis",
-      "kong",
-      "pathogen",
-      "gastroenteritis",
-      "hong",
-      "bioterrorism",
-      "world",
-      "china",
-      "asia",
-      "province",
-      "travel",
-      "surveillance",
-      "century",
-      "taiwan",
-      "singapore",
-      "respiratory_syndrome",
-      "smallpox"
+      {
+        "token": "spread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "emerging",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "epidemiology",
+        "tag_id": null
+      },
+      {
+        "token": "worldwide",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "transmission",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "lymphatic_filariasis",
+        "tag_id": null
+      },
+      {
+        "token": "kong",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pathogen",
+        "tag_id": null
+      },
+      {
+        "token": "gastroenteritis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hong",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "bioterrorism",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "world",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "china",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "asia",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "province",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "travel",
+        "tag_id": null
+      },
+      {
+        "token": "surveillance",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "century",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "taiwan",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "singapore",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "respiratory_syndrome",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      }
     ],
     "2004": [
-      "influenza",
-      "epidemic",
-      "threat",
-      "smallpox",
-      "outbreaks",
-      "spread",
-      "epidemics",
-      "bioterrorism",
-      "plague",
-      "infectious",
-      "china",
-      "worldwide",
-      "outbreak",
-      "avian",
-      "gastroenteritis",
-      "nosocomial",
-      "emergence",
-      "asia",
-      "tuberculosis",
-      "singapore",
-      "rotavirus",
-      "world",
-      "transmitted",
-      "hong",
-      "dengue"
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "spread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "bioterrorism",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "plague",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious",
+        "tag_id": null
+      },
+      {
+        "token": "china",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "worldwide",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "avian",
+        "tag_id": null
+      },
+      {
+        "token": "gastroenteritis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "nosocomial",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "emergence",
+        "tag_id": null
+      },
+      {
+        "token": "asia",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "tuberculosis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "singapore",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "rotavirus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "world",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "transmitted",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hong",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "dengue",
+        "tag_id": "species_1234"
+      }
     ],
     "2005": [
-      "influenza",
-      "flu",
-      "avian",
-      "threat",
-      "threats",
-      "infectious_disease",
-      "emerging",
-      "epidemic",
-      "bioterrorism",
-      "anthrax",
-      "spread",
-      "rabies",
-      "infectious",
-      "outbreaks",
-      "smallpox",
-      "poultry",
-      "measles",
-      "sustainable",
-      "outbreak",
-      "epidemics",
-      "public",
-      "industry",
-      "travel",
-      "government",
-      "today"
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "avian",
+        "tag_id": null
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "threats",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious_disease",
+        "tag_id": null
+      },
+      {
+        "token": "emerging",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "bioterrorism",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "anthrax",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "spread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "rabies",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "poultry",
+        "tag_id": null
+      },
+      {
+        "token": "measles",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "sustainable",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "public",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "industry",
+        "tag_id": null
+      },
+      {
+        "token": "travel",
+        "tag_id": null
+      },
+      {
+        "token": "government",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "today",
+        "tag_id": "species_1234"
+      }
     ],
     "2006": [
-      "influenza",
-      "pandemics",
-      "epidemics",
-      "1918",
-      "epidemic",
-      "flu",
-      "threat",
-      "containment",
-      "outbreak",
-      "outbreaks",
-      "avian",
-      "spread",
-      "smallpox",
-      "vaccination",
-      "preparedness",
-      "bioterrorism",
-      "h5n1",
-      "fight",
-      "infectious",
-      "shortage",
-      "policy",
-      "threats",
-      "poultry",
-      "zoonotic",
-      "influenza_virus"
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "containment",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "avian",
+        "tag_id": null
+      },
+      {
+        "token": "spread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "bioterrorism",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "fight",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious",
+        "tag_id": null
+      },
+      {
+        "token": "shortage",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "policy",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "threats",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "poultry",
+        "tag_id": null
+      },
+      {
+        "token": "zoonotic",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      }
     ],
     "2007": [
-      "flu",
-      "influenza",
-      "pandemics",
-      "epidemics",
-      "epidemic",
-      "avian",
-      "h5n1",
-      "preparedness",
-      "travel",
-      "outbreak",
-      "threat",
-      "outbreaks",
-      "spread",
-      "vaccination",
-      "1918",
-      "disasters",
-      "infectious_disease",
-      "crisis",
-      "influenza_virus",
-      "cholera",
-      "containment",
-      "measles",
-      "infectious_diseases",
-      "person",
-      "emergencies"
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "avian",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "travel",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "spread",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "disasters",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious_disease",
+        "tag_id": null
+      },
+      {
+        "token": "crisis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "cholera",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "containment",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "measles",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious_diseases",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "person",
+        "tag_id": null
+      },
+      {
+        "token": "emergencies",
+        "tag_id": "species_1234"
+      }
     ],
     "2008": [
-      "pandemics",
-      "influenza",
-      "epidemic",
-      "outbreak",
-      "1918",
-      "preparedness",
-      "epidemics",
-      "outbreaks",
-      "influenza_virus",
-      "h5n1",
-      "crisis",
-      "threat",
-      "vaccination",
-      "smallpox",
-      "vaccine",
-      "vaccines",
-      "avian",
-      "flu",
-      "campaign",
-      "plague",
-      "infectious_disease",
-      "immunisation",
-      "mitigation",
-      "h3n2",
-      "eradication"
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "crisis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccine"
+      },
+      {
+        "token": "vaccines",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "avian",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "campaign",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "plague",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "infectious_disease",
+        "tag_id": null
+      },
+      {
+        "token": "immunisation",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "mitigation",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "eradication",
+        "tag_id": "species_1234"
+      }
     ],
     "2009": [
-      "pandemics",
-      "epidemic",
-      "influenza",
-      "h1n1",
-      "flu",
-      "epidemics",
-      "preparedness",
-      "outbreak",
-      "outbreaks",
-      "antivirals",
-      "influenza_virus",
-      "h5n1",
-      "threat",
-      "1918",
-      "officials",
-      "oseltamivir",
-      "stockpile",
-      "vaccination",
-      "disasters",
-      "crisis",
-      "quarantine",
-      "economy",
-      "pdm",
-      "rabies",
-      "hpai"
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "antivirals",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "officials",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "oseltamivir",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "stockpile",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "disasters",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "crisis",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "quarantine",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "economy",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "rabies",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      }
     ],
     "2010": [
-      "h1n1",
-      "influenza",
-      "pandemics",
-      "epidemic",
-      "flu",
-      "outbreak",
-      "ph1n1",
-      "1918",
-      "influenza_virus",
-      "outbreaks",
-      "influenza_infection",
-      "h5n1",
-      "epidemics",
-      "pdm",
-      "h3n2",
-      "oseltamivir",
-      "ili",
-      "influenza_a_virus",
-      "swine",
-      "preparedness",
-      "a/",
-      "illness",
-      "vaccination",
-      "sars",
-      "threat"
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "pdm",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "oseltamivir",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "ili",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "swine",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "a/",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "illness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "sars",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "threat",
+        "tag_id": "species_1234"
+      }
     ],
     "2011": [
-      "influenza",
-      "epidemic",
-      "pandemics",
-      "h1n1",
-      "outbreak",
-      "ph1n1",
-      "1918",
-      "pdm",
-      "epidemics",
-      "influenza_virus",
-      "influenza_infection",
-      "outbreaks",
-      "vaccination",
-      "flu",
-      "h5n1",
-      "preparedness",
-      "seasonal",
-      "influenza_a_virus",
-      "ili",
-      "1920",
-      "h3n2",
-      "influenza_virus_infection",
-      "smallpox",
-      "vaccine",
-      "quarantine"
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "pdm",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "seasonal",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "ili",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1920",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccine"
+      },
+      {
+        "token": "quarantine",
+        "tag_id": "species_1234"
+      }
     ],
     "2012": [
-      "h1n1",
-      "pandemics",
-      "influenza",
-      "epidemic",
-      "outbreak",
-      "influenza_virus",
-      "1918",
-      "h5n1",
-      "h3n2",
-      "epidemics",
-      "influenza_infection",
-      "ph1n1",
-      "pdm",
-      "outbreaks",
-      "vaccination",
-      "flu",
-      "influenza_a_virus",
-      "transmissibility",
-      "circulated",
-      "influenza_virus_infection",
-      "preparedness",
-      "pdm09",
-      "sars",
-      "lpai",
-      "oseltamivir"
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "transmissibility",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "circulated",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm09",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "sars",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "lpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "oseltamivir",
+        "tag_id": "species_1234"
+      }
     ],
     "2013": [
-      "h1n1",
-      "pandemics",
-      "influenza",
-      "outbreak",
-      "epidemic",
-      "h5n1",
-      "h3n2",
-      "h7n9",
-      "outbreaks",
-      "influenza_virus",
-      "influenza_virus_infection",
-      "influenza_infection",
-      "1918",
-      "pdm09",
-      "epidemics",
-      "ph1n1",
-      "hpai",
-      "flu",
-      "sars",
-      "iav",
-      "vaccination",
-      "preparedness",
-      "smallpox",
-      "illness",
-      "disaster"
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "pdm09",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "sars",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "iav",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "preparedness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "illness",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "disaster",
+        "tag_id": "species_1234"
+      }
     ],
     "2014": [
-      "pandemics",
-      "epidemic",
-      "1918",
-      "epidemics",
-      "outbreak",
-      "h1n1",
-      "influenza",
-      "outbreaks",
-      "influenza_virus",
-      "h5n1",
-      "h7n9",
-      "influenza_infection",
-      "epizootic",
-      "hpai",
-      "pdm09",
-      "a(h7n9",
-      "flu",
-      "ebola",
-      "h3n2",
-      "avian_influenza_virus",
-      "reassortment",
-      "a/",
-      "sars",
-      "hajj",
-      "h3n8"
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "epizootic",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm09",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "a(h7n9",
+        "tag_id": null
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "ebola",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "avian_influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "reassortment",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "a/",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "sars",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hajj",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n8",
+        "tag_id": "species_1234"
+      }
     ],
     "2015": [
-      "epidemic",
-      "pandemics",
-      "outbreak",
-      "h1n1",
-      "epidemics",
-      "influenza",
-      "outbreaks",
-      "influenza_infection",
-      "h7n9",
-      "influenza_virus",
-      "h3n2",
-      "pdm09",
-      "h5n1",
-      "hpaiv",
-      "vaccination",
-      "a(h7n9",
-      "influenza_a_virus",
-      "vaccine",
-      "avian_influenza_virus",
-      "iav",
-      "influenza_virus_infection",
-      "emergence",
-      "1918",
-      "cva6",
-      "a/"
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm09",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "hpaiv",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "a(h7n9",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccine"
+      },
+      {
+        "token": "avian_influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "iav",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "emergence",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "cva6",
+        "tag_id": null
+      },
+      {
+        "token": "a/",
+        "tag_id": "species_1234"
+      }
     ],
     "2016": [
-      "epidemic",
-      "pandemics",
-      "epidemics",
-      "outbreak",
-      "h7n9",
-      "h1n1",
-      "outbreaks",
-      "h5n1",
-      "h3n2",
-      "hajj",
-      "influenza_virus",
-      "influenza",
-      "reassortant",
-      "americas",
-      "h3n8",
-      "zika_virus",
-      "poliovirus",
-      "avian_influenza_virus",
-      "eiv",
-      "aiv",
-      "aivs",
-      "pdm09",
-      "hpai",
-      "h5n6",
-      "1918"
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hajj",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "reassortant",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "americas",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n8",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "zika_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "poliovirus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "avian_influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "eiv",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "aiv",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "aivs",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "pdm09",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n6",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      }
     ],
     "2017": [
-      "pandemics",
-      "epidemic",
-      "epidemics",
-      "h7n9",
-      "outbreak",
-      "h5n1",
-      "outbreaks",
-      "h3n2",
-      "h1n1",
-      "influenza_virus",
-      "smallpox",
-      "influenza",
-      "h5n2",
-      "avian_influenza_virus",
-      "reassortant",
-      "aivs",
-      "h5n6",
-      "hpai",
-      "reemergence",
-      "zika",
-      "ph1n1",
-      "influenza_a_virus",
-      "h5",
-      "influenza_virus_infection",
-      "hpaiv"
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "h5n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "avian_influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "reassortant",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "aivs",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n6",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "reemergence",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "zika",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpaiv",
+        "tag_id": "species_1234"
+      }
     ],
     "2018": [
-      "pandemics",
-      "epidemics",
-      "epidemic",
-      "1918",
-      "outbreaks",
-      "outbreak",
-      "h1n1",
-      "influenza_infection",
-      "influenza",
-      "h7n9",
-      "influenza_virus",
-      "iavs",
-      "flu",
-      "h3n2",
-      "h5n1",
-      "ebola",
-      "hpai",
-      "vaccine",
-      "zika",
-      "vaccination",
-      "influenza_virus_infection",
-      "emergence",
-      "reemergence",
-      "ph1n1",
-      "influenza_a_virus"
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_infection",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "iavs",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "flu",
+        "tag_id": null
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "ebola",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccine"
+      },
+      {
+        "token": "zika",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "vaccination",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus_infection",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "emergence",
+        "tag_id": null
+      },
+      {
+        "token": "reemergence",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "ph1n1",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_a_virus",
+        "tag_id": "species_1234"
+      }
     ],
     "2019": [
-      "epidemic",
-      "pandemics",
-      "epidemics",
-      "1918",
-      "outbreak",
-      "outbreaks",
-      "hpai",
-      "h7n9",
-      "h1n1",
-      "influenza",
-      "influenza_viruses",
-      "h3n2",
-      "aivs",
-      "h5n1",
-      "h5n8",
-      "chikungunya_virus",
-      "epizootic",
-      "avian_influenza_virus",
-      "reassortant",
-      "emergence",
-      "smallpox",
-      "plague",
-      "influenza_virus",
-      "iavs",
-      "reemergence"
+      {
+        "token": "epidemic",
+        "tag_id": null
+      },
+      {
+        "token": "pandemics",
+        "tag_id": null
+      },
+      {
+        "token": "epidemics",
+        "tag_id": null
+      },
+      {
+        "token": "1918",
+        "tag_id": null
+      },
+      {
+        "token": "outbreak",
+        "tag_id": null
+      },
+      {
+        "token": "outbreaks",
+        "tag_id": null
+      },
+      {
+        "token": "hpai",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h7n9",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h1n1",
+        "tag_id": null
+      },
+      {
+        "token": "influenza",
+        "tag_id": null
+      },
+      {
+        "token": "influenza_viruses",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h3n2",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "aivs",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "h5n1",
+        "tag_id": null
+      },
+      {
+        "token": "h5n8",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "chikungunya_virus",
+        "tag_id": null
+      },
+      {
+        "token": "epizootic",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "avian_influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "reassortant",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "emergence",
+        "tag_id": null
+      },
+      {
+        "token": "smallpox",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "plague",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "influenza_virus",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "iavs",
+        "tag_id": "species_1234"
+      },
+      {
+        "token": "reemergence",
+        "tag_id": "species_1234"
+      }
     ]
   },
   "frequency": [
-    { "year": 2000, "frequency": 0.0000040559 },
-    { "year": 2001, "frequency": 0.0000067864 },
-    { "year": 2002, "frequency": 0.0000051355 },
-    { "year": 2003, "frequency": 0.000017788 },
-    { "year": 2004, "frequency": 0.0000304242 },
-    { "year": 2005, "frequency": 0.000034602 },
-    { "year": 2006, "frequency": 0.0000579318 },
-    { "year": 2007, "frequency": 0.0000567518 },
-    { "year": 2008, "frequency": 0.0000305002 },
-    { "year": 2009, "frequency": 0.0000354699 },
-    { "year": 2010, "frequency": 0.0000573469 },
-    { "year": 2011, "frequency": 0.0000558169 },
-    { "year": 2012, "frequency": 0.0000306979 },
-    { "year": 2013, "frequency": 0.0000275734 },
-    { "year": 2014, "frequency": 0.000016163 },
-    { "year": 2015, "frequency": 0.0000125242 },
-    { "year": 2016, "frequency": 0.0000106929 },
-    { "year": 2017, "frequency": 0.0000096821 },
-    { "year": 2018, "frequency": 0.0000091011 },
-    { "year": 2019, "frequency": 0.000007857 },
-    { "year": 2020, "frequency": 0.0002476615 }
+    {
+      "year": 2000,
+      "frequency": 0.0000040559
+    },
+    {
+      "year": 2001,
+      "frequency": 0.0000067864
+    },
+    {
+      "year": 2002,
+      "frequency": 0.0000051355
+    },
+    {
+      "year": 2003,
+      "frequency": 0.000017788
+    },
+    {
+      "year": 2004,
+      "frequency": 0.0000304242
+    },
+    {
+      "year": 2005,
+      "frequency": 0.000034602
+    },
+    {
+      "year": 2006,
+      "frequency": 0.0000579318
+    },
+    {
+      "year": 2007,
+      "frequency": 0.0000567518
+    },
+    {
+      "year": 2008,
+      "frequency": 0.0000305002
+    },
+    {
+      "year": 2009,
+      "frequency": 0.0000354699
+    },
+    {
+      "year": 2010,
+      "frequency": 0.0000573469
+    },
+    {
+      "year": 2011,
+      "frequency": 0.0000558169
+    },
+    {
+      "year": 2012,
+      "frequency": 0.0000306979
+    },
+    {
+      "year": 2013,
+      "frequency": 0.0000275734
+    },
+    {
+      "year": 2014,
+      "frequency": 0.000016163
+    },
+    {
+      "year": 2015,
+      "frequency": 0.0000125242
+    },
+    {
+      "year": 2016,
+      "frequency": 0.0000106929
+    },
+    {
+      "year": 2017,
+      "frequency": 0.0000096821
+    },
+    {
+      "year": 2018,
+      "frequency": 0.0000091011
+    },
+    {
+      "year": 2019,
+      "frequency": 0.000007857
+    },
+    {
+      "year": 2020,
+      "frequency": 0.0002476615
+    }
+  ],
+  "umap": [
+    {
+      "year": 2000,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": 8.7152395248,
+      "umap_y_coord": -1.3679676056
+    },
+    {
+      "year": 2000,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": 8.0561990738,
+      "umap_y_coord": -0.7242527604
+    },
+    {
+      "year": 2000,
+      "token": "species_11520",
+      "is_query": false,
+      "umap_x_coord": 6.8814182281,
+      "umap_y_coord": -0.4553814828
+    },
+    {
+      "year": 2000,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": 6.8774704933,
+      "umap_y_coord": 1.0792684555
+    },
+    {
+      "year": 2000,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": 6.3840680122,
+      "umap_y_coord": 0.800817728
+    },
+    {
+      "year": 2000,
+      "token": "zoonosis",
+      "is_query": false,
+      "umap_x_coord": 8.5706396103,
+      "umap_y_coord": 0.8909095526
+    },
+    {
+      "year": 2000,
+      "token": "mesh_d011051",
+      "is_query": false,
+      "umap_x_coord": 5.6056852341,
+      "umap_y_coord": -1.2313410044
+    },
+    {
+      "year": 2000,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": 5.9217538834,
+      "umap_y_coord": -0.7715666294
+    },
+    {
+      "year": 2000,
+      "token": "species_11072",
+      "is_query": false,
+      "umap_x_coord": 7.6498222351,
+      "umap_y_coord": 1.0594432354
+    },
+    {
+      "year": 2000,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": 7.0187854767,
+      "umap_y_coord": -0.7904441357
+    },
+    {
+      "year": 2000,
+      "token": "outbreak",
+      "is_query": false,
+      "umap_x_coord": 6.761592865,
+      "umap_y_coord": 0.0270045307
+    },
+    {
+      "year": 2000,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": 5.5851874352,
+      "umap_y_coord": 0.0413829498
+    },
+    {
+      "year": 2000,
+      "token": "rabie",
+      "is_query": false,
+      "umap_x_coord": 6.998942852,
+      "umap_y_coord": 0.8665876985
+    },
+    {
+      "year": 2000,
+      "token": "species_114727",
+      "is_query": false,
+      "umap_x_coord": 5.8148860931,
+      "umap_y_coord": 0.4971083999
+    },
+    {
+      "year": 2000,
+      "token": "dengue",
+      "is_query": false,
+      "umap_x_coord": 7.0490760803,
+      "umap_y_coord": 0.6594506502
+    },
+    {
+      "year": 2000,
+      "token": "scourge",
+      "is_query": false,
+      "umap_x_coord": 8.001001358,
+      "umap_y_coord": -0.7104400992
+    },
+    {
+      "year": 2000,
+      "token": "mesh_d004671",
+      "is_query": false,
+      "umap_x_coord": 8.2400960922,
+      "umap_y_coord": 0.4803393483
+    },
+    {
+      "year": 2000,
+      "token": "flavivirus",
+      "is_query": false,
+      "umap_x_coord": 7.0442872047,
+      "umap_y_coord": -1.1648323536
+    },
+    {
+      "year": 2000,
+      "token": "pasteur",
+      "is_query": false,
+      "umap_x_coord": 7.9703469276,
+      "umap_y_coord": 0.0212827493
+    },
+    {
+      "year": 2000,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": 6.9973769188,
+      "umap_y_coord": -0.9047361016
+    },
+    {
+      "year": 2000,
+      "token": "species_11309",
+      "is_query": false,
+      "umap_x_coord": 6.0201702118,
+      "umap_y_coord": -0.0699075758
+    },
+    {
+      "year": 2000,
+      "token": "thailand",
+      "is_query": false,
+      "umap_x_coord": 7.7566456795,
+      "umap_y_coord": 0.8953022361
+    },
+    {
+      "year": 2000,
+      "token": "resurgence",
+      "is_query": false,
+      "umap_x_coord": 7.6325325966,
+      "umap_y_coord": -1.1656019688
+    },
+    {
+      "year": 2000,
+      "token": "species_121791",
+      "is_query": false,
+      "umap_x_coord": 7.4480113983,
+      "umap_y_coord": -0.1626110673
+    },
+    {
+      "year": 2000,
+      "token": "mesh_d015047",
+      "is_query": false,
+      "umap_x_coord": 7.6050314903,
+      "umap_y_coord": -0.0727111995
+    },
+    {
+      "year": 2000,
+      "token": "influenza",
+      "is_query": false,
+      "umap_x_coord": 5.9381608963,
+      "umap_y_coord": -1.022034049
+    },
+    {
+      "year": 2001,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": -1.7795000076,
+      "umap_y_coord": -4.4521079063
+    },
+    {
+      "year": 2001,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": -0.0868782997,
+      "umap_y_coord": -4.3635697365
+    },
+    {
+      "year": 2001,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": -2.1645841599,
+      "umap_y_coord": -5.1115517616
+    },
+    {
+      "year": 2001,
+      "token": "species_11320",
+      "is_query": false,
+      "umap_x_coord": -0.7912327647,
+      "umap_y_coord": -3.9854474068
+    },
+    {
+      "year": 2001,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": -0.74121207,
+      "umap_y_coord": -6.1172914505
+    },
+    {
+      "year": 2001,
+      "token": "mesh_d011051",
+      "is_query": false,
+      "umap_x_coord": -2.4788067341,
+      "umap_y_coord": -5.6823997498
+    },
+    {
+      "year": 2001,
+      "token": "zoonosis",
+      "is_query": false,
+      "umap_x_coord": -0.0172371455,
+      "umap_y_coord": -4.5707783699
+    },
+    {
+      "year": 2001,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": -2.0281271935,
+      "umap_y_coord": -3.9792442322
+    },
+    {
+      "year": 2001,
+      "token": "polio",
+      "is_query": false,
+      "umap_x_coord": -1.7348865271,
+      "umap_y_coord": -3.3661568165
+    },
+    {
+      "year": 2001,
+      "token": "species_11082",
+      "is_query": false,
+      "umap_x_coord": -0.667026639,
+      "umap_y_coord": -4.0240268707
+    },
+    {
+      "year": 2001,
+      "token": "mesh_d004671",
+      "is_query": false,
+      "umap_x_coord": -0.0152794067,
+      "umap_y_coord": -4.5474152565
+    },
+    {
+      "year": 2001,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": -1.2123554945,
+      "umap_y_coord": -4.8718466759
+    },
+    {
+      "year": 2001,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": -1.7746272087,
+      "umap_y_coord": -5.1104822159
+    },
+    {
+      "year": 2001,
+      "token": "bioterrorism",
+      "is_query": false,
+      "umap_x_coord": -1.5651077032,
+      "umap_y_coord": -5.0180764198
+    },
+    {
+      "year": 2001,
+      "token": "species_11520",
+      "is_query": false,
+      "umap_x_coord": -1.5240058899,
+      "umap_y_coord": -3.893951416
+    },
+    {
+      "year": 2001,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": -0.8017347455,
+      "umap_y_coord": -3.6026203632
+    },
+    {
+      "year": 2001,
+      "token": "worldwide",
+      "is_query": false,
+      "umap_x_coord": 0.4979762137,
+      "umap_y_coord": -5.0725278854
+    },
+    {
+      "year": 2001,
+      "token": "zaire",
+      "is_query": false,
+      "umap_x_coord": -2.1425595284,
+      "umap_y_coord": -4.7446856499
+    },
+    {
+      "year": 2001,
+      "token": "reemerge",
+      "is_query": false,
+      "umap_x_coord": -0.961286366,
+      "umap_y_coord": -6.2425513268
+    },
+    {
+      "year": 2001,
+      "token": "species_1570291",
+      "is_query": false,
+      "umap_x_coord": -1.3749594688,
+      "umap_y_coord": -3.2548720837
+    },
+    {
+      "year": 2001,
+      "token": "species_11072",
+      "is_query": false,
+      "umap_x_coord": -1.9183951616,
+      "umap_y_coord": -4.0782647133
+    },
+    {
+      "year": 2001,
+      "token": "nlvs",
+      "is_query": false,
+      "umap_x_coord": -0.7603182197,
+      "umap_y_coord": -4.7513360977
+    },
+    {
+      "year": 2001,
+      "token": "bubonic",
+      "is_query": false,
+      "umap_x_coord": -1.939730525,
+      "umap_y_coord": -4.2507386208
+    },
+    {
+      "year": 2001,
+      "token": "dengue",
+      "is_query": false,
+      "umap_x_coord": -0.886826694,
+      "umap_y_coord": -5.3178181648
+    },
+    {
+      "year": 2001,
+      "token": "nile",
+      "is_query": false,
+      "umap_x_coord": -1.1202123165,
+      "umap_y_coord": -5.3334150314
+    },
+    {
+      "year": 2001,
+      "token": "resurgence",
+      "is_query": false,
+      "umap_x_coord": -0.2539679706,
+      "umap_y_coord": -5.1492452621
+    },
+    {
+      "year": 2002,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": -1.41749084,
+      "umap_y_coord": 8.1782131195
+    },
+    {
+      "year": 2002,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": 0.3298174739,
+      "umap_y_coord": 7.5542621613
+    },
+    {
+      "year": 2002,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": -2.1965162754,
+      "umap_y_coord": 6.9951047897
+    },
+    {
+      "year": 2002,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": -0.1989257336,
+      "umap_y_coord": 7.0328655243
+    },
+    {
+      "year": 2002,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": -1.2780559063,
+      "umap_y_coord": 6.5862107277
+    },
+    {
+      "year": 2002,
+      "token": "species_11320",
+      "is_query": false,
+      "umap_x_coord": 0.4830284417,
+      "umap_y_coord": 8.2318611145
+    },
+    {
+      "year": 2002,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": -0.4431815147,
+      "umap_y_coord": 7.0351657867
+    },
+    {
+      "year": 2002,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": 0.2720496655,
+      "umap_y_coord": 7.9086050987
+    },
+    {
+      "year": 2002,
+      "token": "mesh_d004671",
+      "is_query": false,
+      "umap_x_coord": -0.7597904205,
+      "umap_y_coord": 6.9336204529
+    },
+    {
+      "year": 2002,
+      "token": "mesh_d011051",
+      "is_query": false,
+      "umap_x_coord": -0.9353755713,
+      "umap_y_coord": 7.7084798813
+    },
+    {
+      "year": 2002,
+      "token": "mesh_d019142",
+      "is_query": false,
+      "umap_x_coord": -2.0768680573,
+      "umap_y_coord": 7.3511590958
+    },
+    {
+      "year": 2002,
+      "token": "species_114727",
+      "is_query": false,
+      "umap_x_coord": -0.0239523053,
+      "umap_y_coord": 6.1313428879
+    },
+    {
+      "year": 2002,
+      "token": "outbreak",
+      "is_query": false,
+      "umap_x_coord": -0.9112384319,
+      "umap_y_coord": 6.6180143356
+    },
+    {
+      "year": 2002,
+      "token": "species_11520",
+      "is_query": false,
+      "umap_x_coord": 0.4174383581,
+      "umap_y_coord": 7.8082242012
+    },
+    {
+      "year": 2002,
+      "token": "species_11021",
+      "is_query": false,
+      "umap_x_coord": -1.8921283484,
+      "umap_y_coord": 7.6190094948
+    },
+    {
+      "year": 2002,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": -1.2091884613,
+      "umap_y_coord": 6.5020551682
+    },
+    {
+      "year": 2002,
+      "token": "reemerge",
+      "is_query": false,
+      "umap_x_coord": -1.2601666451,
+      "umap_y_coord": 7.6347417831
+    },
+    {
+      "year": 2002,
+      "token": "species_11309",
+      "is_query": false,
+      "umap_x_coord": 0.1409683526,
+      "umap_y_coord": 8.2922401428
+    },
+    {
+      "year": 2002,
+      "token": "domingue",
+      "is_query": false,
+      "umap_x_coord": -1.509749651,
+      "umap_y_coord": 7.2500839233
+    },
+    {
+      "year": 2002,
+      "token": "saharan",
+      "is_query": false,
+      "umap_x_coord": -0.2757498622,
+      "umap_y_coord": 8.9132404327
+    },
+    {
+      "year": 2002,
+      "token": "species_11308",
+      "is_query": false,
+      "umap_x_coord": -0.7309576869,
+      "umap_y_coord": 8.1387672424
+    },
+    {
+      "year": 2002,
+      "token": "reemergence",
+      "is_query": false,
+      "umap_x_coord": 0.1412684321,
+      "umap_y_coord": 7.4518404007
+    },
+    {
+      "year": 2002,
+      "token": "africa",
+      "is_query": false,
+      "umap_x_coord": -0.9898162484,
+      "umap_y_coord": 8.3848781586
+    },
+    {
+      "year": 2002,
+      "token": "zoonosis",
+      "is_query": false,
+      "umap_x_coord": 0.6767976284,
+      "umap_y_coord": 6.7542214394
+    },
+    {
+      "year": 2002,
+      "token": "flavivirus",
+      "is_query": false,
+      "umap_x_coord": -1.2524108887,
+      "umap_y_coord": 6.7994818687
+    },
+    {
+      "year": 2002,
+      "token": "worldwide",
+      "is_query": false,
+      "umap_x_coord": -0.1313428581,
+      "umap_y_coord": 7.9150729179
+    },
+    {
+      "year": 2003,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": 10.2341442108,
+      "umap_y_coord": 8.6019020081
+    },
+    {
+      "year": 2003,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": 10.7893390656,
+      "umap_y_coord": 7.6054296494
+    },
+    {
+      "year": 2003,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": 11.8905887604,
+      "umap_y_coord": 6.1487202644
+    },
+    {
+      "year": 2003,
+      "token": "variola",
+      "is_query": false,
+      "umap_x_coord": 11.1866369247,
+      "umap_y_coord": 7.8551225662
+    },
+    {
+      "year": 2003,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": 11.9689531326,
+      "umap_y_coord": 6.1454482079
+    },
+    {
+      "year": 2003,
+      "token": "species_11520",
+      "is_query": false,
+      "umap_x_coord": 10.8902893066,
+      "umap_y_coord": 5.5404939651
+    },
+    {
+      "year": 2003,
+      "token": "outbreak",
+      "is_query": false,
+      "umap_x_coord": 9.5874433517,
+      "umap_y_coord": 7.3052816391
+    },
+    {
+      "year": 2003,
+      "token": "species_11320",
+      "is_query": false,
+      "umap_x_coord": 10.3085069656,
+      "umap_y_coord": 5.6638145447
+    },
+    {
+      "year": 2003,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": 9.7544307709,
+      "umap_y_coord": 7.5064678192
+    },
+    {
+      "year": 2003,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": 11.071149826,
+      "umap_y_coord": 6.8993139267
+    },
+    {
+      "year": 2003,
+      "token": "species_114727",
+      "is_query": false,
+      "umap_x_coord": 11.5767869949,
+      "umap_y_coord": 6.4021539688
+    },
+    {
+      "year": 2003,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": 11.4590034485,
+      "umap_y_coord": 8.3605718613
+    },
+    {
+      "year": 2003,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": 9.5558013916,
+      "umap_y_coord": 7.0599479675
+    },
+    {
+      "year": 2003,
+      "token": "species_114728",
+      "is_query": false,
+      "umap_x_coord": 10.7478504181,
+      "umap_y_coord": 5.6927604675
+    },
+    {
+      "year": 2003,
+      "token": "bioterrorist",
+      "is_query": false,
+      "umap_x_coord": 10.9257745743,
+      "umap_y_coord": 7.3140978813
+    },
+    {
+      "year": 2003,
+      "token": "bioterrorism",
+      "is_query": false,
+      "umap_x_coord": 9.6542282104,
+      "umap_y_coord": 8.0151195526
+    },
+    {
+      "year": 2003,
+      "token": "deadly",
+      "is_query": false,
+      "umap_x_coord": 10.5629110336,
+      "umap_y_coord": 7.1510300636
+    },
+    {
+      "year": 2003,
+      "token": "species_11309",
+      "is_query": false,
+      "umap_x_coord": 10.1798830032,
+      "umap_y_coord": 6.1066975594
+    },
+    {
+      "year": 2003,
+      "token": "reassortant",
+      "is_query": false,
+      "umap_x_coord": 10.9088792801,
+      "umap_y_coord": 5.7884588242
+    },
+    {
+      "year": 2003,
+      "token": "bioweapon",
+      "is_query": false,
+      "umap_x_coord": 10.274641037,
+      "umap_y_coord": 8.0655555725
+    },
+    {
+      "year": 2003,
+      "token": "influenza",
+      "is_query": false,
+      "umap_x_coord": 10.1501846313,
+      "umap_y_coord": 6.2552146912
+    },
+    {
+      "year": 2003,
+      "token": "polio",
+      "is_query": false,
+      "umap_x_coord": 9.6211137772,
+      "umap_y_coord": 7.5871934891
+    },
+    {
+      "year": 2003,
+      "token": "mesh_d015047",
+      "is_query": false,
+      "umap_x_coord": 10.6613283157,
+      "umap_y_coord": 8.2959403992
+    },
+    {
+      "year": 2003,
+      "token": "species_119218",
+      "is_query": false,
+      "umap_x_coord": 11.3413610458,
+      "umap_y_coord": 6.7246317863
+    },
+    {
+      "year": 2003,
+      "token": "reemerge",
+      "is_query": false,
+      "umap_x_coord": 10.6053380966,
+      "umap_y_coord": 7.8911304474
+    },
+    {
+      "year": 2003,
+      "token": "reemergence",
+      "is_query": false,
+      "umap_x_coord": 10.2623434067,
+      "umap_y_coord": 8.3779459
+    },
+    {
+      "year": 2004,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": 5.6222500801,
+      "umap_y_coord": 7.8394079208
+    },
+    {
+      "year": 2004,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": 6.8349585533,
+      "umap_y_coord": 8.4998569489
+    },
+    {
+      "year": 2004,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": 6.8768291473,
+      "umap_y_coord": 9.4191408157
+    },
+    {
+      "year": 2004,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": 6.7763824463,
+      "umap_y_coord": 9.6006307602
+    },
+    {
+      "year": 2004,
+      "token": "reemergence",
+      "is_query": false,
+      "umap_x_coord": 5.4738020897,
+      "umap_y_coord": 7.7453289032
+    },
+    {
+      "year": 2004,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": 7.7732086182,
+      "umap_y_coord": 8.3869981766
+    },
+    {
+      "year": 2004,
+      "token": "outbreak",
+      "is_query": false,
+      "umap_x_coord": 5.3324146271,
+      "umap_y_coord": 8.9857625961
+    },
+    {
+      "year": 2004,
+      "token": "species_11309",
+      "is_query": false,
+      "umap_x_coord": 5.2661004066,
+      "umap_y_coord": 10.6549167633
+    },
+    {
+      "year": 2004,
+      "token": "species_114727",
+      "is_query": false,
+      "umap_x_coord": 6.2029180527,
+      "umap_y_coord": 10.2311458588
+    },
+    {
+      "year": 2004,
+      "token": "species_11320",
+      "is_query": false,
+      "umap_x_coord": 6.2493667603,
+      "umap_y_coord": 8.4515695572
+    },
+    {
+      "year": 2004,
+      "token": "bioterrorism",
+      "is_query": false,
+      "umap_x_coord": 5.4107680321,
+      "umap_y_coord": 7.8364691734
+    },
+    {
+      "year": 2004,
+      "token": "species_382835",
+      "is_query": false,
+      "umap_x_coord": 5.3808870316,
+      "umap_y_coord": 10.196059227
+    },
+    {
+      "year": 2004,
+      "token": "species_1570291",
+      "is_query": false,
+      "umap_x_coord": 6.2557039261,
+      "umap_y_coord": 9.5154953003
+    },
+    {
+      "year": 2004,
+      "token": "flu",
+      "is_query": false,
+      "umap_x_coord": 4.6968894005,
+      "umap_y_coord": 10.2859039307
+    },
+    {
+      "year": 2004,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": 6.6495366096,
+      "umap_y_coord": 9.9610557556
+    },
+    {
+      "year": 2004,
+      "token": "influenza",
+      "is_query": false,
+      "umap_x_coord": 4.7721061707,
+      "umap_y_coord": 9.5951957703
+    },
+    {
+      "year": 2004,
+      "token": "species_11308",
+      "is_query": false,
+      "umap_x_coord": 5.8996481895,
+      "umap_y_coord": 9.435790062
+    },
+    {
+      "year": 2004,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": 6.7239899635,
+      "umap_y_coord": 8.4131374359
+    },
+    {
+      "year": 2004,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": 5.7573051453,
+      "umap_y_coord": 9.9871454239
+    },
+    {
+      "year": 2004,
+      "token": "species_114729",
+      "is_query": false,
+      "umap_x_coord": 5.8550767899,
+      "umap_y_coord": 8.9460315704
+    },
+    {
+      "year": 2004,
+      "token": "bioweapon",
+      "is_query": false,
+      "umap_x_coord": 5.3934292793,
+      "umap_y_coord": 8.3713626862
+    },
+    {
+      "year": 2004,
+      "token": "mesh_d003141",
+      "is_query": false,
+      "umap_x_coord": 6.9389605522,
+      "umap_y_coord": 7.8201570511
+    },
+    {
+      "year": 2004,
+      "token": "species_119218",
+      "is_query": false,
+      "umap_x_coord": 4.9862742424,
+      "umap_y_coord": 9.1710128784
+    },
+    {
+      "year": 2004,
+      "token": "polio",
+      "is_query": false,
+      "umap_x_coord": 7.0312428474,
+      "umap_y_coord": 9.8743667603
+    },
+    {
+      "year": 2004,
+      "token": "mesh_d012120",
+      "is_query": false,
+      "umap_x_coord": 6.1452212334,
+      "umap_y_coord": 8.552239418
+    },
+    {
+      "year": 2004,
+      "token": "mesh_d011051",
+      "is_query": false,
+      "umap_x_coord": 6.3917803764,
+      "umap_y_coord": 8.7489862442
+    },
+    {
+      "year": 2005,
+      "token": "pandemic",
+      "is_query": true,
+      "umap_x_coord": 10.3276824951,
+      "umap_y_coord": 1.9544197321
+    },
+    {
+      "year": 2005,
+      "token": "epidemic",
+      "is_query": false,
+      "umap_x_coord": 10.8204202652,
+      "umap_y_coord": 1.3404672146
+    },
+    {
+      "year": 2005,
+      "token": "species_102793",
+      "is_query": false,
+      "umap_x_coord": 12.005654335,
+      "umap_y_coord": 1.6594959497
+    },
+    {
+      "year": 2005,
+      "token": "flu",
+      "is_query": false,
+      "umap_x_coord": 12.5391950607,
+      "umap_y_coord": 2.3981873989
+    },
+    {
+      "year": 2005,
+      "token": "species_10255",
+      "is_query": false,
+      "umap_x_coord": 12.8794975281,
+      "umap_y_coord": 1.9702566862
+    },
+    {
+      "year": 2005,
+      "token": "outbreak",
+      "is_query": false,
+      "umap_x_coord": 10.7288284302,
+      "umap_y_coord": 0.7282660604
+    },
+    {
+      "year": 2005,
+      "token": "1918",
+      "is_query": false,
+      "umap_x_coord": 11.5420331955,
+      "umap_y_coord": 2.5451385975
+    },
+    {
+      "year": 2005,
+      "token": "species_11309",
+      "is_query": false,
+      "umap_x_coord": 12.5089302063,
+      "umap_y_coord": 0.9616983533
+    },
+    {
+      "year": 2005,
+      "token": "species_11308",
+      "is_query": false,
+      "umap_x_coord": 12.5827569962,
+      "umap_y_coord": 1.1519386768
+    },
+    {
+      "year": 2005,
+      "token": "bioterrorism",
+      "is_query": false,
+      "umap_x_coord": 11.5311040878,
+      "umap_y_coord": -0.8494955301
+    },
+    {
+      "year": 2005,
+      "token": "species_11320",
+      "is_query": false,
+      "umap_x_coord": 12.8602600098,
+      "umap_y_coord": 1.1020408869
+    },
+    {
+      "year": 2005,
+      "token": "stockpile",
+      "is_query": false,
+      "umap_x_coord": 11.3331661224,
+      "umap_y_coord": 1.5265935659
+    },
+    {
+      "year": 2005,
+      "token": "disaster",
+      "is_query": false,
+      "umap_x_coord": 11.8340120316,
+      "umap_y_coord": -0.9175878763
+    },
+    {
+      "year": 2005,
+      "token": "threat",
+      "is_query": false,
+      "umap_x_coord": 12.1553611755,
+      "umap_y_coord": -0.2249925435
+    },
+    {
+      "year": 2005,
+      "token": "mesh_d003141",
+      "is_query": false,
+      "umap_x_coord": 10.8748350143,
+      "umap_y_coord": 0.0697352067
+    },
+    {
+      "year": 2005,
+      "token": "plague",
+      "is_query": false,
+      "umap_x_coord": 10.8741264343,
+      "umap_y_coord": 0.853726387
+    },
+    {
+      "year": 2005,
+      "token": "polio",
+      "is_query": false,
+      "umap_x_coord": 12.0526895523,
+      "umap_y_coord": 1.5609141588
+    },
+    {
+      "year": 2005,
+      "token": "devastation",
+      "is_query": false,
+      "umap_x_coord": 11.5095729828,
+      "umap_y_coord": -0.1956059337
+    },
+    {
+      "year": 2005,
+      "token": "epizootic",
+      "is_query": false,
+      "umap_x_coord": 11.8174829483,
+      "umap_y_coord": 0.6731237769
+    },
+    {
+      "year": 2005,
+      "token": "species_119210",
+      "is_query": false,
+      "umap_x_coord": 13.2064962387,
+      "umap_y_coord": 1.7343074083
+    },
+    {
+      "year": 2005,
+      "token": "reemerge",
+      "is_query": false,
+      "umap_x_coord": 11.1411542892,
+      "umap_y_coord": -0.2998983562
+    },
+    {
+      "year": 2005,
+      "token": "tsunami",
+      "is_query": false,
+      "umap_x_coord": 11.5325469971,
+      "umap_y_coord": -0.8959283829
+    },
+    {
+      "year": 2005,
+      "token": "influenza",
+      "is_query": false,
+      "umap_x_coord": 12.8309555054,
+      "umap_y_coord": 1.2985509634
+    },
+    {
+      "year": 2005,
+      "token": "bioterrorist",
+      "is_query": false,
+      "umap_x_coord": 12.1037120819,
+      "umap_y_coord": 0.0102878343
+    },
+    {
+      "year": 2005,
+      "token": "resurgence",
+      "is_query": false,
+      "umap_x_coord": 11.4067163467,
+      "umap_y_coord": 0.6084794402
+    },
+    {
+      "year": 2005,
+      "token": "terrorism",
+      "is_query": false,
+      "umap_x_coord": 12.2100477219,
+      "umap_y_coord": -0.9098035693
+    }
   ],
   "changepoints": [[2019, 2020]]
 }

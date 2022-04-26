@@ -10,6 +10,9 @@ export const id = "neighbors";
 // height of lines
 export const lineHeight = 15;
 
+// symbol to show next to tagged words to indicate they're tagged
+export const tagSymbol = "❉"
+
 // func to wrap text into lines by number of characters
 // (because there is no easier way, believe me i tried)
 // adjust line chars so that fitted title text size matches that of other graphs
