@@ -330,7 +330,7 @@ def query_model_for_tok(
     if tok in vocab:
 
         # Get initial word vector for query token
-        result.append(dict(token=tok, vector=word_vectors[tok], is_query=True))
+        result.append(dict(token=tok, vector=word_vectors[tok], is_query=True, score=1))
 
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
@@ -338,7 +338,7 @@ def query_model_for_tok(
 
         # Append neighbor to word_neighbor_map
         for neighbor in word_neighbors:
-            word_neighbor = neighbor[0]
+            word_neighbor, similarity_score = neighbor
             tag_id = None
             word_vector = word_vectors[word_neighbor]
             entity_features = []
@@ -366,6 +366,7 @@ def query_model_for_tok(
                     tag_id=tag_id,
                     vector=word_vector,
                     is_query=False,
+                    score=similarity_score
                 )
             )
 
