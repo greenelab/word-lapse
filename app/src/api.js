@@ -1,6 +1,6 @@
 import { getUnique } from "./util/neighbors";
 import { sleep } from "./util/debug";
-import fixture from "./data/api-fixture.json";
+// import fixture from "./data/api-fixture.json"; // for mocking api
 
 // api endpoint base url
 // const api = "https://word-lapse-beta.ddns.net"; // for testing
@@ -46,11 +46,12 @@ export const getResults = async (query, corpus) => {
   await sleep(1000);
 
   // make request
-  // const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
-  // const response = await window.fetch(url);
-  // if (!response.ok) throw new Error("Response not OK");
-  // const results = await response.json();
-  const results = JSON.parse(JSON.stringify(fixture));
+  const url = `${api}/neighbors?tok=${query}&corpus=${corpus}`;
+  const response = await window.fetch(url);
+  if (!response.ok) throw new Error("Response not OK");
+  const results = await response.json();
+
+  // const results = JSON.parse(JSON.stringify(fixture)); // for mocking api
 
   // api error
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
@@ -71,6 +72,8 @@ export const getResults = async (query, corpus) => {
     results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
 
   // rename some field names to be easier to work with in D3
+  results.umap = results.umap_coords;
+  delete results.umap_coords;
   results.umap = results.umap.map((point) => ({
     ...point,
     x: point.umap_x_coord,

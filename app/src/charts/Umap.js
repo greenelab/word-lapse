@@ -85,7 +85,7 @@ const chart = (umap) => {
       simulation
         .force("collide")
         // push apart the closer neighbor is to mouse
-        .radius((d) => (strength(d) < 1 ? d.token.length : 0));
+        .radius((d) => (strength(d) < 1 ? 10 : 0));
     });
 
   // when mouse moves over svg
