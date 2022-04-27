@@ -13,9 +13,9 @@ const Results = () => {
     return (
       <>
         <div className="results">
-          {/* <Neighbors />
-          <Frequency /> */}
           <Umap />
+          <Neighbors />
+          <Frequency />
         </div>
         <Download />
       </>
