@@ -4,7 +4,9 @@ SHORT_SHA=$(git log -1 --format=%h)
 COMMIT_SHA=$(git log -1 --format=%H)
 
 TARGET_INSTANCE="${TARGET_INSTANCE:-word-lapse-api}"
+TARGET_INSTANCE_MIG="${TARGET_INSTANCE_MIG:-word-lapse-workers}"
 BETA_INSTANCE="${BETA_INSTANCE:-word-lapse-api-beta}"
+BETA_INSTANCE_MIG="${TARGET_INSTANCE_MIG:-beta-workers}"
 
 DEPLOY_BETA=${DEPLOY_BETA:-0}
 
@@ -39,11 +41,19 @@ else
             [[ "$DEPLOY_BETA" == "0" ]] && (
                 # deployment to production instance
                 echo "Deploying to production (${TARGET_INSTANCE})..."
+
                 gcloud compute instances update-container --project=word-lapse "${TARGET_INSTANCE}" \
                     --container-image=${IMAGE_WITH_TAG} \
                     --container-mount-host-path=mount-path=/app/data,host-path=/mnt/stateful_partition/word-lapse-data,mode=rw \
                     --container-mount-host-path=mount-path=/etc/letsencrypt,host-path=/var/letsencrypt,mode=rw \
                     --container-env-file=instance_env
+
+                # also deploy to the workers in the MIG
+                echo "Deploying to production workers (${TARGET_INSTANCE_MIG})..."
+                gcloud compute instance-groups managed rolling-action replace \
+                    --project=word-lapse --zone=us-central1-a \
+                    ${TARGET_INSTANCE_MIG}
+
             ) || (
                 # deployment to beta instance
                 echo "Deploying to beta (${BETA_INSTANCE})..."
@@ -52,6 +62,12 @@ else
                     --container-mount-host-path=mount-path=/app/data,host-path=/mnt/stateful_partition/word-lapse-data,mode=rw \
                     --container-mount-host-path=mount-path=/etc/letsencrypt,host-path=/var/letsencrypt,mode=rw \
                     --container-env-file=instance_env_beta
+
+                # also deploy to the workers in the MIG
+                echo "Deploying to beta workers (${BETA_INSTANCE_MIG})..."
+                gcloud compute instance-groups managed rolling-action replace \
+                    --project=word-lapse --zone=us-central1-a \
+                    ${BETA_INSTANCE_MIG}
             )
         )
     )
