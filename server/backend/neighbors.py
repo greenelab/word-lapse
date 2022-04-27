@@ -341,7 +341,8 @@ def query_model_for_tok(
             word_neighbor = neighbor[0]
             tag_id = None
             word_vector = word_vectors[word_neighbor]
-
+            entity_features = []
+            
             # Convert tags that contain the following pattern
             # disease_mesh_####### or chemical_mesh_#######
             if "mesh" in word_neighbor:
