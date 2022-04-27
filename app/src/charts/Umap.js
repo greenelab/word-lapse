@@ -1,12 +1,6 @@
 import { useEffect, useContext } from "react";
-import {
-  select,
-  extent,
-  scaleLinear,
-  forceSimulation,
-  pointer,
-  forceCollide,
-} from "d3";
+import { select, extent, scaleLinear, forceSimulation, pointer } from "d3";
+import { bboxCollide } from "d3-bboxCollide";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
 import { blue, darkGray, red } from "../palette";
@@ -68,7 +62,13 @@ const chart = (umap) => {
       }
     })
     // force to push apart neighbors
-    .force("collide", forceCollide().iterations(5))
+    .force(
+      "collide",
+      bboxCollide([
+        [-0.01, -0.01],
+        [0.01, 0.01],
+      ]).iterations(5)
+    )
 
     // each tick of simulation
     .on("tick", () => {
@@ -81,11 +81,20 @@ const chart = (umap) => {
         // update other attributes
         .style("opacity", (d) => (strength(d) < 1 ? 1 : 0.25));
 
-      // make collision radii update
-      simulation
-        .force("collide")
-        // push apart the closer neighbor is to mouse
-        .radius((d) => (strength(d) < 1 ? 10 : 0));
+      simulation.force(
+        "collide",
+        bboxCollide((d) =>
+          strength(d) < 1
+            ? [
+                [-d.token.length * 2, -3],
+                [d.token.length * 2, 3],
+              ]
+            : [
+                [-0.01, -0.01],
+                [0.01, 0.01],
+              ]
+        )
+      );
     });
 
   // when mouse moves over svg
