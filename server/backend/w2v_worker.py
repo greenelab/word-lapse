@@ -77,12 +77,16 @@ def split_and_generate_umap_embeddings(word_neighbor_map: dict, neighbors: int =
 
         for idx, tok_entry in enumerate(word_neighbor_map[year]):
             embeddings_matrix.append(tok_entry["vector"])
-            tok_label_list.append((year, tok_entry["token"], tok_entry["is_query"]))
+            tok_label_list.append((year, tok_entry["token"], tok_entry["is_query"], tok_entry["score"]))
 
             # Include the neighbors for the object return
             if idx > 0:
                 word_neighbor_map_returned[year].append(
-                    dict(token=tok_entry["token"], tag_id=tok_entry["tag_id"])
+                    dict(
+                        token=tok_entry["token"],
+                        tag_id=tok_entry["tag_id"],
+                        score=tok_entry["score"],
+                    )
                 )
 
     umap_model = umap.UMAP(
@@ -102,6 +106,7 @@ def split_and_generate_umap_embeddings(word_neighbor_map: dict, neighbors: int =
             year=int(tok_label[0]),
             token=tok_label[1],
             is_query=tok_label[2],
+            score=tok_label[3],
             umap_x_coord=float(umap_coord[0]),
             umap_y_coord=float(umap_coord[1]),
         )
