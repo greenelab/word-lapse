@@ -341,17 +341,23 @@ def query_model_for_tok(
             word_neighbor = neighbor[0]
             tag_id = None
             word_vector = word_vectors[word_neighbor]
-
+            entity_features = []
+            
             # Convert tags that contain the following pattern
             # disease_mesh_####### or chemical_mesh_#######
             if "mesh" in word_neighbor:
-                word_neighbor = "_".join(word_neighbor.split("_")[1:])
+                entity_features = word_neighbor.split("_")
+                word_neighbor = "_".join(entity_features[1:])
+
+                # a switch to tell the if statement below we found a mesh id
+                tag_id = "mesh"
 
             # Insert tagged suffix to show users that
             # some concpets are tagged and some concepts are missed
             # example: mcf-7 is a cellline but the token itself appears as well
             if word_neighbor in concept_id_mapper_dict:
-                tag_id = word_neighbor
+                # add entity type back to the mesh id for the front end
+                tag_id = word_neighbor if tag_id is None else "_".join(entity_features)
                 word_neighbor = concept_id_mapper_dict[word_neighbor]
 
             result.append(
