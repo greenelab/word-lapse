@@ -111,7 +111,7 @@ def init_autocomplete_trie():
             with open("./data/full_vocab.txt", "r") as fp:
                 vocab_trie = CharTrie()
                 for line in fp:
-                    vocab_trie.add(line)
+                    vocab_trie[line] = True
 
                 logger.info(" - writing pickle...")
                 with open(vocab_trie_pickle, "wb") as pickle_fp:
