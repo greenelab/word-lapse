@@ -67,7 +67,7 @@ class CorpusNotFoundException(Exception):
 def extract_frequencies(tok: str, corpus: str):
     corpus_paths = {
         "pubtator": data_folder / Path("all_pubtator_tok_frequency.tsv.xz"),
-        # "preprints": data_folder / Path("all_preprints_tok_frequency.tsv.xz"),
+        "preprints": data_folder / Path("all_preprint_tok_frequency.tsv.xz"),
     }
 
     # Extract the frequencies
@@ -96,7 +96,7 @@ def extract_frequencies(tok: str, corpus: str):
 def cutoff_points(tok: str, corpus: str):
     corpus_paths = {
         "pubtator": data_folder / Path("pubtator_changepoints.tsv"),
-        # "preprints": data_folder / Path("preprints_changepoints.tsv"),
+        "preprints": data_folder / Path("preprint_changepoints.tsv"),
     }
 
     # Extract Estimated Cutoff Points

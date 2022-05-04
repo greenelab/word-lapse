@@ -40,7 +40,7 @@ LOG_LEVEL = os.environ.get("LOG_LEVEL")
 # the set of corpora in the data folder
 CORPORA_SET = {
     "pubtator": "PMC Full Text",
-    # "preprints": "BioRxiv/MedRxiv"
+    "preprints": "BioRxiv/MedRxiv"
 }
 
 # if env var USE_MEMMAP is truthy, loads word2vec models using the mmap='r' flag,
