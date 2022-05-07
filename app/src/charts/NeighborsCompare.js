@@ -61,68 +61,66 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, "word", symbols ? 340 : 440, 10).map(
-          (line, lineIndex) => (
-            <text
-              key={lineIndex}
-              x="0"
-              y={lineHeight * lineIndex}
-              textAnchor="middle"
-            >
-              {line.map((neighbor, index) => {
-                // determine if neighbor in selected year(s)
-                const inA = find(aNeighbors, neighbor);
-                const inB = find(bNeighbors, neighbor);
-                const inBoth = inA && inB;
-                const inNeither = !inA && !inB;
+        {wrapLines(uniqueNeighbors, "word", 350, 10).map((line, lineIndex) => (
+          <text
+            key={lineIndex}
+            x="0"
+            y={lineHeight * lineIndex}
+            textAnchor="middle"
+          >
+            {line.map((neighbor, index) => {
+              // determine if neighbor in selected year(s)
+              const inA = find(aNeighbors, neighbor);
+              const inB = find(bNeighbors, neighbor);
+              const inBoth = inA && inB;
+              const inNeither = !inA && !inB;
 
-                // determine props
-                let color;
-                let symbol;
-                let tooltip;
-                if (inBoth) {
-                  color = props.both.color;
-                  symbol = props.both.symbol;
-                  tooltip = `In ${yearA} and ${yearB}. ${
-                    neighbor.tagged ? "Tagged." : "Not tagged."
-                  }`;
-                } else if (inA) {
-                  color = props.a.color;
-                  symbol = props.a.symbol;
-                  tooltip = `In ${yearA}. ${
-                    neighbor.tagged ? "Tagged." : "Not tagged."
-                  }`;
-                } else if (inB) {
-                  color = props.b.color;
-                  symbol = props.b.symbol;
-                  tooltip = `In ${yearB}. ${
-                    neighbor.tagged ? "Tagged." : "Not tagged."
-                  }`;
-                } else if (inNeither) {
-                  color = props.neither.color;
-                  symbol = props.neither.symbol;
-                }
+              // determine props
+              let color;
+              let symbol;
+              let tooltip;
+              if (inBoth) {
+                color = props.both.color;
+                symbol = props.both.symbol;
+                tooltip = `In ${yearA} and ${yearB}. ${
+                  neighbor.tagged ? "Tagged." : "Not tagged."
+                }`;
+              } else if (inA) {
+                color = props.a.color;
+                symbol = props.a.symbol;
+                tooltip = `In ${yearA}. ${
+                  neighbor.tagged ? "Tagged." : "Not tagged."
+                }`;
+              } else if (inB) {
+                color = props.b.color;
+                symbol = props.b.symbol;
+                tooltip = `In ${yearB}. ${
+                  neighbor.tagged ? "Tagged." : "Not tagged."
+                }`;
+              } else if (inNeither) {
+                color = props.neither.color;
+                symbol = props.neither.symbol;
+              }
 
-                return (
-                  <tspan
-                    key={index}
-                    dx="10"
-                    style={{
-                      fontSize: 10,
-                      fill: color,
-                    }}
-                    data-tooltip={tooltip}
-                    aria-hidden={inNeither}
-                  >
-                    {symbols && symbol ? symbol + " " : ""}
-                    {toHumanCase(neighbor.word)}
-                    {neighbor.tagged && " " + tagSymbol}
-                  </tspan>
-                );
-              })}
-            </text>
-          )
-        )}
+              return (
+                <tspan
+                  key={index}
+                  dx="10"
+                  style={{
+                    fontSize: 10,
+                    fill: color,
+                  }}
+                  data-tooltip={tooltip}
+                  aria-hidden={inNeither}
+                >
+                  {symbols && symbol ? symbol + " " : ""}
+                  {toHumanCase(neighbor.word)}
+                  {neighbor.tagged && " " + tagSymbol}
+                </tspan>
+              );
+            })}
+          </text>
+        ))}
 
         <text
           x="0"
