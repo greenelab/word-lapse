@@ -1,8 +1,8 @@
 import { useState } from "react";
-import NeighborsSingle from "./NeighborsSingle";
-import "./Neighbors.css";
-import NeighborsCompare from "./NeighborsCompare";
 import { BooleanParam, useQueryParam, withDefault } from "use-query-params";
+import NeighborsSingle from "./NeighborsSingle";
+import NeighborsCompare from "./NeighborsCompare";
+import "./Neighbors.css";
 
 // unique id of this chart
 export const id = "neighbors";
@@ -11,24 +11,7 @@ export const id = "neighbors";
 export const lineHeight = 15;
 
 // symbol to show next to tagged words to indicate they're tagged
-export const tagSymbol = "❉"
-
-// func to wrap text into lines by number of characters
-// (because there is no easier way, believe me i tried)
-// adjust line chars so that fitted title text size matches that of other graphs
-export const wrapLines = (uniqueNeighbors, lineChars) => {
-  const lines = [[]];
-  for (const word of uniqueNeighbors) {
-    if (
-      lines[lines.length - 1].reduce((total, word) => total + word.length, 0) +
-        word.length >
-      lineChars
-    )
-      lines.push([]);
-    lines[lines.length - 1].push(word);
-  }
-  return lines;
-};
+export const tagSymbol = "❉";
 
 // encode/decode years to/from url
 export const YearParam = (years) => ({
@@ -51,7 +34,7 @@ const getPlaying = () =>
     key.includes("year")
   );
 
-// neighbors list
+// table visualization of neighbors
 const Neighbors = () => {
   // other state
   const [compare, setCompare] = useQueryParam(

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { range } from "../util/math";
+import { range } from "lodash";
 import { useUid } from "../util/hooks";
 import commonWords from "../data/common-words.json";
 import "./Matrix.css";
@@ -38,11 +38,9 @@ const timer = (func, period, delay) => {
 // text animation like the matrix
 const Matrix = () => (
   <div className="matrix-container">
-    {Array(15)
-      .fill(0)
-      .map((_, index) => (
-        <Word key={index} />
-      ))}
+    {range(15).map((_, index) => (
+      <Word key={index} />
+    ))}
   </div>
 );
 

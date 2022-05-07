@@ -1,29 +1,29 @@
 import { useContext, useEffect } from "react";
 import { useQueryParam } from "use-query-params";
+import { find } from "lodash";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, tagSymbol, wrapLines, YearParam } from "./Neighbors";
+import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
 import { blue, lightGray, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
-import { toHumanCase } from "../util/string";
-import { count } from "../util/neighbors";
+import { toHumanCase, wrapLines } from "../util/string";
 
-// single year neighbors list
+// table visualization ofneighbors, single year
 const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   // app state
   const { search, results } = useContext(AppContext);
-  const { neighbors: neighborsData, uniqueNeighbors, tags } = results;
+  const { neighbors, uniqueNeighbors } = results;
 
   // other state
   const [svg, setViewBox] = useViewBox(20);
 
   // compute year stuff
-  const years = Object.keys(neighborsData);
+  const years = Object.keys(neighbors);
   const [yearIndex, setYearIndex] = useQueryParam("year", YearParam(years));
   const year = years[yearIndex] || "";
-  const neighbors = neighborsData[year] || [];
+  const yearNeighbors = neighbors[year] || [];
 
   // animate year index
   useEffect(() => {
@@ -52,37 +52,41 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, 70).map((line, lineIndex) => (
-          <text
-            key={lineIndex}
-            x="0"
-            y={lineHeight * lineIndex}
-            textAnchor="middle"
-          >
-            {line.map((word, index) => (
-              <tspan
-                key={index}
-                className="neighbors-word"
-                dx="10"
-                style={{
-                  fontSize: 10,
-                  fill: neighbors.includes(word) ? blended : lightGray,
-                }}
-                data-tooltip={`In ${count(
-                  word,
-                  neighborsData
-                )} of the year(s). ${tags[word] ? `Tagged.` : "Not tagged."}`}
-                aria-hidden={!neighbors.includes(word)}
-                tabIndex={!neighbors.includes(word) ? -1 : 0}
-              >
-                {toHumanCase(word)}
-                {tags[word] && " " + tagSymbol}
-              </tspan>
-            ))}
-          </text>
-        ))}
+        {wrapLines(uniqueNeighbors, "word", 420, 10).map(
+          (line, lineIndex) => (
+            <text
+              key={lineIndex}
+              x="0"
+              y={lineHeight * lineIndex}
+              textAnchor="middle"
+            >
+              {line.map((neighbor, index) => (
+                <tspan
+                  key={index}
+                  dx="10"
+                  style={{
+                    fontSize: 10,
+                    fill: find(yearNeighbors, neighbor) ? blended : lightGray,
+                  }}
+                  data-tooltip={`In ${neighbor.count} of the year(s). ${
+                    neighbor.tagged ? `Tagged.` : "Not tagged."
+                  }`}
+                  aria-hidden={!find(yearNeighbors, neighbor)}
+                >
+                  {toHumanCase(neighbor.word)}
+                  {neighbor.tagged && " " + tagSymbol}
+                </tspan>
+              ))}
+            </text>
+          )
+        )}
 
-        <text x="0" y="-30" textAnchor="middle" style={{ fontSize: 12 }}>
+        <text
+          x="0"
+          y="-30"
+          textAnchor="middle"
+          style={{ fontSize: 12, fontWeight: 600 }}
+        >
           Words associated with "{search}" in {year}
         </text>
       </svg>

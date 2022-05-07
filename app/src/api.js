@@ -1,6 +1,17 @@
-import { getUnique } from "./util/neighbors";
+import {
+  omitBy,
+  isEmpty,
+  mapValues,
+  values,
+  map,
+  filter,
+  find,
+  matches,
+  flatMap,
+  uniqBy,
+  orderBy,
+} from "lodash";
 import { sleep } from "./util/debug";
-// import fixture from "./data/api-fixture.json"; // for mocking api
 
 // api endpoint base url
 // const api = "https://word-lapse-beta.ddns.net"; // for testing
@@ -51,43 +62,36 @@ export const getResults = async (query, corpus) => {
   if (!response.ok) throw new Error("Response not OK");
   const results = await response.json();
 
-  // const results = JSON.parse(JSON.stringify(fixture)); // for mocking api
-
   // api error
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
-  // transform data as needed
-
   // delete empty years
-  for (const [year, words] of Object.entries(results.neighbors))
-    if (!words.length) delete results.neighbors[year];
+  results.neighbors = omitBy(results.neighbors, isEmpty);
 
-  // create map for conveniently looking up whether a (plain string) word is tagged
-  results.tags = {};
-  for (const [, words] of Object.entries(results.neighbors))
-    for (const { token, tag_id } of words) results.tags[token] = tag_id;
+  // transform/compute data
+  results.neighbors = mapValues(results.neighbors, (neighbors) =>
+    map(neighbors, ({ token, tag_id }) => ({
+      // plain text word
+      word: token,
+      // tag string
+      tag: tag_id,
+      // tagged boolean
+      tagged: !!tag_id,
+      // how many years word appears in
+      count: filter(values(results.neighbors), (yearNeighbors) =>
+        find(yearNeighbors, matches({ token }))
+      ).length,
+    }))
+  );
 
-  // make year into array of plain string words (tokens) for easier visualizations
-  for (const [year] of Object.entries(results.neighbors))
-    results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
+  // get a de-duped, sorted list of unique neighbors
+  results.uniqueNeighbors = orderBy(
+    uniqBy(flatMap(results.neighbors, values), "word"),
+    ["count", "word"],
+    ["desc", "asc"]
+  );
 
-  // rename some field names to be easier to work with in D3
-  results.umap = results.umap_coords;
-  delete results.umap_coords;
-  results.umap = results.umap.map((point) => ({
-    ...point,
-    x: point.umap_x_coord,
-    y: point.umap_y_coord,
-  }));
-
-  // split umap data into searched word and neighbors
-  results.umap = {
-    trajectory: results.umap.filter((point) => point.token === query),
-    neighbors: results.umap.filter((point) => point.token !== query),
-  };
-
-  // get computed data
-  results.uniqueNeighbors = getUnique(results.neighbors);
+  console.info(results);
 
   // by the time we're done with the above, another request may have been made.
   // only return results if this request is latest request.

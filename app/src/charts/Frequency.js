@@ -11,7 +11,7 @@ import {
   easeLinear,
   easeElasticOut,
 } from "d3";
-import { blue, gray, lightGray, lightPurple, purple, red } from "../palette";
+import { blue, gray, offWhite, lightPurple, purple, red } from "../palette";
 import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
@@ -23,7 +23,7 @@ const id = "frequency";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
-const height = 300;
+const height = 200;
 
 // duration of animations (in ms)
 const duration = 1000;
@@ -64,7 +64,7 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .join("path")
     .attr("class", "curve-fill")
     .attr("d", curveFill)
-    .attr("fill", lightGray);
+    .attr("fill", offWhite);
 
   // make curve stroke from frequency points
   const curveStroke = line()
@@ -193,7 +193,7 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   svg.select(".y-axis").call(yAxis);
 };
 
-// frequency chart
+// visualization of frequency data
 const Frequency = () => {
   const { search, results } = useContext(AppContext);
   const { frequency, changepoints } = results;
@@ -241,7 +241,7 @@ const Frequency = () => {
           Year
         </text>
         <text
-          transform={`translate(-50, -${height / 2}) rotate(-90)`}
+          transform={`translate(-40, -${height / 2}) rotate(-90)`}
           textAnchor="middle"
           alignmentBaseline="middle"
           style={{ fontSize: 12 }}
@@ -252,7 +252,7 @@ const Frequency = () => {
           x={width / 2}
           y={-height - 30}
           textAnchor="middle"
-          style={{ fontSize: 12 }}
+          style={{ fontSize: 12, fontWeight: 600 }}
         >
           How often "{search}" has been used over time
         </text>

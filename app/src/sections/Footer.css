@@ -4,6 +4,6 @@ footer {
   gap: 10px;
   padding: var(--pagePadding);
   color: var(--darkGray);
-  background: var(--lightGray);
+  background: var(--offWhite);
   text-align: center;
 }

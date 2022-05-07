@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AppContext } from "../App";
 import Frequency from "../charts/Frequency";
 import Neighbors from "../charts/Neighbors";
-import Umap from "../charts/Umap";
+import Trajectory from "../charts/Trajectory";
 import Download from "../components/Download";
 import "./Results.css";
 
@@ -13,9 +13,13 @@ const Results = () => {
     return (
       <>
         <div className="results">
-          <Umap />
-          <Neighbors />
-          <Frequency />
+          <div className="results-col">
+            <Trajectory />
+          </div>
+          <div className="results-col">
+            <Frequency />
+            <Neighbors />
+          </div>
         </div>
         <Download />
       </>

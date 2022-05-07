@@ -1,7 +1,7 @@
 import RCSlider from "rc-slider";
+import { range } from "lodash";
 import { useEffect } from "react";
 import { useBbox } from "../util/hooks";
-import { range } from "../util/math";
 import "./Slider.css";
 
 // number range slider
@@ -18,7 +18,7 @@ const Slider = ({ value, onChange, steps, tooltip, label, ...rest }) => {
 
   // only take every n indices to fit marks without overlapping
   const n = Math.ceil((steps.length * w) / width);
-  let r = range(steps.length, n);
+  let r = range(0, steps.length, n);
 
   // if 2 or less marks, always include first and last
   if (r.length <= 2) r = [0, steps.length - 1];
