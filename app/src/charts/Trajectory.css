@@ -1,0 +1,21 @@
+/* styles we don't want/need in downloaded svg */
+
+#trajectory .year,
+#trajectory .arrow {
+  animation: fade-in 1s ease backwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+#trajectory .word {
+  stroke: white;
+  stroke-width: 2;
+  paint-order: stroke;
+}

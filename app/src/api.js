@@ -1,4 +1,16 @@
-import { getUnique } from "./util/neighbors";
+import {
+  omitBy,
+  isEmpty,
+  mapValues,
+  values,
+  map,
+  filter,
+  find,
+  matches,
+  flatMap,
+  uniqBy,
+  orderBy,
+} from "lodash";
 import { sleep } from "./util/debug";
 
 // api endpoint base url
@@ -8,7 +20,10 @@ const api = "https://api-wl.greenelab.com";
 // get metadata from api
 export const getMetadata = async () => {
   try {
-    return await (await window.fetch(api)).json();
+    const meta = await (await window.fetch(api)).json();
+    if (meta?.config?.CORPORA_SET)
+      meta.config.CORPORA_SET = Object.values(meta.config.CORPORA_SET);
+    return meta;
   } catch (error) {
     return {};
   }
@@ -50,17 +65,33 @@ export const getResults = async (query, corpus) => {
   // api error
   if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
 
-  // transform data as needed
-  results.tags = {};
-  for (const [year, words] of Object.entries(results.neighbors))
-    if (!words.length) delete results.neighbors[year];
-  for (const [, words] of Object.entries(results.neighbors))
-    for (const { token, tag_id } of words) results.tags[token] = tag_id;
-  for (const [year] of Object.entries(results.neighbors))
-    results.neighbors[year] = results.neighbors[year].map(({ token }) => token);
+  // delete empty years
+  results.neighbors = omitBy(results.neighbors, isEmpty);
 
-  // get computed data
-  results.uniqueNeighbors = getUnique(results.neighbors);
+  // transform/compute data
+  results.neighbors = mapValues(results.neighbors, (neighbors) =>
+    map(neighbors, ({ token, tag_id, score }) => ({
+      // plain text word
+      word: token,
+      // tag string
+      tag: tag_id,
+      // tagged boolean
+      tagged: !!tag_id,
+      // similarity score
+      score: score.toFixed(2),
+      // how many years word appears in
+      count: filter(values(results.neighbors), (yearNeighbors) =>
+        find(yearNeighbors, matches({ token }))
+      ).length,
+    }))
+  );
+
+  // get a de-duped, sorted list of unique neighbors
+  results.uniqueNeighbors = orderBy(
+    uniqBy(flatMap(results.neighbors, values), "word"),
+    ["count", "word"],
+    ["desc", "asc"]
+  );
 
   // by the time we're done with the above, another request may have been made.
   // only return results if this request is latest request.

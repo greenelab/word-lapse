@@ -11,7 +11,7 @@ import {
   easeLinear,
   easeElasticOut,
 } from "d3";
-import { blue, gray, lightGray, lightPurple, purple, red } from "../palette";
+import { blue, gray, offWhite, lightPurple, purple, red } from "../palette";
 import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
@@ -23,7 +23,7 @@ const id = "frequency";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
 const width = 400;
-const height = 300;
+const height = 200;
 
 // duration of animations (in ms)
 const duration = 1000;
@@ -33,9 +33,6 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
-  // get subset of frequency for animation purposes
-  const animatedFrequency = frequency.slice(0, frequencyIndex);
-
   // get range of values for x/y axes
   const xExtent = extent(frequency, (d) => d.year);
   const yExtent = extent(frequency, (d) => d.frequency);
@@ -44,11 +41,21 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   const xScale = scaleLinear().domain(xExtent).range([0, width]);
   const yScale = scaleLinear().domain(yExtent).range([0, -height]);
 
+  // get scaled x/y coordinates
+  frequency = frequency.map((d) => ({
+    ...d,
+    x: xScale(d.year),
+    y: yScale(d.frequency),
+  }));
+
+  // get subset of frequency for animation purposes
+  const animatedFrequency = frequency.slice(0, frequencyIndex);
+
   // make curve fill from frequency points
   const curveFill = area()
     .curve(curveLinear)
-    .x((d) => xScale(d.year))
-    .y1((d) => yScale(d.frequency))
+    .x((d) => d.x)
+    .y1((d) => d.y)
     .y0(() => yScale(yExtent[0]));
   svg
     .select(".curve-fills")
@@ -57,13 +64,13 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .join("path")
     .attr("class", "curve-fill")
     .attr("d", curveFill)
-    .attr("fill", lightGray);
+    .attr("fill", offWhite);
 
   // make curve stroke from frequency points
   const curveStroke = line()
     .curve(curveLinear)
-    .x((d) => xScale(d.year))
-    .y((d) => yScale(d.frequency));
+    .x((d) => d.x)
+    .y((d) => d.y);
   const length = getPathLength(curveStroke(frequency));
   svg
     .select(".curve-strokes")
@@ -84,7 +91,9 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .attr("d", curveStroke)
     .attr("fill", "none")
     .attr("stroke", gray)
-    .attr("stroke-width", 2);
+    .attr("stroke-width", 2)
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round");
 
   // make changepoints fill
   const changepointFill = area()
@@ -166,8 +175,8 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     )
     .attr("stroke", "black")
     .attr("stroke-width", "1")
-    .attr("cx", (d) => xScale(d.year))
-    .attr("cy", (d) => yScale(d.frequency))
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
     .attr(
       "data-tooltip",
       (d) => `Year: ${d.year}<br>Frequency: ${d.frequency.toExponential(2)}`
@@ -184,7 +193,7 @@ const chart = (frequency, changepoints, frequencyIndex) => {
   svg.select(".y-axis").call(yAxis);
 };
 
-// frequency chart
+// visualization of frequency data
 const Frequency = () => {
   const { search, results } = useContext(AppContext);
   const { frequency, changepoints } = results;
@@ -232,7 +241,7 @@ const Frequency = () => {
           Year
         </text>
         <text
-          transform={`translate(-50, -${height / 2}) rotate(-90)`}
+          transform={`translate(-40, -${height / 2}) rotate(-90)`}
           textAnchor="middle"
           alignmentBaseline="middle"
           style={{ fontSize: 12 }}
@@ -243,7 +252,7 @@ const Frequency = () => {
           x={width / 2}
           y={-height - 30}
           textAnchor="middle"
-          style={{ fontSize: 12 }}
+          style={{ fontSize: 12, fontWeight: 600 }}
         >
           How often "{search}" has been used over time
         </text>

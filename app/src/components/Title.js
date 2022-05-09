@@ -1,5 +1,6 @@
 import { Fragment, useContext } from "react";
-import { blendColors, range } from "../util/math";
+import { range } from "lodash";
+import { blendColors } from "../util/math";
 import { red, blue } from "../palette";
 import { AppContext } from "../App";
 import "./Title.css";

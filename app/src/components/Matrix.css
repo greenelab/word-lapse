@@ -19,7 +19,7 @@
 }
 
 .matrix span {
-  font-family: "Source Code Pro", monospace;
+  font-weight: 300;
 }
 
 @keyframes fade {

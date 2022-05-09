@@ -1,5 +1,6 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import * as fas from "@fortawesome/free-solid-svg-icons";
+import { blendColors } from "./util/math";
 
 // common palette of styles
 
@@ -9,13 +10,16 @@ const pagePadding = `40px max(40px, calc((100vw - ${page}) / 2))`;
 const pagePaddingSmall = `20px max(20px, calc((100vw - ${page}) / 2))`;
 
 // colors
-const lightGray = "#eceff1";
-const gray = "#90a4ae";
-const darkGray = "#455a64";
+// https://tailwindcss.com/docs/customizing-colors
+const offWhite = "#f3f4f6";
+const lightGray = "#e5e7eb";
+const gray = "#6b7280";
+const darkGray = "#4b5563";
+// https://www.materialpalette.com/colors
 const red = "#e91e63";
 const blue = "#03a9f4";
-const purple = "#673ab7";
-const lightPurple = "#d1c4e9";
+const purple = blendColors("#000000", blendColors(red, blue, 0.5), 0.66);
+const lightPurple = blendColors("#ffffff", blendColors(red, blue, 0.5), 0.66);
 
 // effects
 const fast = "0.5s ease";
@@ -25,6 +29,7 @@ export {
   page,
   pagePadding,
   pagePaddingSmall,
+  offWhite,
   lightGray,
   gray,
   darkGray,
