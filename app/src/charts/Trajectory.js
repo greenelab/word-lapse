@@ -4,7 +4,7 @@ import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
 import { blue, gray, red } from "../palette";
 import { blendColors } from "../util/math";
-import { toHumanCase, wrapLines } from "../util/string";
+import { join, toHumanCase, wrapLines } from "../util/string";
 
 import "./Trajectory.css";
 
@@ -22,7 +22,7 @@ const lineHeight = ySpacing / 10;
 const top = 7;
 
 // symbol to show next to tagged words to indicate they're tagged
-const tagSymbol = "❉";
+const tagSymbol = "＊";
 
 // util func to make snake pattern
 const makeSnake = (array, cols, sizeX, sizeY) =>
@@ -166,9 +166,14 @@ const Trajectory = () => {
                     key={neighborIndex}
                     dx={neighborIndex === 0 ? 0 : 5}
                     className="word"
-                    data-tooltip={`${neighbor.wordFull}. ${
-                      neighbor.tagged ? `Tagged` : "Not tagged"
-                    }. Score: ${neighbor.score}`}
+                    data-tooltip={join(
+                      [
+                        neighbor.wordFull,
+                        neighbor.tagLink,
+                        `Score: ${neighbor.score}`,
+                      ],
+                      "<br/>"
+                    )}
                     style={{
                       fontSize: 6,
                       fill: blendColors(red, blue, index / (array.length - 1)),

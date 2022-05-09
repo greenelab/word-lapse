@@ -7,7 +7,7 @@ import { AppContext } from "../App";
 import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
 import { blue, gray, lightGray, purple, red } from "../palette";
 import { useViewBox } from "../util/hooks";
-import { toHumanCase, wrapLines } from "../util/string";
+import { join, toHumanCase, wrapLines } from "../util/string";
 
 // symbols for color blind, monochrome printing, etc
 const props = {
@@ -82,21 +82,18 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
               if (inBoth) {
                 color = props.both.color;
                 symbol = props.both.symbol;
-                tooltip = `In ${yearA} and ${yearB}. ${
-                  neighbor.tagged ? "Tagged" : "Not tagged"
-                }.`;
+                tooltip = join(
+                  [`In ${yearA} and ${yearB}`, neighbor.tagLink],
+                  "<br/>"
+                );
               } else if (inA) {
                 color = props.a.color;
                 symbol = props.a.symbol;
-                tooltip = `In ${yearA}. ${
-                  neighbor.tagged ? "Tagged" : "Not tagged"
-                }.`;
+                tooltip = join([`In ${yearA}`, neighbor.tagLink], "<br/>");
               } else if (inB) {
                 color = props.b.color;
                 symbol = props.b.symbol;
-                tooltip = `In ${yearB}. ${
-                  neighbor.tagged ? "Tagged" : "Not tagged"
-                }.`;
+                tooltip = join([`In ${yearB}`, neighbor.tagLink], "<br/>");
               } else if (inNeither) {
                 color = props.neither.color;
                 symbol = props.neither.symbol;

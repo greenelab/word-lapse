@@ -1,3 +1,5 @@
+import { icon } from "@fortawesome/fontawesome-svg-core";
+import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import {
   omitBy,
   isEmpty,
@@ -77,6 +79,8 @@ export const getResults = async (query, corpus) => {
       tag: tag_id,
       // tagged boolean
       tagged: !!tag_id,
+      // link to tag metadata
+      tagLink: getTagLink(tag_id),
       // similarity score
       score: score.toFixed(2),
       // how many years word appears in
@@ -92,6 +96,9 @@ export const getResults = async (query, corpus) => {
     ["count", "word"],
     ["desc", "asc"]
   );
+
+  // log resulting data
+  console.info(results);
 
   // by the time we're done with the above, another request may have been made.
   // only return results if this request is latest request.
@@ -127,4 +134,36 @@ export const statuses = {
   loading: "loading", // uncached results are fetching
   stale: "stale", // results superseded by newer query
   // else: error fetching results
+};
+
+// get external link for tag metadata
+const getTagLink = (tag) => {
+  if (!tag) return "";
+
+  // get parts of tag
+  const prefix = tag.split("_").shift().toLowerCase();
+  const id = tag.split("_").pop().toUpperCase();
+
+  // map of links
+  const links = {
+    gene: "https://www.ncbi.nlm.nih.gov/gene/<id>",
+    species:
+      "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=info&id=<id>",
+    cellline: "https://web.expasy.org/cellosaurus/<id>",
+    disease: "https://id.nlm.nih.gov/mesh/<id>",
+    chemical: "https://id.nlm.nih.gov/mesh/<id>",
+  };
+
+  // find matching link
+  const link = find(links, (value, key) => prefix === key)?.replace("<id>", id);
+
+  // https://fontawesome.com/docs/apis/javascript/methods
+  const extIcon = icon(faExternalLinkAlt, {
+    styles: { "margin-left": "0.5em" },
+  }).html;
+
+  // return html to show
+  return link
+    ? `<a href="${link}" target="_blank">Metadata for ${tag}${extIcon}</a>`
+    : "Unknown tag type";
 };

@@ -53,3 +53,7 @@ svg :focus {
   outline-width: 0.4px;
   outline-style: solid;
 }
+
+.tippy-content {
+  line-height: 1.6;
+}
