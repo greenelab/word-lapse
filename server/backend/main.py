@@ -236,7 +236,6 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     ```
     {
         "neighbors": {<year:str>: [{"token": <token:str>, "tag_id": <tag_id:str?>, "score": <score:float>}, ...]},
-        "umap_coords": [{"year":<year:int>, "token":<token:str>, "is_query":<is_query:bool>, "score":<score:float>, "umap_x_coord":<umap_x_coord:float>, "umap_y_coord":<umap_y_coord:float>}, ...],
         "frequency": [{"year": <year:int>, "frequency": <frequency:float>}, ...],
         "changepoints": [ [<year_start:str>, <year_end:str>], ...],
         "elapsed": <elapsed_ms:float>
@@ -247,9 +246,9 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     - `elapsed_ms` is the length of time the request took to formulate on
     the server.
     - while the documentation for our word-neighbor querying library doesn't
-    explicitly state that the words are returned in order of decreasing similarity
-    to the target, they appear to be. as a result, `neighbors` and `umap_coords`
-    will typically be in order of decreasing score within a year.
+    explicitly state that the words are returned in order of decreasing
+    similarity to the target, they appear to be. as a result, `neighbors` will
+    typically be in order of decreasing score within a year.
     """
     from .w2v_worker import get_neighbors
 
