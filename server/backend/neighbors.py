@@ -328,9 +328,8 @@ def query_model_for_tok(
             logger.info(f"remapped token {original_tok} to {tok}")
 
     if tok in vocab:
-
         # Get initial word vector for query token
-        result.append(dict(token=tok, vector=word_vectors[tok], is_query=True, score=1))
+        result.append(dict(token=tok, tag_id=None, is_query=True, score=1))
 
         # If it is grab the neighbors
         # Gensim needs to be > 4.0 as they enabled neighbor clipping (remove words from entire vocab)
@@ -340,7 +339,6 @@ def query_model_for_tok(
         for neighbor in word_neighbors:
             word_neighbor, similarity_score = neighbor
             tag_id = None
-            word_vector = word_vectors[word_neighbor]
             entity_features = []
             
             # Convert tags that contain the following pattern
@@ -364,7 +362,6 @@ def query_model_for_tok(
                 dict(
                     token=word_neighbor,
                     tag_id=tag_id,
-                    vector=word_vector,
                     is_query=False,
                     score=similarity_score
                 )
