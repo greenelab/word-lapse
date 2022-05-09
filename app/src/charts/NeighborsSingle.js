@@ -10,7 +10,7 @@ import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
 import { toHumanCase, wrapLines } from "../util/string";
 
-// table visualization ofneighbors, single year
+// table visualization of neighbors, single year
 const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   // app state
   const { search, results } = useContext(AppContext);
@@ -52,34 +52,32 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, "word", 350, 10).map(
-          (line, lineIndex) => (
-            <text
-              key={lineIndex}
-              x="0"
-              y={lineHeight * lineIndex}
-              textAnchor="middle"
-            >
-              {line.map((neighbor, index) => (
-                <tspan
-                  key={index}
-                  dx="10"
-                  style={{
-                    fontSize: 10,
-                    fill: find(yearNeighbors, neighbor) ? blended : lightGray,
-                  }}
-                  data-tooltip={`In ${neighbor.count} of the year(s). ${
-                    neighbor.tagged ? `Tagged.` : "Not tagged."
-                  }`}
-                  aria-hidden={!find(yearNeighbors, neighbor)}
-                >
-                  {toHumanCase(neighbor.word)}
-                  {neighbor.tagged && " " + tagSymbol}
-                </tspan>
-              ))}
-            </text>
-          )
-        )}
+        {wrapLines(uniqueNeighbors, "word", 350, 10).map((line, lineIndex) => (
+          <text
+            key={lineIndex}
+            x="0"
+            y={lineHeight * lineIndex}
+            textAnchor="middle"
+          >
+            {line.map((neighbor, index) => (
+              <tspan
+                key={index}
+                dx="10"
+                style={{
+                  fontSize: 10,
+                  fill: find(yearNeighbors, neighbor) ? blended : lightGray,
+                }}
+                data-tooltip={`In ${neighbor.count} of the year(s). ${
+                  neighbor.tagged ? `Tagged` : "Not tagged"
+                }.`}
+                aria-hidden={!find(yearNeighbors, neighbor)}
+              >
+                {toHumanCase(neighbor.word)}
+                {neighbor.tagged && " " + tagSymbol}
+              </tspan>
+            ))}
+          </text>
+        ))}
 
         <text
           x="0"

@@ -83,20 +83,20 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
                 color = props.both.color;
                 symbol = props.both.symbol;
                 tooltip = `In ${yearA} and ${yearB}. ${
-                  neighbor.tagged ? "Tagged." : "Not tagged."
-                }`;
+                  neighbor.tagged ? "Tagged" : "Not tagged"
+                }.`;
               } else if (inA) {
                 color = props.a.color;
                 symbol = props.a.symbol;
                 tooltip = `In ${yearA}. ${
-                  neighbor.tagged ? "Tagged." : "Not tagged."
-                }`;
+                  neighbor.tagged ? "Tagged" : "Not tagged"
+                }.`;
               } else if (inB) {
                 color = props.b.color;
                 symbol = props.b.symbol;
                 tooltip = `In ${yearB}. ${
-                  neighbor.tagged ? "Tagged." : "Not tagged."
-                }`;
+                  neighbor.tagged ? "Tagged" : "Not tagged"
+                }.`;
               } else if (inNeither) {
                 color = props.neither.color;
                 symbol = props.neither.symbol;
@@ -122,6 +122,18 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
           </text>
         ))}
 
+        <text x="0" y="-35" textAnchor="middle" style={{ fontSize: 10 }}>
+          <tspan>(or</tspan>{" "}
+          <tspan fill={props.both.color}>
+            {(symbols ? props.both.symbol + " " : "") + "both"}
+          </tspan>{" "}
+          <tspan>or</tspan>{" "}
+          <tspan fill={gray}>
+            {(symbols ? props.neither.symbol + " " : "") + "neither"}
+          </tspan>
+          <tspan>)</tspan>
+        </text>
+
         <text
           x="0"
           y="-50"
@@ -136,18 +148,6 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
           <tspan fill={props.b.color}>
             {(symbols ? props.b.symbol + " " : "") + yearB}
           </tspan>
-        </text>
-
-        <text x="0" y="-35" textAnchor="middle" style={{ fontSize: 10 }}>
-          <tspan>(or</tspan>{" "}
-          <tspan fill={props.both.color}>
-            {(symbols ? props.both.symbol + " " : "") + "both"}
-          </tspan>{" "}
-          <tspan>or</tspan>{" "}
-          <tspan fill={gray}>
-            {(symbols ? props.neither.symbol + " " : "") + "neither"}
-          </tspan>
-          <tspan>)</tspan>
         </text>
       </svg>
 

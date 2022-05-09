@@ -70,13 +70,15 @@ export const getResults = async (query, corpus) => {
 
   // transform/compute data
   results.neighbors = mapValues(results.neighbors, (neighbors) =>
-    map(neighbors, ({ token, tag_id }) => ({
+    map(neighbors, ({ token, tag_id, score }) => ({
       // plain text word
       word: token,
       // tag string
       tag: tag_id,
       // tagged boolean
       tagged: !!tag_id,
+      // similarity score
+      score: score.toFixed(2),
       // how many years word appears in
       count: filter(values(results.neighbors), (yearNeighbors) =>
         find(yearNeighbors, matches({ token }))
@@ -90,8 +92,6 @@ export const getResults = async (query, corpus) => {
     ["count", "word"],
     ["desc", "asc"]
   );
-
-  console.info(results);
 
   // by the time we're done with the above, another request may have been made.
   // only return results if this request is latest request.

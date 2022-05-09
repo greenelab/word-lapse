@@ -122,7 +122,7 @@ const Trajectory = () => {
               .join(" ")}
             fill="none"
             stroke={gray}
-            strokeDasharray="3"
+            strokeDasharray="1 2"
             strokeLinecap="round"
             markerEnd="url(#arrowhead)"
           />
@@ -166,7 +166,9 @@ const Trajectory = () => {
                     key={neighborIndex}
                     dx={neighborIndex === 0 ? 0 : 5}
                     className="word"
-                    data-tooltip={`Year: ${year}, ${neighbor.wordFull}`}
+                    data-tooltip={`${neighbor.wordFull}. ${
+                      neighbor.tagged ? `Tagged` : "Not tagged"
+                    }. Score: ${neighbor.score}`}
                     style={{
                       fontSize: 6,
                       fill: blendColors(red, blue, index / (array.length - 1)),
@@ -181,9 +183,13 @@ const Trajectory = () => {
           </g>
         ))}
 
+        <text x="0" y="-45" textAnchor="middle" style={{ fontSize: 10 }}>
+          Top {top} associated words in each year
+        </text>
+
         <text
-          x={0}
-          y={-50}
+          x="0"
+          y="-60"
           textAnchor="middle"
           style={{ fontSize: 12, fontWeight: 600 }}
         >
