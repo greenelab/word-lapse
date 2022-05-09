@@ -48,3 +48,7 @@ export const getWidth = (text, size) => {
   const { width } = ctx.measureText(text);
   return width;
 };
+
+// filter array and join
+export const join = (array = [], separator = " ") =>
+  array.filter((part) => part.trim()).join(separator);

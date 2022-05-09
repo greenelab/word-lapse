@@ -41,6 +41,7 @@ export const useViewBox = (padding = 0) => {
       .join(" ");
 
     svg.current.setAttribute("viewBox", viewBox);
+    svg.current.style.aspectRatio = width + " / " + height;
   }, [padding]);
 
   return [svg, setViewBox];

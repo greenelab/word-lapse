@@ -15,7 +15,11 @@ const download = () => {
 
 // download button
 const Download = () => (
-  <Button text="Download SVGs" icon="download" onClick={download} />
+  <Button
+    text="Download SVGs"
+    icon="download"
+    onClick={download}
+  />
 );
 
 export default Download;

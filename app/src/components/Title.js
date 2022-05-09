@@ -1,8 +1,7 @@
-import { Fragment, useContext } from "react";
+import { Fragment } from "react";
 import { range } from "lodash";
 import { blendColors } from "../util/math";
 import { red, blue } from "../palette";
-import { AppContext } from "../App";
 import "./Title.css";
 
 // letter props
@@ -45,7 +44,7 @@ const Title = () => (
         key={index}
         viewBox={[-width / 2, -height / 2, width, height].join(" ")}
         aria-hidden="true"
-        style={{ aspectRatio: width + "/" + height }}
+        style={{ aspectRatio: width + " / " + height }}
       >
         {word.map(({ char, color, x, id }, index) => (
           <Fragment key={index}>
@@ -64,10 +63,8 @@ export default Title;
 
 // drop shadow filter
 const Filter = ({ id, color }) => {
-  const { fullscreen } = useContext(AppContext);
-
   // number of layers
-  const layers = fullscreen ? 10 : 2;
+  const layers = 10;
   // length of shadow
   const length = 1.8;
 

@@ -1,11 +1,16 @@
-import tippy from "tippy.js";
+import tippy, { hideAll } from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
 // tippy options
 const options = {
   offset: [0, 10],
+  delay: [50, 0],
+  duration: [200, 200],
   allowHTML: true,
+  interactive: true,
+  appendTo: document.body,
   onShow: (instance) => {
+    hideAll();
     const content = instance?.reference?.getAttribute("data-tooltip")?.trim();
     if (!content) return false;
     instance?.setContent(content);

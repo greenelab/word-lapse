@@ -8,7 +8,7 @@ import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
 import { blue, lightGray, red } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
-import { toHumanCase, wrapLines } from "../util/string";
+import { join, toHumanCase, wrapLines } from "../util/string";
 
 // table visualization of neighbors, single year
 const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
@@ -67,9 +67,10 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                   fontSize: 10,
                   fill: find(yearNeighbors, neighbor) ? blended : lightGray,
                 }}
-                data-tooltip={`In ${neighbor.count} of the year(s). ${
-                  neighbor.tagged ? `Tagged` : "Not tagged"
-                }.`}
+                data-tooltip={join(
+                  [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
+                  "<br/>"
+                )}
                 aria-hidden={!find(yearNeighbors, neighbor)}
               >
                 {toHumanCase(neighbor.word)}

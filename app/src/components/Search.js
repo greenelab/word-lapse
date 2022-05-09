@@ -25,7 +25,7 @@ const Search = () => {
           options={meta?.config?.CORPORA_SET || []}
           value={corpus}
           onChange={setCorpus}
-          data-tooltip={`Select corpus to use in analysis. Using "${corpus}".`}
+          data-tooltip={`Select corpus to use in analysis.<br/>Using "${corpus}".`}
         />
       </div>
       <div className="search-label">{description}</div>

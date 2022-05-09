@@ -11,7 +11,7 @@ export const id = "neighbors";
 export const lineHeight = 15;
 
 // symbol to show next to tagged words to indicate they're tagged
-export const tagSymbol = "❉";
+export const tagSymbol = "＊";
 
 // encode/decode years to/from url
 export const YearParam = (years) => ({
