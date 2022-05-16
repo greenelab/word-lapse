@@ -65,7 +65,7 @@ export const getResults = async (query, corpus) => {
   const results = await response.json();
 
   // api error
-  if ((results?.detail || [])[0]?.msg) throw new Error(results.detail[0].msg);
+  if (results?.detail?.[0]?.msg) throw new Error(results.detail[0].msg);
 
   // delete empty years
   results.neighbors = omitBy(results.neighbors, isEmpty);

@@ -28,11 +28,8 @@ export const downloadSvg = (
   // remove specific attributes from all elements
   for (const element of clone.querySelectorAll("*"))
     for (const removeAttr of removeAttrs)
-      for (const { name } of element.attributes)
-        if (name.match(removeAttr)) {
-          element.removeAttribute(name);
-          continue;
-        }
+      for (const { name } of [...element.attributes])
+        if (name.match(removeAttr)) element.removeAttribute(name);
 
   // download clone as svg file
   const data = clone.outerHTML;
