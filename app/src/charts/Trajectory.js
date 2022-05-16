@@ -19,7 +19,7 @@ const ySpacing = 90;
 const lineHeight = ySpacing / 10;
 
 // number of neighbors to show for each year
-const top = 7;
+const top = 5;
 
 // symbol to show next to tagged words to indicate they're tagged
 const tagSymbol = "＊";
@@ -153,7 +153,7 @@ const Trajectory = () => {
               })),
               "word",
               xSpacing * 0.66,
-              6
+              8
             ).map((line, lineIndex) => (
               <text
                 key={lineIndex}
@@ -175,7 +175,7 @@ const Trajectory = () => {
                       "<br/>"
                     )}
                     style={{
-                      fontSize: 6,
+                      fontSize: 8,
                       fill: blendColors(red, blue, index / (array.length - 1)),
                     }}
                   >
