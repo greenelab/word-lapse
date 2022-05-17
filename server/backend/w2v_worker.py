@@ -68,8 +68,9 @@ if __name__ == "__main__":
         # invoke to cache word models into 'word_models'
         logger.info("Warming enabled, preloading word2vec models...")
         for corpus in CORPORA_SET.keys():
-            logger.info("Materializing '%s' corpus" % corpus)
-            materialized_word_models(corpus=corpus)
+            with ExecTimer(verbose=True):
+                logger.info("Materializing '%s' corpus" % corpus)
+                materialized_word_models(corpus=corpus)
 
     queues = sys.argv[1:] or ["default"]
 
