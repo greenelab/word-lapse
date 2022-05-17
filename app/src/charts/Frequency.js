@@ -149,9 +149,9 @@ const chart = (frequency, changepoints, frequencyIndex) => {
           -height / 2
         }) rotate(-90)`
     )
-    .style("font-size", "12")
+    .style("font-size", "12px")
     .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
+    .attr("dominant-baseline", "middle")
     .attr("fill", purple)
     .text("Change point");
 
@@ -235,16 +235,16 @@ const Frequency = () => {
         <text
           transform={`translate(${width / 2}, 40)`}
           textAnchor="middle"
-          alignmentBaseline="middle"
-          style={{ fontSize: 12 }}
+          dominantBaseline="middle"
+          style={{ fontSize: "12px" }}
         >
           Year
         </text>
         <text
           transform={`translate(-40, -${height / 2}) rotate(-90)`}
           textAnchor="middle"
-          alignmentBaseline="middle"
-          style={{ fontSize: 12 }}
+          dominantBaseline="middle"
+          style={{ fontSize: "12px" }}
         >
           Frequency
         </text>
@@ -252,7 +252,7 @@ const Frequency = () => {
           x={width / 2}
           y={-height - 30}
           textAnchor="middle"
-          style={{ fontSize: 12, fontWeight: 600 }}
+          style={{ fontSize: "12px", fontWeight: 600 }}
         >
           How often "{search}" has been used over time
         </text>

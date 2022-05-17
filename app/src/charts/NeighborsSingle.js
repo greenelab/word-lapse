@@ -64,7 +64,7 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                 key={index}
                 dx="10"
                 style={{
-                  fontSize: 10,
+                  fontSize: "10px",
                   fill: find(yearNeighbors, neighbor) ? blended : lightGray,
                 }}
                 data-tooltip={join(
@@ -84,7 +84,7 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
           x="0"
           y="-30"
           textAnchor="middle"
-          style={{ fontSize: 12, fontWeight: 600 }}
+          style={{ fontSize: "12px", fontWeight: 600 }}
         >
           Words associated with "{search}" in {year}
         </text>

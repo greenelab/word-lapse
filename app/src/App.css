@@ -38,11 +38,12 @@ svg {
 
 a {
   color: currentColor;
-  transition: color var(--purple);
+  text-underline-offset: 2px;
+  transition: color var(--fast);
 }
 
 a:hover {
-  color: var(--purple);
+  color: var(--lightPurple);
 }
 
 :focus {

@@ -119,7 +119,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
           </text>
         ))}
 
-        <text x="0" y="-35" textAnchor="middle" style={{ fontSize: 10 }}>
+        <text x="0" y="-35" textAnchor="middle" style={{ fontSize: "10px" }}>
           <tspan>(or</tspan>{" "}
           <tspan fill={props.both.color}>
             {(symbols ? props.both.symbol + " " : "") + "both"}
@@ -135,7 +135,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
           x="0"
           y="-50"
           textAnchor="middle"
-          style={{ fontSize: 12, fontWeight: 600 }}
+          style={{ fontSize: "12px", fontWeight: 600 }}
         >
           Words associated with "{search}" in{" "}
           <tspan fill={props.a.color}>

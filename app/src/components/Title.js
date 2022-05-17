@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { range } from "lodash";
 import { blendColors } from "../util/math";
 import { red, blue } from "../palette";
@@ -44,15 +43,20 @@ const Title = () => (
         key={index}
         viewBox={[-width / 2, -height / 2, width, height].join(" ")}
         aria-hidden="true"
-        style={{ aspectRatio: width + " / " + height }}
       >
         {word.map(({ char, color, x, id }, index) => (
-          <Fragment key={index}>
-            <Filter id={id} color={color} />
-            <text key={index} x={x} y="1" filter={`url(#drop-shadow-${id})`}>
+          <g key={index} style={{ "--color": color }}>
+            <Filter id={id} />
+            <text
+              key={index}
+              x={x}
+              y="1"
+              filter={`url(#drop-shadow-${id})`}
+              style={{ animationDelay: id * 0.2 + "s" }}
+            >
               {char}
             </text>
-          </Fragment>
+          </g>
         ))}
       </svg>
     ))}
@@ -62,7 +66,7 @@ const Title = () => (
 export default Title;
 
 // drop shadow filter
-const Filter = ({ id, color }) => {
+const Filter = ({ id }) => {
   // number of layers
   const layers = 10;
   // length of shadow
@@ -83,7 +87,7 @@ const Filter = ({ id, color }) => {
           in="SourceGraphic"
           dx={-(length * (n + 1)) / layers}
           dy={(length * (n + 1)) / layers}
-          floodColor={color}
+          floodColor="var(--color)"
           floodOpacity="1"
           x="-100%"
           y="-100%"

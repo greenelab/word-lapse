@@ -3,7 +3,7 @@ import { svgPathProperties } from "svg-path-properties";
 // set CSS variables
 export const setCssVariables = (variables) => {
   for (const [key, value] of Object.entries(variables))
-    window.root.style.setProperty(`--${key}`, value);
+    document.documentElement.style.setProperty(`--${key}`, value);
 };
 
 // download data as .svg file
