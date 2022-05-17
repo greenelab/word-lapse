@@ -38,7 +38,8 @@ svg {
 
 a {
   color: currentColor;
-  transition: color var(--purple);
+  text-underline-offset: 2px;
+  transition: color var(--fast);
 }
 
 a:hover {
@@ -56,4 +57,8 @@ svg :focus {
 
 .tippy-content {
   line-height: 1.6;
+}
+
+.tippy-content a:hover {
+  color: var(--lightPurple);
 }

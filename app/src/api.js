@@ -164,6 +164,9 @@ const getTagLink = (tag) => {
 
   // return html to show
   return link
-    ? `<a href="${link}" target="_blank">Metadata for ${tag}${extIcon}</a>`
+    ? `<a href="${link}" target="_blank">Metadata for ${tag.replaceAll(
+        "_",
+        " "
+      )}${extIcon}</a>`
     : "Unknown tag type";
 };

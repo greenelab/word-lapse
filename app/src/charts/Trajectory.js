@@ -134,7 +134,12 @@ const Trajectory = () => {
             className="year"
             style={{ animationDelay: index * 0.1 + "s" }}
           >
-            <text x={x} y={y - 10} textAnchor="middle" style={{ fontSize: 10 }}>
+            <text
+              x={x}
+              y={y - 10}
+              textAnchor="middle"
+              style={{ fontSize: "10px" }}
+            >
               {year}
             </text>
             <circle
@@ -175,7 +180,7 @@ const Trajectory = () => {
                       "<br/>"
                     )}
                     style={{
-                      fontSize: 8,
+                      fontSize: "8px",
                       fill: blendColors(red, blue, index / (array.length - 1)),
                     }}
                   >
@@ -188,7 +193,7 @@ const Trajectory = () => {
           </g>
         ))}
 
-        <text x="0" y="-45" textAnchor="middle" style={{ fontSize: 10 }}>
+        <text x="0" y="-45" textAnchor="middle" style={{ fontSize: "10px" }}>
           Top {top} associated words in each year
         </text>
 
@@ -196,7 +201,7 @@ const Trajectory = () => {
           x="0"
           y="-60"
           textAnchor="middle"
-          style={{ fontSize: 12, fontWeight: 600 }}
+          style={{ fontSize: "12px", fontWeight: 600 }}
         >
           Trajectory of "{search}" over time
         </text>

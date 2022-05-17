@@ -20,14 +20,6 @@
   min-width: 100%;
   max-width: 90vw;
   top: calc(100% + 5px);
-}
-
-header[data-fullscreen="true"] .dropdown {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-header[data-fullscreen="false"] .dropdown {
   right: 0;
 }
 
