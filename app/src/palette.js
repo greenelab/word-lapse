@@ -22,7 +22,8 @@ const purple = blendColors("#000000", blendColors(red, blue, 0.5), 0.66);
 const lightPurple = blendColors("#ffffff", blendColors(red, blue, 0.5), 0.66);
 
 // effects
-const fast = "0.5s ease";
+const slow = "0.5s ease";
+const fast = "0.2s ease";
 
 // master list of variables
 export {
@@ -37,6 +38,7 @@ export {
   blue,
   purple,
   lightPurple,
+  slow,
   fast,
 };
 

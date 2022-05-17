@@ -22,6 +22,9 @@
   text-transform: uppercase;
   text-anchor: middle;
   dominant-baseline: middle;
+}
+
+header[data-fullscreen="true"] .title text {
   animation: shine 3s ease-in-out infinite;
 }
 

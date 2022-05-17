@@ -10,7 +10,7 @@ header {
   background: var(--offWhite);
   text-align: center;
   z-index: 1;
-  transition: min-height var(--fast);
+  transition: min-height var(--slow);
 }
 
 header[data-fullscreen="false"] {
