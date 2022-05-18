@@ -3,6 +3,7 @@
 cd ../../server/data
 
 (
-    cat abstract_changepoints.tsv | cut -f1 ;
-    cat fulltext_changepoints.tsv | cut -f1
+    cat preprint_changepoints.tsv | cut -f1 ;
+    cat pubtator_changepoints.tsv | cut -f1 ;
+    cat abstract_changepoints.tsv | cut -f1
 ) | sort | uniq
