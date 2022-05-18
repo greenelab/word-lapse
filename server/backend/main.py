@@ -169,6 +169,27 @@ def lowercase_field(target_field="tok"):
 
     return decorator
 
+def map_corpus_label(target_field="corpus"):
+    def decorator(func):
+        @wraps(func)
+        async def anon(*args, **kwargs):
+            if target_field in kwargs:
+                input_label = kwargs[target_field]
+
+                # check if the specified corpus is a label in CORPORA_SET, not an id.
+                # if it's there, replace the target field with the corpus id
+                if input_label and input_label in CORPORA_SET.values():
+                    corpus_id = next(
+                        (id for id, label in CORPORA_SET.items() if label == input_label),
+                        None
+                    )
+
+                kwargs[target_field] = corpus_id
+            return await func(*args, **kwargs)
+
+        return anon
+
+    return decorator
 
 # ========================================================================
 # === endpoints
@@ -221,6 +242,7 @@ async def ping_workers():
 
 @app.get("/neighbors")
 @lowercase_field()
+@map_corpus_label()
 @cache()
 async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     """
@@ -251,11 +273,6 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
     typically be in order of decreasing score within a year.
     """
     from .w2v_worker import get_neighbors
-
-    # check if the specified corpus is a label in CORPORA_SET, not an id.
-    # if it's there, replace 'corpus' with the corpus id
-    if corpus and corpus in CORPORA_SET.values():
-        corpus = next((id for id, label in CORPORA_SET.items() if label == corpus), None)
 
     # validate the corpus before we send off a job, since it's hard to read the exception there
     corpora_ids = list(CORPORA_SET.keys())
@@ -302,6 +319,7 @@ async def neighbors(request: Request, tok: str, corpus: str = "pubtator"):
 
 @app.get("/neighbors/cached")
 @lowercase_field()
+@map_corpus_label()
 async def neighbors_is_cached(tok: str, corpus: str = "pubtator"):
     """
     Queries the cache for 'tok', returning the token in the 'token'
