@@ -10,7 +10,7 @@
 .title svg {
   width: 200px;
   max-width: 100%;
-  min-height: 20px;
+  min-height: 0;
 }
 
 .title text {

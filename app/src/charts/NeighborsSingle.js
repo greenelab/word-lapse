@@ -65,13 +65,15 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
                 dx="10"
                 style={{
                   fontSize: "10px",
-                  fill: find(yearNeighbors, neighbor) ? blended : lightGray,
+                  fill: !!find(yearNeighbors, ["word", neighbor.word])
+                    ? blended
+                    : lightGray,
                 }}
                 data-tooltip={join(
                   [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
                   "<br/>"
                 )}
-                aria-hidden={!find(yearNeighbors, neighbor)}
+                aria-hidden={!find(yearNeighbors, ["word", neighbor.word])}
               >
                 {toHumanCase(neighbor.word)}
                 {neighbor.tagged && " " + tagSymbol}

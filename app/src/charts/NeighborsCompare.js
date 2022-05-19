@@ -70,8 +70,8 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
           >
             {line.map((neighbor, index) => {
               // determine if neighbor in selected year(s)
-              const inA = find(aNeighbors, neighbor);
-              const inB = find(bNeighbors, neighbor);
+              const inA = find(aNeighbors, ["word", neighbor.word]);
+              const inB = find(bNeighbors, ["word", neighbor.word]);
               const inBoth = inA && inB;
               const inNeither = !inA && !inB;
 
