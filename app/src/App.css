@@ -62,3 +62,7 @@ svg :focus {
 .tippy-content a:hover {
   color: var(--lightPurple);
 }
+
+.fa-spin {
+  animation: fa-spin 2s linear infinite !important;
+}
