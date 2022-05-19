@@ -4,8 +4,8 @@ import { find } from "lodash";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
-import { blue, gray, lightGray, purple, red } from "../palette";
+import { id, lineHeight, YearParam } from "./Neighbors";
+import { blue, gray, lightGray, purple, red, tagSymbol } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { join, toHumanCase, wrapLines } from "../util/string";
 

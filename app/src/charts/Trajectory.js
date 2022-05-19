@@ -2,7 +2,7 @@ import { useEffect, useContext, useMemo } from "react";
 import { chunk, truncate } from "lodash";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
-import { blue, gray, red } from "../palette";
+import { blue, gray, red, tagSymbol } from "../palette";
 import { blendColors } from "../util/math";
 import { join, toHumanCase, wrapLines } from "../util/string";
 
@@ -20,9 +20,6 @@ const lineHeight = ySpacing / 10;
 
 // number of neighbors to show for each year
 const top = 5;
-
-// symbol to show next to tagged words to indicate they're tagged
-const tagSymbol = "＊";
 
 // util func to make snake pattern
 const makeSnake = (array, cols, sizeX, sizeY) =>

@@ -42,6 +42,10 @@ export {
   fast,
 };
 
+// symbol to show next to tagged words to indicate they're tagged
+// (keep in sync with google font import in index.html)
+export const tagSymbol = "🞶";
+
 // font awesome icons
 library.add(
   fas.faAngleDown,

@@ -9,13 +9,17 @@ const options = {
   allowHTML: true,
   interactive: true,
   appendTo: document.body,
+  aria: { content: "describedby" },
   onShow: (instance) => {
+    // close all so only one can show at a time
     hideAll();
+    // don't show if tooltip content empty
     const content = instance?.reference?.getAttribute("data-tooltip")?.trim();
     if (!content) return false;
+    // set/update content
     instance?.setContent(content);
+    return true;
   },
-  onHide: (instance) => instance?.reference !== document.activeElement,
 };
 
 // listen for changes to document
@@ -28,7 +32,6 @@ new MutationObserver(() => {
     if (!element._tippy) tippy(element, options);
 
     // update tippy content
-    element.setAttribute("aria-label", content);
     element._tippy.setContent(content);
 
     // force re-position after rendering updates
