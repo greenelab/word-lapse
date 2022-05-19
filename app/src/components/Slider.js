@@ -40,9 +40,9 @@ const Slider = ({ value, onChange, steps, tooltip, label, ...rest }) => {
         value={value}
         onChange={onChange}
         marks={marks}
-        min="0"
+        min={0}
         max={steps.length - 1}
-        step="1"
+        step={1}
         ariaValueTextFormatterForHandle={() => label}
       />
     </div>
