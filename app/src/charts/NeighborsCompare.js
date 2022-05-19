@@ -4,8 +4,8 @@ import { find } from "lodash";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
-import { blue, gray, lightGray, purple, red } from "../palette";
+import { id, lineHeight, YearParam } from "./Neighbors";
+import { blue, gray, lightGray, purple, red, tagSymbol } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { join, toHumanCase, wrapLines } from "../util/string";
 
@@ -61,7 +61,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, "word", 350, 10).map((line, lineIndex) => (
+        {wrapLines(uniqueNeighbors, "word", 330, 10).map((line, lineIndex) => (
           <text
             key={lineIndex}
             x="0"
@@ -102,13 +102,14 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
               return (
                 <tspan
                   key={index}
-                  dx="10"
+                  dx="15"
                   style={{
                     fontSize: 10,
                     fill: color,
                   }}
                   data-tooltip={tooltip}
                   aria-hidden={inNeither}
+                  tabIndex={inNeither ? -1 : 0}
                 >
                   {symbols && symbol ? symbol + " " : ""}
                   {toHumanCase(neighbor.word)}

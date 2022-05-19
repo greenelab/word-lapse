@@ -4,8 +4,8 @@ import { find } from "lodash";
 import Slider from "../components/Slider";
 import Button from "../components/Button";
 import { AppContext } from "../App";
-import { id, lineHeight, tagSymbol, YearParam } from "./Neighbors";
-import { blue, lightGray, red } from "../palette";
+import { id, lineHeight, YearParam } from "./Neighbors";
+import { blue, lightGray, red, tagSymbol } from "../palette";
 import { useViewBox } from "../util/hooks";
 import { blendColors } from "../util/math";
 import { join, toHumanCase, wrapLines } from "../util/string";
@@ -52,33 +52,36 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, "word", 350, 10).map((line, lineIndex) => (
+        {wrapLines(uniqueNeighbors, "word", 330, 10).map((line, lineIndex) => (
           <text
             key={lineIndex}
             x="0"
             y={lineHeight * lineIndex}
             textAnchor="middle"
           >
-            {line.map((neighbor, index) => (
-              <tspan
-                key={index}
-                dx="10"
-                style={{
-                  fontSize: "10px",
-                  fill: !!find(yearNeighbors, ["word", neighbor.word])
-                    ? blended
-                    : lightGray,
-                }}
-                data-tooltip={join(
-                  [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
-                  "<br/>"
-                )}
-                aria-hidden={!find(yearNeighbors, ["word", neighbor.word])}
-              >
-                {toHumanCase(neighbor.word)}
-                {neighbor.tagged && " " + tagSymbol}
-              </tspan>
-            ))}
+            {line.map((neighbor, index) => {
+              const active = !!find(yearNeighbors, ["word", neighbor.word]);
+
+              return (
+                <tspan
+                  key={index}
+                  dx="15"
+                  style={{
+                    fontSize: "10px",
+                    fill: active ? blended : lightGray,
+                  }}
+                  data-tooltip={join(
+                    [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
+                    "<br/>"
+                  )}
+                  aria-hidden={!active}
+                  tabIndex={!active ? -1 : 0}
+                >
+                  {toHumanCase(neighbor.word)}
+                  {neighbor.tagged && " " + tagSymbol}
+                </tspan>
+              );
+            })}
           </text>
         ))}
 

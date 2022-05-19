@@ -2,7 +2,7 @@ import { useEffect, useContext, useMemo } from "react";
 import { chunk, truncate } from "lodash";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
-import { blue, gray, red } from "../palette";
+import { blue, gray, red, tagSymbol } from "../palette";
 import { blendColors } from "../util/math";
 import { join, toHumanCase, wrapLines } from "../util/string";
 
@@ -16,13 +16,10 @@ const xSpacing = 110;
 const ySpacing = 90;
 
 // height of lines
-const lineHeight = ySpacing / 10;
+const lineHeight = ySpacing / 8;
 
 // number of neighbors to show for each year
 const top = 5;
-
-// symbol to show next to tagged words to indicate they're tagged
-const tagSymbol = "＊";
 
 // util func to make snake pattern
 const makeSnake = (array, cols, sizeX, sizeY) =>
@@ -145,10 +142,10 @@ const Trajectory = () => {
             <circle
               cx={x}
               cy={y}
-              r={3}
+              r="3"
               fill={blendColors(red, blue, index / (array.length - 1))}
               stroke="black"
-              strokeWidth={1}
+              strokeWidth="1"
             />
             {wrapLines(
               neighbors.slice(0, top).map((neighbor) => ({
@@ -163,13 +160,13 @@ const Trajectory = () => {
               <text
                 key={lineIndex}
                 x={x}
-                y={2 * lineHeight + y + lineHeight * lineIndex}
+                y={1.5 * lineHeight + y + lineHeight * lineIndex}
                 textAnchor="middle"
               >
                 {line.map((neighbor, neighborIndex) => (
                   <tspan
                     key={neighborIndex}
-                    dx={neighborIndex === 0 ? 0 : 5}
+                    dx={neighborIndex === 0 ? 0 : 8}
                     className="word"
                     data-tooltip={join(
                       [

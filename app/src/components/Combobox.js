@@ -24,7 +24,7 @@ const Combobox = ({ value, onChange, options, ...props }) => {
     inputValue: input,
     onInputValueChange: ({ inputValue }) => setInput(inputValue),
     onSelectedItemChange: ({ selectedItem }) =>
-      onChange(selectedItem.concept || selectedItem.vocab),
+      onChange(selectedItem.concept || selectedItem.vocab || ""),
   });
 
   // get autocomplete results
