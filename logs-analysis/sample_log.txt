@@ -1,0 +1,10 @@
+INFO:fastapi_redis_cache.client: 05/19/2022 10:24:25 PM | KEY_FOUND_IN_CACHE: key=wlc:backend.main.neighbors(tok=zoonosis,corpus=pubtator)
+
+INFO:fastapi_redis_cache.client: 05/19/2022 10:15:00 PM | KEY_FOUND_IN_CACHE: key=wlc:backend.main.neighbors(tok=zoonosis,corpus=pubtator)
+
+INFO:fastapi_redis_cache.client: 05/19/2022 09:33:21 PM | KEY_ADDED_TO_CACHE: key=wlc:backend.main.neighbors(tok=zoonosis,corpus=pubtator)
+
+INFO:fastapi_redis_cache.client: 05/19/2022 09:31:01 PM | KEY_FOUND_IN_CACHE: key=wlc:backend.main.neighbors(tok=pandemic,corpus=pubtator)
+
+INFO:fastapi_redis_cache.client: 05/19/2022 09:16:00 PM | KEY_ADDED_TO_CACHE: key=wlc:backend.main.neighbors(tok=specimen,corpus=pubtator)
+
