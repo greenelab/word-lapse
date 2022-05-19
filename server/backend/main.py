@@ -183,8 +183,8 @@ def map_corpus_label(target_field="corpus"):
                         (id for id, label in CORPORA_SET.items() if label == input_label),
                         None
                     )
-
-                kwargs[target_field] = corpus_id
+                    kwargs[target_field] = corpus_id
+                
             return await func(*args, **kwargs)
 
         return anon
