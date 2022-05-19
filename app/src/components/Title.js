@@ -34,9 +34,9 @@ const Title = () => (
     href="."
     className="title"
     role="heading"
-    aria-level={1}
+    aria-level="1"
     aria-label="Word Lapse"
-    tabIndex={0}
+    tabIndex="0"
   >
     {words.map((word, index) => (
       <svg

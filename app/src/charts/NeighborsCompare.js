@@ -61,7 +61,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
   return (
     <div className="chart">
       <svg ref={svg} id={id}>
-        {wrapLines(uniqueNeighbors, "word", 350, 10).map((line, lineIndex) => (
+        {wrapLines(uniqueNeighbors, "word", 330, 10).map((line, lineIndex) => (
           <text
             key={lineIndex}
             x="0"
@@ -102,7 +102,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
               return (
                 <tspan
                   key={index}
-                  dx="10"
+                  dx="15"
                   style={{
                     fontSize: 10,
                     fill: color,

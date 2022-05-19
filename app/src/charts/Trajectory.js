@@ -142,10 +142,10 @@ const Trajectory = () => {
             <circle
               cx={x}
               cy={y}
-              r={3}
+              r="3"
               fill={blendColors(red, blue, index / (array.length - 1))}
               stroke="black"
-              strokeWidth={1}
+              strokeWidth="1"
             />
             {wrapLines(
               neighbors.slice(0, top).map((neighbor) => ({
@@ -166,7 +166,7 @@ const Trajectory = () => {
                 {line.map((neighbor, neighborIndex) => (
                   <tspan
                     key={neighborIndex}
-                    dx={neighborIndex === 0 ? 0 : 5}
+                    dx={neighborIndex === 0 ? 0 : 8}
                     className="word"
                     data-tooltip={join(
                       [
