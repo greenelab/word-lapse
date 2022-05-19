@@ -109,6 +109,7 @@ const NeighborsCompare = ({ setCompare, playing, setPlaying }) => {
                   }}
                   data-tooltip={tooltip}
                   aria-hidden={inNeither}
+                  tabIndex={inNeither ? -1 : 0}
                 >
                   {symbols && symbol ? symbol + " " : ""}
                   {toHumanCase(neighbor.word)}

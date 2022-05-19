@@ -59,26 +59,29 @@ const NeighborsSingle = ({ setCompare, playing, setPlaying }) => {
             y={lineHeight * lineIndex}
             textAnchor="middle"
           >
-            {line.map((neighbor, index) => (
-              <tspan
-                key={index}
-                dx="15"
-                style={{
-                  fontSize: "10px",
-                  fill: !!find(yearNeighbors, ["word", neighbor.word])
-                    ? blended
-                    : lightGray,
-                }}
-                data-tooltip={join(
-                  [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
-                  "<br/>"
-                )}
-                aria-hidden={!find(yearNeighbors, ["word", neighbor.word])}
-              >
-                {toHumanCase(neighbor.word)}
-                {neighbor.tagged && " " + tagSymbol}
-              </tspan>
-            ))}
+            {line.map((neighbor, index) => {
+              const active = !!find(yearNeighbors, ["word", neighbor.word]);
+
+              return (
+                <tspan
+                  key={index}
+                  dx="15"
+                  style={{
+                    fontSize: "10px",
+                    fill: active ? blended : lightGray,
+                  }}
+                  data-tooltip={join(
+                    [`In ${neighbor.count} of the year(s)`, neighbor.tagLink],
+                    "<br/>"
+                  )}
+                  aria-hidden={!active}
+                  tabIndex={!active ? -1 : 0}
+                >
+                  {toHumanCase(neighbor.word)}
+                  {neighbor.tagged && " " + tagSymbol}
+                </tspan>
+              );
+            })}
           </text>
         ))}
 
