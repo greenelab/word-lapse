@@ -26,6 +26,16 @@ if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
         2> /var/log/redis.stderr &
     
     export REDIS_URL="redis://localhost:6379"
+
+    # despite redis being backgrounded, it can take some time to come up
+    # when its database is large; let's poll until it's ready
+    TRIES=30
+    for ((i=TRIES;i>0;i--)); do
+        if redis-cli ping; then
+            break
+        fi
+        echo "* redis-server not yet up, retrying... (retries left: $i)"
+    done
 fi
 
 # read in RQ_CONCURRENCY, or set to 1 process if unspecified
