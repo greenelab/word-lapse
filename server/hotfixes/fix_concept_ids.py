@@ -63,7 +63,6 @@ def main():
         # operate on the decoded value, i.e. map the tag_id to something else
         for _, neighbors in decoded['neighbors'].items():
             for neighbor in neighbors:
-                #  token = neighbor['token']
                 tag_id = neighbor['tag_id']
                 if tag_id and tag_id in concept_dict:
                     new_token = concept_dict[tag_id]
