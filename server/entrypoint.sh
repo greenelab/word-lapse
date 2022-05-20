@@ -31,10 +31,11 @@ if [ ${USE_INLINE_REDIS:-0} -eq 1 ]; then
     # when its database is large; let's poll until it's ready
     TRIES=30
     for ((i=TRIES;i>0;i--)); do
-        if redis-cli ping; then
+        if redis-cli info; then
             break
         fi
         echo "* redis-server not yet up, retrying... (retries left: $i)"
+        sleep 5
     done
 fi
 
