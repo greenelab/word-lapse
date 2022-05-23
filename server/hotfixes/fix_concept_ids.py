@@ -61,16 +61,14 @@ def main():
         decoded = json.loads(r.get(cached_key))
 
         # operate on the decoded value, i.e. map the tag_id to something else
-        for _, neighbors in decoded['neighbors'].items():
-            for neighbor in neighbors:
+        for year, neighbors in decoded['neighbors'].items():
+            for n_idx, neighbor in enumerate(neighbors):
                 tag_id = neighbor['tag_id']
                 if tag_id and tag_id in concept_dict:
                     new_token = concept_dict[tag_id]
                     if neighbor['token'] != new_token:
-                        neighbor['token'] = new_token
+                        decoded['neighbors'][year][n_idx]['token'] = new_token
                         corrections += 1
-                    # else:
-                    #     tqdm.write("* tag_id %s for token %s is already correct" % (tag_id, token))
 
         r.set(cached_key, json.dumps(decoded))
 
