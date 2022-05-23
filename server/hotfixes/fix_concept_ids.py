@@ -49,23 +49,30 @@ def main():
 
     print("Loading concept dict...")
     concept_dict = get_concept_id_mapper()
-    # print("Inverting dict...")
-    # inverted_concept_dict = {v: k for k, v in concept_dict.items()}
-    # del concept_dict
     print("...done!")
 
     corrections = 0
 
-    for cached_key in tqdm(r.scan_iter('wlc:*'), total=75471):
-        # print("Key: %s" % cached_key.decode("utf8", "ignore"))
+    for cached_key in tqdm(r.scan_iter('wlc:*'), total=75514):
         decoded = json.loads(r.get(cached_key))
 
         # operate on the decoded value, i.e. map the tag_id to something else
         for year, neighbors in decoded['neighbors'].items():
             for n_idx, neighbor in enumerate(neighbors):
                 tag_id = neighbor['tag_id']
-                if tag_id and tag_id in concept_dict:
+
+                if not tag_id:
+                    continue
+
+                # remove prefixes added when caching
+                if tag_id.startswith("disease_"):
+                    tag_id = tag_id.replace("disease_", "")
+                if tag_id.startswith("chemical_"):
+                    tag_id = tag_id.replace("chemical_", "")
+                    
+                if tag_id in concept_dict:
                     new_token = concept_dict[tag_id]
+                    
                     if neighbor['token'] != new_token:
                         decoded['neighbors'][year][n_idx]['token'] = new_token
                         corrections += 1
