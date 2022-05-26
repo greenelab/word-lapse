@@ -90,7 +90,7 @@ def extract_frequencies(tok: str, corpus: str):
         >> ply.define(normalized="word_count/total") 
         >> ply.select("year", "word_count", "normalized")
         >> ply.arrange("year")
-        >> ply.rename({"frequency": "word_count", "normalized_frequency": "normalied"})
+        >> ply.rename({"frequency": "word_count", "normalized_frequency": "normalized"})
         >> ply.call(".astype", {"year": int, "frequency": int, "normalized_frequency": float})
     )
 
