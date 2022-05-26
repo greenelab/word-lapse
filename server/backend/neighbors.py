@@ -83,11 +83,15 @@ def extract_frequencies(tok: str, corpus: str):
 
     frequency_output_df = (
         frequency_table
+        >> ply.group_by("year")
+        >> ply.define(total="sum(word_count)")
+        >> ply.ungroup()
         >> ply.query("tok == @tok")
-        >> ply.select("year", "word_count")
+        >> ply.define(normalized="word_count/total") 
+        >> ply.select("year", "word_count", "normalized")
         >> ply.arrange("year")
-        >> ply.rename({"frequency": "word_count"})
-        >> ply.call(".astype", {"year": int, "frequency": int})
+        >> ply.rename({"frequency": "word_count", "normalized_frequency": "normalied"})
+        >> ply.call(".astype", {"year": int, "frequency": int, "normalized_frequency": float})
     )
 
     return frequency_output_df >> ply.call(".to_dict", orient="records")
