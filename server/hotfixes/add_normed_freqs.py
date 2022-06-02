@@ -108,8 +108,8 @@ def main():
             # if the key already has 'normalized_frequency' in it, it's been updated
             if (
                 (
-                    len(decoded['frequencies']) > 0
-                    and 'normalized_frequency' in decoded['frequencies'][0]
+                    len(decoded['frequency']) > 0
+                    and 'normalized_frequency' in decoded['frequency'][0]
                 )
                 and not FORCE_REWRITE_FREQS
             ):
@@ -117,7 +117,7 @@ def main():
                 already_updated += 1
                 continue
 
-            decoded['frequencies'] = extract_frequencies(tok=tok, corpus=corpus)
+            decoded['frequency'] = extract_frequencies(tok=tok, corpus=corpus)
             corrections += 1
 
             if not DRY_RUN:
