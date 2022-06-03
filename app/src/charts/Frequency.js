@@ -21,13 +21,13 @@ import Button from "../components/Button";
 import "./Frequency.css";
 import { ReactComponent as ScaleLinear } from "../assets/scale-linear.svg";
 import { ReactComponent as ScaleLog } from "../assets/scale-log.svg";
-import { compactNumber } from "../util/string";
+import { compactNumber, logLabel } from "../util/string";
 
 // unique id of this chart
 const id = "frequency";
 
 // dimensions of main chart area, in SVG units. use to set aspect ratio.
-const width = 400;
+const width = 380;
 const height = 200;
 
 // duration of animations (in ms)
@@ -177,8 +177,10 @@ const chart = (frequency, changepoints, normalized, linear, frequencyIndex) => {
   const xAxis = axisBottom(xScale)
     .ticks(frequency.length / 2)
     .tickFormat((d) => d);
-  const yAxis = axisLeft(yScale);
-  yAxis.tickFormat(compactNumber);
+  const yAxis = axisLeft(yScale).tickFormat(
+    linear ? compactNumber : logLabel([1, 2, 5], compactNumber)
+  );
+
   svg
     .select(".x-axis")
     .interrupt()
@@ -248,12 +250,12 @@ const Frequency = () => {
           Year
         </text>
         <text
-          transform={`translate(-40, -${height / 2}) rotate(-90)`}
+          transform={`translate(-50, -${height / 2}) rotate(-90)`}
           textAnchor="middle"
           dominantBaseline="middle"
           style={{ fontSize: "12px" }}
         >
-          Frequency
+          {normalized ? "Normalized" : "Absolute"} Frequency
         </text>
         <text
           x={width / 2}
