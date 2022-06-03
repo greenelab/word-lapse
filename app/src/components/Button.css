@@ -25,3 +25,7 @@
   height: 30px;
   flex-shrink: 0;
 }
+
+.custom-icon {
+  height: 1em;
+}

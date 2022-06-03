@@ -67,10 +67,19 @@ export const getResults = async (query, corpus) => {
   // api error
   if (results?.detail?.[0]?.msg) throw new Error(results.detail[0].msg);
 
+  // transform frequency data
+  results.frequency = results.frequency.map(
+    ({ frequency, normalized_frequency, year }) => ({
+      frequency,
+      normalized: normalized_frequency,
+      year,
+    })
+  );
+
   // delete empty years
   results.neighbors = omitBy(results.neighbors, isEmpty);
 
-  // transform/compute data
+  // transform/compute neighbors data
   results.neighbors = mapValues(results.neighbors, (neighbors) =>
     map(neighbors, ({ token, tag_id, score }) => ({
       // plain text word

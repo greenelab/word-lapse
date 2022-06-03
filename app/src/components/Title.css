@@ -24,25 +24,6 @@
   dominant-baseline: middle;
 }
 
-header[data-fullscreen="true"] .title text {
-  animation: shine 3s ease-in-out infinite;
-}
-
-@keyframes shine {
-  0% {
-    stroke: black;
-  }
-  20% {
-    stroke: var(--color);
-  }
-  40% {
-    stroke: black;
-  }
-  100% {
-    stroke: black;
-  }
-}
-
 header[data-fullscreen="false"] .title {
   flex-direction: row;
   gap: 0;

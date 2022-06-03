@@ -52,3 +52,14 @@ export const getWidth = (text, size) => {
 // filter array and join
 export const join = (array = [], separator = " ") =>
   array.filter((part) => part.trim()).join(separator);
+
+// convert number to compact form (e.g. with "k" for 1000)
+const formatter = Intl.NumberFormat("en", { notation: "compact" });
+export const compactNumber = (value) =>
+  value < 1 ? value.toExponential(1) : formatter.format(value).toLowerCase();
+
+// get axis tick labels for log scale
+export const logLabel = (powers, format) => (d) =>
+  // only return label if number is a "multiple" of one of powers
+  // otherwise skip tick (give it a blank label)
+  powers.some((power) => Math.log10(d / power) % 1 === 0) ? format(d) : "";

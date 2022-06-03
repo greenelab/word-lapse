@@ -53,10 +53,12 @@ library.add(
   fas.faDownload,
   fas.faExclamationCircle,
   fas.faFont,
+  fas.faHashtag,
   fas.faIcons,
   fas.faInfoCircle,
   fas.faLeftRight,
   fas.faPause,
+  fas.faPercent,
   fas.faPlay,
   fas.faRightLong,
   fas.faSpinner
