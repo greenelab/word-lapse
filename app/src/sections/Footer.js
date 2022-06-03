@@ -7,7 +7,10 @@ const Footer = () => {
 
   return (
     <footer>
-      <span>Results for {meta.cached} words already pre-computed!</span>
+      <span>
+        Results for {meta.cached?.toLocaleString() || "???"} words already
+        pre-computed!
+      </span>
 
       <span>
         <a href="https://github.com/greenelab/word-lapse">
