@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { getAutocomplete } from "../api";
 import { AppContext } from "../App";
-import { meta } from "..";
 import Combobox from "./Combobox";
 import "./Search.css";
 import Select from "./Select";
@@ -10,7 +9,9 @@ const description = process.env.REACT_APP_DESCRIPTION;
 
 // search box
 const Search = () => {
-  const { search, setSearch, corpus, setCorpus } = useContext(AppContext);
+  const { meta, search, setSearch, corpus, setCorpus } = useContext(AppContext);
+
+  if (!meta.corpora) return <div>Couldn't load corpora</div>;
 
   return (
     <>
@@ -22,7 +23,7 @@ const Search = () => {
           placeholder="Type a word"
         />
         <Select
-          options={meta?.config?.CORPORA_SET || []}
+          options={meta.corpora}
           value={corpus}
           onChange={setCorpus}
           data-tooltip={`Select corpus to use in analysis.<br/>Using "${corpus}".`}

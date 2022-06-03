@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { AppContext } from "../App";
 import Frequency from "../charts/Frequency";
 import Neighbors from "../charts/Neighbors";
@@ -27,4 +27,4 @@ const Results = () => {
   else return <></>;
 };
 
-export default Results;
+export default memo(Results);
