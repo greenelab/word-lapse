@@ -164,7 +164,7 @@ const Trajectory = () => {
                   ...neighbor,
                   wordFull: neighbor.word,
                   word: truncate(neighbor.word, {
-                    length: underCurve && neighborIndex === 0 ? 10 : 20,
+                    length: underCurve && neighborIndex === 0 ? 15 : 20,
                   }),
                 }))
                 .map((neighbor, neighborIndex) => (
