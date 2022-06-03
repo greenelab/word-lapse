@@ -3,20 +3,25 @@ import {
   select,
   extent,
   scaleLinear,
+  scaleLog,
   axisLeft,
   axisBottom,
   area,
   line,
   curveLinear,
   easeLinear,
-  easeElasticOut,
+  easeBackOut,
 } from "d3";
 import { blue, gray, offWhite, lightPurple, purple, red } from "../palette";
 import { AppContext } from "../App";
 import { blendColors } from "../util/math";
 import { getPathLength } from "../util/dom";
 import { useViewBox } from "../util/hooks";
+import Button from "../components/Button";
 import "./Frequency.css";
+import { ReactComponent as ScaleLinear } from "../assets/scale-linear.svg";
+import { ReactComponent as ScaleLog } from "../assets/scale-log.svg";
+import { compactNumber } from "../util/string";
 
 // unique id of this chart
 const id = "frequency";
@@ -29,24 +34,27 @@ const height = 200;
 const duration = 1000;
 
 // d3 code for chart
-const chart = (frequency, changepoints, frequencyIndex) => {
+const chart = (frequency, changepoints, normalized, linear, frequencyIndex) => {
   // get elements of interest
   const svg = select("#" + id);
 
   // get range of values for x/y axes
   const xExtent = extent(frequency, (d) => d.year);
-  const yExtent = extent(frequency, (d) => d.frequency);
+  const yExtent = extent(frequency, (d) =>
+    normalized ? d.normalized : d.frequency
+  );
 
   // get scales for x/y that map values to SVG coordinates
-  const xScale = scaleLinear().domain(xExtent).range([0, width]);
-  const yScale = scaleLinear().domain(yExtent).range([0, -height]);
+  const scale = linear ? scaleLinear : scaleLog;
+  const xScale = scale().domain(xExtent).range([0, width]);
+  const yScale = scale().domain(yExtent).range([0, -height]);
 
-  // get scaled x/y coordinates
-  frequency = frequency.map((d) => ({
-    ...d,
-    x: xScale(d.year),
-    y: yScale(d.frequency),
-  }));
+  frequency
+    // get scaled x/y coordinates
+    ?.forEach((d) => {
+      d.x = xScale(d.year);
+      d.y = yScale(normalized ? d.normalized : d.frequency);
+    });
 
   // get subset of frequency for animation purposes
   const animatedFrequency = frequency.slice(0, frequencyIndex);
@@ -76,24 +84,22 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .select(".curve-strokes")
     .selectAll(".curve-stroke")
     .data([frequency])
-    .join((enter) =>
-      enter
-        .append("path")
-        .attr("stroke-dasharray", length + " " + length)
-        .attr("stroke-dashoffset", length)
-        .transition()
-        .delay(duration)
-        .duration(duration)
-        .ease(easeLinear)
-        .attr("stroke-dashoffset", 0)
-    )
+    .join("path")
     .attr("class", "curve-stroke")
     .attr("d", curveStroke)
     .attr("fill", "none")
     .attr("stroke", gray)
     .attr("stroke-width", 2)
     .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round");
+    .attr("stroke-linecap", "round")
+    .attr("stroke-dasharray", length + " " + length)
+    .attr("stroke-dashoffset", length)
+    .interrupt()
+    .transition()
+    .delay(duration / 2)
+    .duration(duration)
+    .ease(easeLinear)
+    .attr("stroke-dashoffset", 0);
 
   // make changepoints fill
   const changepointFill = area()
@@ -105,26 +111,18 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .select(".changepoints")
     .selectAll(".changepoints-fill")
     .data(changepoints)
-    .join((enter) =>
-      enter
-        .append("path")
-        .style("opacity", 0)
-        .transition()
-        .delay(duration * 2)
-        .duration(duration)
-        .style("opacity", 0.25)
-    )
+    .join("path")
     .attr("class", "changepoints-fill")
     .attr("d", changepointFill)
     .attr("fill", lightPurple)
     .attr("stroke", purple)
     .attr("stroke-dasharray", "4 4")
+    .style("opacity", 0.5)
     .attr(
       "data-tooltip",
       (d) =>
-        `${d.join(
-          " to "
-        )} represents a significant change in the word's association`
+        d.join(" to ") +
+        " represents a significant change in the word's association"
     );
 
   // make changepoints text
@@ -132,22 +130,13 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .select(".changepoints")
     .selectAll(".changepoints-text")
     .data(changepoints)
-    .join((enter) =>
-      enter
-        .append("text")
-        .style("opacity", 0)
-        .transition()
-        .delay(duration * 2)
-        .duration(duration)
-        .style("opacity", 1)
-    )
+    .join("text")
     .attr("class", "changepoints-text")
     .attr(
       "transform",
       ([from, to]) =>
-        `translate(${(xScale(from) + xScale(to)) / 2}, ${
-          -height / 2
-        }) rotate(-90)`
+        `translate(${(xScale(from) + xScale(to)) / 2}, ${-height / 2})` +
+        `rotate(-90)`
     )
     .style("font-size", "12px")
     .attr("text-anchor", "middle")
@@ -160,15 +149,7 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .select(".dots")
     .selectAll(".dot")
     .data(animatedFrequency)
-    .join((enter) =>
-      enter
-        .append("circle")
-        .attr("r", 0)
-        .transition()
-        .duration(duration)
-        .ease(easeElasticOut)
-        .attr("r", 3)
-    )
+    .join("circle")
     .attr("class", "dot")
     .attr("fill", (d, index, array) =>
       blendColors(red, blue, index / (array.length - 1))
@@ -177,27 +158,53 @@ const chart = (frequency, changepoints, frequencyIndex) => {
     .attr("stroke-width", "1")
     .attr("cx", (d) => d.x)
     .attr("cy", (d) => d.y)
-    .attr(
-      "data-tooltip",
-      (d) => `Year: ${d.year}<br>Frequency: ${d.frequency.toExponential(2)}`
+    .attr("r", 0)
+    .interrupt()
+    .transition()
+    .delay((d, index, array) => (duration * index) / array.length)
+    .duration(duration / 2)
+    .ease(easeBackOut)
+    .attr("r", 3)
+    .attr("data-tooltip", (d) =>
+      [
+        `Year: ${d.year}`,
+        `Frequency: ${d.frequency.toLocaleString()}`,
+        `Normalized Frequency: ${compactNumber(d.normalized)}`,
+      ].join("<br/>")
     );
 
   // make x/y axes ticks
   const xAxis = axisBottom(xScale)
     .ticks(frequency.length / 2)
     .tickFormat((d) => d);
-  const yAxis = axisLeft(yScale)
-    .tickValues(yExtent)
-    .tickFormat((d, i) => (i === 0 ? "less" : "more"));
-  svg.select(".x-axis").call(xAxis);
-  svg.select(".y-axis").call(yAxis);
+  const yAxis = axisLeft(yScale);
+  yAxis.tickFormat(compactNumber);
+  svg
+    .select(".x-axis")
+    .interrupt()
+    .transition()
+    .duration(linear ? 100 : 0)
+    .call(xAxis)
+    .style("font-size", "10px");
+  svg
+    .select(".y-axis")
+    .interrupt()
+    .transition()
+    .duration(linear ? 100 : 0)
+    .call(yAxis)
+    .style("font-size", "8px");
 };
 
 // visualization of frequency data
 const Frequency = () => {
+  // app state
   const { search, results } = useContext(AppContext);
   const { frequency, changepoints } = results;
+
+  // other state
   const [frequencyIndex, setFrequencyIndex] = useState(0);
+  const [normalized, setNormalized] = useState(false);
+  const [linear, setLinear] = useState(true);
   const [svg, setViewBox] = useViewBox(20);
 
   // animate frequencyIndex
@@ -215,8 +222,8 @@ const Frequency = () => {
 
   // rerun d3 code any time data changes
   useEffect(() => {
-    chart(frequency, changepoints, frequencyIndex);
-  }, [frequency, changepoints, frequencyIndex]);
+    chart(frequency, changepoints, normalized, linear, frequencyIndex);
+  }, [frequency, changepoints, normalized, linear, frequencyIndex]);
 
   // fit svg viewbox after render when certain props change
   useEffect(() => {
@@ -257,6 +264,25 @@ const Frequency = () => {
           How often "{search}" has been used over time
         </text>
       </svg>
+
+      <div className="chart-controls">
+        <Button
+          icon={normalized ? "percent" : "hashtag"}
+          text={normalized ? "Normalized" : "Absolute"}
+          onClick={() => setNormalized(!normalized)}
+          data-tooltip={
+            normalized
+              ? "View absolute frequencies"
+              : "View normalized frequencies"
+          }
+        />
+        <Button
+          CustomIcon={linear ? ScaleLinear : ScaleLog}
+          text={linear ? "Linear" : "Log"}
+          onClick={() => setLinear(!linear)}
+          data-tooltip={linear ? "Show log scale" : "Show linear scale"}
+        />
+      </div>
     </div>
   );
 };

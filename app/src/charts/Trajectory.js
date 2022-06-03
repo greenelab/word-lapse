@@ -4,7 +4,7 @@ import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
 import { blue, gray, red, tagSymbol } from "../palette";
 import { blendColors } from "../util/math";
-import { join, toHumanCase, wrapLines } from "../util/string";
+import { join, toHumanCase } from "../util/string";
 
 import "./Trajectory.css";
 
@@ -15,24 +15,30 @@ const id = "trajectory";
 const xSpacing = 110;
 const ySpacing = 90;
 
-// height of lines
-const lineHeight = ySpacing / 8;
-
 // number of neighbors to show for each year
 const top = 5;
+
+// height of lines
+const lineHeight = ySpacing / (top * 1.8);
 
 // util func to make snake pattern
 const makeSnake = (array, cols, sizeX, sizeY) =>
   // make array of arrays for rows and cols
   chunk(array, cols)
-    // make coordinates, flip every other row, center horizontally
-    .map((row, rowIndex) =>
+    .map((row, rowIndex, rowArray) =>
       row.map((entry, colIndex) => ({
+        // make point coordinates
+        // flip every other row, center horizontally
         x:
           (rowIndex % 2 === 0 ? colIndex : cols - colIndex - 1) * sizeX -
           ((cols - 1) / 2) * sizeX,
         y: rowIndex * sizeY,
-        direction: rowIndex % 2 === 0 ? sizeX / 10 : -sizeX / 10,
+        // small offset in direction of snake
+        // (to create gap between points and connecting lines/curves)
+        offset: rowIndex % 2 === 0 ? sizeX / 10 : -sizeX / 10,
+        // whether point will be under/next to a connecting curve
+        underCurve:
+          colIndex % cols === cols - 1 && rowIndex < rowArray.length - 1,
       }))
     )
     // make into flat array of point coords
@@ -101,7 +107,7 @@ const Trajectory = () => {
             className="arrow"
             style={{ animationDelay: index * 0.1 + "s" }}
             d={[
-              ["M", a.x + a.direction, a.y],
+              ["M", a.x + a.offset, a.y],
               a.x - b.x === 0
                 ? [
                     "A",
@@ -110,10 +116,10 @@ const Trajectory = () => {
                     0,
                     0,
                     a.x < 0 ? 0 : 1,
-                    b.x + a.direction,
+                    b.x + a.offset,
                     b.y,
                   ]
-                : ["L", b.x - a.direction, b.y],
+                : ["L", b.x - a.offset, b.y],
             ]
               .flat()
               .join(" ")}
@@ -125,48 +131,47 @@ const Trajectory = () => {
           />
         ))}
 
-        {snake.map(({ year, x, y, neighbors }, index, array) => (
-          <g
-            key={index}
-            className="year"
-            style={{ animationDelay: index * 0.1 + "s" }}
-          >
-            <text
-              x={x}
-              y={y - 10}
-              textAnchor="middle"
-              style={{ fontSize: "10px" }}
+        {snake.map(
+          ({ year, x, y, neighbors, underCurve }, snakeIndex, snakeArray) => (
+            <g
+              key={snakeIndex}
+              className="year"
+              style={{ animationDelay: snakeIndex * 0.1 + "s" }}
             >
-              {year}
-            </text>
-            <circle
-              cx={x}
-              cy={y}
-              r="3"
-              fill={blendColors(red, blue, index / (array.length - 1))}
-              stroke="black"
-              strokeWidth="1"
-            />
-            {wrapLines(
-              neighbors.slice(0, top).map((neighbor) => ({
-                ...neighbor,
-                wordFull: neighbor.word,
-                word: truncate(neighbor.word, { length: 20 }),
-              })),
-              "word",
-              xSpacing * 0.66,
-              8
-            ).map((line, lineIndex) => (
               <text
-                key={lineIndex}
                 x={x}
-                y={1.5 * lineHeight + y + lineHeight * lineIndex}
+                y={y - 10}
                 textAnchor="middle"
+                style={{ fontSize: "10px" }}
               >
-                {line.map((neighbor, neighborIndex) => (
-                  <tspan
+                {year}
+              </text>
+              <circle
+                cx={x}
+                cy={y}
+                r="3"
+                fill={blendColors(
+                  red,
+                  blue,
+                  snakeIndex / (snakeArray.length - 1)
+                )}
+                stroke="black"
+                strokeWidth="1"
+              />
+              {neighbors
+                .slice(0, top)
+                .map((neighbor, neighborIndex) => ({
+                  ...neighbor,
+                  wordFull: neighbor.word,
+                  word: truncate(neighbor.word, {
+                    length: underCurve && neighborIndex === 0 ? 10 : 20,
+                  }),
+                }))
+                .map((neighbor, neighborIndex) => (
+                  <text
                     key={neighborIndex}
-                    dx={neighborIndex === 0 ? 0 : 8}
+                    x={x}
+                    y={16 + y + lineHeight * neighborIndex}
                     className="word"
                     data-tooltip={join(
                       [
@@ -178,17 +183,21 @@ const Trajectory = () => {
                     )}
                     style={{
                       fontSize: "8px",
-                      fill: blendColors(red, blue, index / (array.length - 1)),
+                      fill: blendColors(
+                        red,
+                        blue,
+                        snakeIndex / (snakeArray.length - 1)
+                      ),
                     }}
+                    textAnchor="middle"
                   >
                     {toHumanCase(neighbor.word)}
                     {neighbor.tagged && " " + tagSymbol}
-                  </tspan>
+                  </text>
                 ))}
-              </text>
-            ))}
-          </g>
-        ))}
+            </g>
+          )
+        )}
 
         <text x="0" y="-45" textAnchor="middle" style={{ fontSize: "10px" }}>
           Top {top} associated words in each year

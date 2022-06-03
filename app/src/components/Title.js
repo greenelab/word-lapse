@@ -52,7 +52,6 @@ const Title = () => (
               x={x}
               y="1"
               filter={`url(#drop-shadow-${id})`}
-              style={{ animationDelay: id * 0.2 + "s" }}
             >
               {char}
             </text>
