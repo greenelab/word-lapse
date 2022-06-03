@@ -1,0 +1,42 @@
+{
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "word-lapse",
+            "source_image_family": "ubuntu-2004-lts",
+            "source_image_project_id": "ubuntu-os-cloud",
+            "zone": "us-central1-a",
+            "disk_size": "65",
+            "image_name": "wl-models-{{timestamp}}",
+            "image_family": "word-lapse-models",
+            "ssh_username": "ubuntu"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "cloud-init status --wait"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo apt update && sudo apt install -y default-jdk python3-pip python3.8-venv jq apt-transport-https ca-certificates nfs-common",
+                "curl -fsSL https://get.docker.com | sh"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "docker.socket_override.conf",
+            "destination": "/tmp/docker.socket.d_override.conf"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo mkdir -p /etc/systemd/system/docker.socket.d",
+                "sudo cp /tmp/docker.socket.d_override.conf /etc/systemd/system/docker.socket.d/override.conf"
+            ]
+        }
+    ]
+}
