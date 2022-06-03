@@ -16,7 +16,9 @@ setCssVariables(palette);
 // context to conveniently pass down global/app-level vars
 export const AppContext = createContext({});
 
+// root app
 const App = () => {
+  // global app state
   const [meta, setMeta] = useState({});
   const [corpus, setCorpus] = useQueryParam(
     "corpus",

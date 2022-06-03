@@ -5,6 +5,7 @@ import { QueryParamProvider } from "use-query-params";
 // browser history object
 export const history = createBrowserHistory();
 
+// wrapper for app to sync state with url
 const Url = ({ children }) => {
   // https://github.com/pbeshai/use-query-params/blob/master/examples/no-router/src/App.js
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
