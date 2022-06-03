@@ -1,4 +1,4 @@
-import { useEffect, useContext, useMemo, memo } from "react";
+import { useEffect, useContext, useMemo } from "react";
 import { chunk } from "lodash";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
@@ -220,4 +220,4 @@ const Trajectory = () => {
   );
 };
 
-export default memo(Trajectory);
+export default Trajectory;
