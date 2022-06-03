@@ -9,6 +9,7 @@ from itertools import islice
 import redis
 from fastapi import FastAPI, HTTPException, Request
 from fastapi_redis_cache import FastApiRedisCache, cache
+from fastapi_utils.tasks import repeat_every
 from pygtrie import CharTrie
 from rq import Queue, Worker
 from rq.exceptions import NoSuchJobError
@@ -90,6 +91,14 @@ async def init_rq():
     r = redis.from_url(os.environ.get("REDIS_URL"))
     queue = Queue("w2v_queries", connection=r)
 
+@app.on_event("startup")
+@repeat_every(seconds=60 * 5)  # 5 minutes
+def count_cached_entries() -> None:
+    r = redis.from_url(os.environ.get("REDIS_URL"))
+    r.set(
+        'meta:cached_entry_count',
+        sum(1 for _ in r.scan_iter('wlc:*'))
+    )
 
 @app.on_event("startup")
 def init_autocomplete_trie():
@@ -207,10 +216,20 @@ async def server_meta(worker_details: bool = False):
     r = redis.from_url(os.environ.get("REDIS_URL"))
     runtime = {"total_workers": Worker.count(connection=r)}
 
+    # get the number of entries in the cache, but if it fails for any
+    # reason, just report 0 rather than causing the request to fail
+    try:
+        cached_entry_count = int(r.get('meta:cached_entry_count') or 0)
+    except:
+        cached_entry_count = 0
+
     payload = {
         "name": "Word Lapse API",
         "commit_sha": os.environ.get("COMMIT_SHA", "unspecified"),
         "config": get_config_values(),
+        "cache": {
+            "cached_entries": cached_entry_count
+        },
         "runtime": runtime,
     }
 
