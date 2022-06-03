@@ -57,6 +57,10 @@ svg :focus {
 
 .tippy-content {
   line-height: 1.6;
+  --webkit-hyphens: auto;
+  hyphens: auto;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .tippy-content a:hover {

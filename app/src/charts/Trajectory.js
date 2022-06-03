@@ -1,10 +1,10 @@
 import { useEffect, useContext, useMemo } from "react";
-import { chunk, truncate } from "lodash";
+import { chunk } from "lodash";
 import { useViewBox } from "../util/hooks";
 import { AppContext } from "../App";
 import { blue, gray, red, tagSymbol } from "../palette";
 import { blendColors } from "../util/math";
-import { join, toHumanCase } from "../util/string";
+import { join, toHumanCase, truncate } from "../util/string";
 
 import "./Trajectory.css";
 
@@ -163,9 +163,13 @@ const Trajectory = () => {
                 .map((neighbor, neighborIndex) => ({
                   ...neighbor,
                   wordFull: neighbor.word,
-                  word: truncate(neighbor.word, {
-                    length: underCurve && neighborIndex === 0 ? 15 : 20,
-                  }),
+                  word: truncate(
+                    neighbor.word,
+                    8,
+                    underCurve && neighborIndex === 0
+                      ? xSpacing * 0.4
+                      : xSpacing * 0.6
+                  ),
                 }))
                 .map((neighbor, neighborIndex) => (
                   <text

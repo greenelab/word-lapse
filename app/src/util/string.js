@@ -1,7 +1,6 @@
 // split string and convert to Human Case
 export const toHumanCase = (string) =>
   string
-    .replace(/[^a-zA-Z0-9.-]/g, " ")
     .split(/\s+/)
     .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
     .join(" ");
@@ -43,10 +42,23 @@ export const wrapLines = (array, key, width, size = 12) => {
 // get actual pixel width of string rendered in font
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
+const cache = {};
 export const getWidth = (text, size) => {
+  if (cache[size + text]) return cache[size + text];
   ctx.font = `${size}px Quicksand`;
   const { width } = ctx.measureText(text);
+  cache[size + text] = width;
   return width;
+};
+
+// truncate text based on actual width
+export const truncate = (text, size, width) => {
+  if (getWidth(text, size) < width) return text;
+
+  while (getWidth(text + "...", size) > width && text.length > 3)
+    text = text.slice(0, -1);
+
+  return text + "...";
 };
 
 // filter array and join

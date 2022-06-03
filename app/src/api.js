@@ -16,19 +16,15 @@ import {
 import { sleep } from "./util/debug";
 
 // api endpoint base url
-// const api = "https://word-lapse-beta.ddns.net"; // for testing
 const api = "https://api-wl.greenelab.com";
 
 // get metadata from api
 export const getMetadata = async () => {
-  try {
-    const meta = await (await window.fetch(api)).json();
-    if (meta?.config?.CORPORA_SET)
-      meta.config.CORPORA_SET = Object.values(meta.config.CORPORA_SET);
-    return meta;
-  } catch (error) {
-    return {};
-  }
+  const meta = await (await window.fetch(api)).json();
+  return {
+    corpora: Object.values(meta?.config?.CORPORA_SET || {}),
+    cached: meta?.cache?.cached_entries || "",
+  };
 };
 
 // api call to see if cached
