@@ -44,7 +44,7 @@ const Status = () => {
         <span>
           No one has searched for this word yet!
           <br />
-          Computing results. This might take a minute.
+          Computing results. This might take a few minutes.
         </span>
       </>
     );
