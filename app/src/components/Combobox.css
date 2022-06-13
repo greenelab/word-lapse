@@ -18,9 +18,19 @@
 .dropdown {
   position: absolute;
   min-width: 100%;
-  max-width: 90vw;
+}
+
+header[data-fullscreen="false"] .dropdown {
   top: calc(100% + 5px);
   right: 0;
+  max-width: 80vw;
+}
+
+header[data-fullscreen="true"] .dropdown {
+  max-width: 90vw;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .dropdown-list {
