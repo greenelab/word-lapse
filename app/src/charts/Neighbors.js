@@ -25,12 +25,6 @@ const getCompare = () => {
   return params.get("yearA") && params.get("yearB");
 };
 
-// get default playing state from url
-const getPlaying = () =>
-  !Array.from(new URLSearchParams(window.location.search)).some(([key]) =>
-    key.includes("year")
-  );
-
 // table visualization of neighbors
 const Neighbors = () => {
   // other state
@@ -38,7 +32,7 @@ const Neighbors = () => {
     "compare",
     withDefault(BooleanParam, getCompare())
   );
-  const [playing, setPlaying] = useState(getPlaying);
+  const [playing, setPlaying] = useState(false);
 
   // pass props down
   const props = { setCompare, playing, setPlaying };

@@ -45,10 +45,3 @@ export const useViewBox = (padding = 0) => {
 
   return [svg, setViewBox];
 };
-
-// unique id for component instance
-let count = 0;
-export const useUid = (prefix) => {
-  const [id] = useState(() => prefix + "-" + count++);
-  return id;
-};

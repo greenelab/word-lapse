@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useId } from "react";
 import { range } from "lodash";
-import { useUid } from "../util/hooks";
 import commonWords from "../data/common-words.json";
 import "./Matrix.css";
 
@@ -48,7 +47,7 @@ export default Matrix;
 
 // single word in animation
 const Word = () => {
-  const id = useUid("matrix");
+  const id = useId();
   const [x, setX] = useState(-99999);
   const [y, setY] = useState(-99999);
   const [word, setWord] = useState("");
