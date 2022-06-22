@@ -41,6 +41,7 @@ const App = () => {
 
   // when search query changes
   useEffect(() => {
+    let latest = true;
     (async () => {
       try {
         // go into results mode
@@ -50,25 +51,26 @@ const App = () => {
 
         // check if results for search already cached
         // and display appropriate loading status
-        if (await getCached(search, corpus)) setStatus(statuses.loadingCached);
+        const cached = await getCached(search, corpus);
+        if (!latest) return;
+        if (cached) setStatus(statuses.loadingCached);
         else setStatus(statuses.loading);
 
         // perform query
-        setResults(await getResults(search, corpus));
+        const results = await getResults(search, corpus);
+        if (!latest) return;
+        setResults(results);
         setStatus();
       } catch (error) {
         console.error(error);
-        // if not latest query
-        if (error.message === statuses.stale) {
-          // don't do anything, leaving most recent query to do its thing
-        } else {
-          // set status message from thrown error
-          setResults();
-          setStatus(error.message);
-          setFullscreen(error.message === statuses.empty);
-        }
+        // set status message from thrown error
+        setResults();
+        setStatus(error.message);
+        setFullscreen(error.message === statuses.empty);
       }
     })();
+
+    return () => (latest = false);
   }, [corpus, search]);
 
   return (
