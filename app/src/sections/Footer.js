@@ -19,9 +19,7 @@ const Footer = () => {
       </span>
 
       <span>
-        Project of the{" "}
-        <a href="https://medschool.cuanschutz.edu/ai">Center for Health AI</a>{" "}
-        and the <a href="https://greenelab.com/">Greene Lab</a>
+        Project of the <a href="https://greenelab.com/">Greene Lab</a>
       </span>
     </footer>
   );
